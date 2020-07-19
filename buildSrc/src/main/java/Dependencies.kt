@@ -1,5 +1,4 @@
 object Versions {
-    // kotlin
     const val kotlin = "1.3.61"
     const val kotlinCoroutines = "1.3.3"
     const val gradlePlugin: String = "4.0.0"
@@ -10,6 +9,7 @@ object Versions {
     const val nav: String = "2.2.0"
     const val glidePalette: String = "2.1.2"
     const val room: String = "2.2.2"
+    const val retrofit = "2.9.0"
 }
 
 object Libs {
@@ -80,6 +80,11 @@ object Libs {
     }
     object Ad {
         const val adMob = "com.google.android.gms:play-services-ads:19.2.0"
+    }
+    object Network {
+        const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
+        const val gson = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
+        const val page = "androidx.paging:paging-runtime-ktx:3.0.0-alpha02"
     }
 }
 
