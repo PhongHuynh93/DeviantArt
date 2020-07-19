@@ -4,7 +4,7 @@ plugins {
     kotlin(Plugins.kotlinAndroid)
     kotlin(Plugins.kotlinExtensions)
     kotlin(Plugins.kapt)
-    id("kotlin-android")
+    id(Plugins.safeArgs)
 }
 
 android {
@@ -49,8 +49,7 @@ dependencies {
     implementation(Libs.Android.recyclerView)
     implementation(Libs.Android.constraint)
 
-    implementation(Libs.Kotlin.stdLib)
-    implementation(Libs.Kotlin.stdLib2)
+    implementation(Libs.Kotlin.std)
 
 
     // For dagger 2
@@ -65,7 +64,7 @@ dependencies {
     implementation(Libs.Glide.glideTransform)
 
     // life cycle
-    implementation(Libs.Ktx.ktxCore)
+    implementation(Libs.Ktx.core)
     implementation(Libs.Ktx.fragment)
     implementation(Libs.Ktx.lifeCycle)
     implementation(Libs.Ktx.liveData)

@@ -22,8 +22,7 @@ object Libs {
     }
 
     object Kotlin {
-        const val stdLib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}"
-        const val stdLib2 = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}"
+        const val std = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}"
     }
 
     object Dagger {
@@ -46,7 +45,7 @@ object Libs {
     }
 
     object Ktx {
-        const val ktxCore = "androidx.core:core-ktx:1.3.0"
+        const val core = "androidx.core:core-ktx:1.3.0"
         const val fragment = "androidx.fragment:fragment-ktx:1.3.0-alpha06"
         const val lifeCycle = "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
         const val liveData = "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
@@ -103,6 +102,7 @@ object Plugins {
 //    const val crashlytics = "com.google.firebase.crashlytics"
     const val kapt = "kapt"
     const val hilt = "dagger.hilt.android.plugin"
+    const val safeArgs = "androidx.navigation.safeargs.kotlin"
 }
 
 object ClassPaths {
