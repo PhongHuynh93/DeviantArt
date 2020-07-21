@@ -1,0 +1,25 @@
+package com.wind.deviantart.ui
+
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.wind.data.model.ArtList
+import com.wind.domain.art.GetNewestArtUseCase
+import com.wind.domain.result.data
+import kotlinx.coroutines.launch
+
+/**
+ * Created by Phong Huynh on 7/21/2020
+ */
+class BrowseViewModel @ViewModelInject constructor(private val getNewestArtUseCase:
+                                                   GetNewestArtUseCase): ViewModel() {
+    private val _newestArtList = MutableLiveData<ArtList>()
+    val newestArtList: LiveData<ArtList> = _newestArtList
+    init {
+        viewModelScope.launch {
+            _newestArtList.value = getNewestArtUseCase(null).data
+        }
+    }
+}

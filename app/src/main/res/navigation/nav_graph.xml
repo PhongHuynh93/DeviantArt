@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.wind.deviantart.MainFragment"
+        android:name="com.wind.deviantart.ui.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" />
 

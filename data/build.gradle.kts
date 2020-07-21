@@ -4,6 +4,7 @@ plugins {
     kotlin(Plugins.kotlinExtensions)
     kotlin(Plugins.kapt)
     id(Plugins.hilt)
+    id("kotlin-android")
 }
 
 android {
@@ -33,4 +34,16 @@ dependencies {
     // dagger
     implementation(Libs.Dagger.core)
     kapt(Libs.Dagger.compiler)
+
+    // network
+    implementation(Libs.Network.retrofit)
+    implementation(Libs.Network.gson)
+    implementation(Libs.Network.log)
+
+    // thread
+    implementation(Libs.Thread.coroutine)
+    implementation(Libs.Thread.coroutineAndroid)
+
+    // helper
+    implementation(Libs.Helper.timber)
 }

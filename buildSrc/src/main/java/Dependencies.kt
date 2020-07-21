@@ -1,6 +1,6 @@
 object Versions {
     const val kotlin = "1.3.61"
-    const val kotlinCoroutines = "1.3.3"
+    const val kotlinCoroutines = "1.3.8"
     const val gradlePlugin: String = "4.0.0"
     const val glide: String = "4.10.0"
     const val supportLibrary: String = "1.1.0"
@@ -71,6 +71,8 @@ object Libs {
 
     object Thread {
         const val coroutine = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.kotlinCoroutines}"
+        const val coroutineAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions
+            .kotlinCoroutines}"
     }
     object Db {
         // Room with RXjava2 & Kotlin
@@ -85,6 +87,7 @@ object Libs {
         const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
         const val gson = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
         const val page = "androidx.paging:paging-runtime-ktx:3.0.0-alpha02"
+        const val log = "com.squareup.okhttp3:logging-interceptor:3.9.0"
     }
 }
 
