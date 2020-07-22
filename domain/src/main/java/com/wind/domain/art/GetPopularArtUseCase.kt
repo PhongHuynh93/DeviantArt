@@ -13,13 +13,13 @@ import javax.inject.Inject
 /**
  * Created by Phong Huynh on 7/21/2020
  */
-data class GetNewestArtParam(val catePath: String?, val query: String?, val offset: Int?, val
+data class GetPopularArtParam(val catePath: String?, val query: String?, val offset: Int?, val
 limit: Int?)
 
-class GetNewestArtUseCase @Inject constructor(@IoDispatcher dispatcher: CoroutineDispatcher,
+class GetPopularArtUseCase @Inject constructor(@IoDispatcher dispatcher: CoroutineDispatcher,
                                               private val browseRepository: BrowseRepository):
-    UseCase<GetNewestArtParam?, ArtList>(dispatcher) {
-    override suspend fun execute(parameters: GetNewestArtParam?): ArtList {
-        return browseRepository.getPopularDeviations()
+    UseCase<GetPopularArtParam?, ArtList>(dispatcher) {
+    override suspend fun execute(parameters: GetPopularArtParam?): ArtList {
+        return browseRepository.g()
     }
 }

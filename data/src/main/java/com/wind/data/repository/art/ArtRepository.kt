@@ -29,11 +29,16 @@ object BrowseRepositoryModule {
 
 interface BrowseRepository {
     suspend fun getNewestDeviations(): ArtList
+    suspend fun getPopularDeviations(): ArtList
 }
 
 class BrowseRepositoryImpl(private val remoteDataSource: ArtRemoteDataSource,
     private val localDataSource: ArtLocalDataSource) : BrowseRepository {
     override suspend fun getNewestDeviations(): ArtList {
         return remoteDataSource.getNewestDeviations()
+    }
+
+    override suspend fun getPopularDeviations(): ArtList {
+        return remoteDataSource.getPopularDeviations()
     }
 }

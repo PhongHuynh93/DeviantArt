@@ -9,6 +9,6 @@
         android:id="@+id/mainFragment"
         android:name="com.wind.deviantart.ui.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_browse" />
 
 </navigation>

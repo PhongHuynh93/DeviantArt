@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="item"
+            type="com.wind.data.model.Art" />
+    </data>
+
+    <ImageView
+        android:id="@+id/imgv"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        tools:src="@tools:sample/backgrounds/scenic"
+        tools:ignore="ContentDescription"
+        app:imageUrl="@{item.thumbs != null ? item.thumbs.get(0) : null}"/>
+
+</layout>
+
+
