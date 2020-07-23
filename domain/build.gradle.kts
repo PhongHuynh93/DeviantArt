@@ -3,8 +3,6 @@ plugins {
     kotlin(Plugins.kotlinAndroid)
     kotlin(Plugins.kotlinExtensions)
     kotlin(Plugins.kapt)
-    id(Plugins.hilt)
-    id("kotlin-android")
 }
 
 android {
@@ -33,6 +31,8 @@ dependencies {
     implementation(Libs.Ktx.core)
 
     // dagger
+    implementation(Libs.Dagger.coreDagger)
+    kapt(Libs.Dagger.compilerDagger)
     implementation(Libs.Dagger.core)
     kapt(Libs.Dagger.compiler)
 

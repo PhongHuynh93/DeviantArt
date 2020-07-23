@@ -37,7 +37,7 @@ android {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-    implementation(project(":domain"))
+    api(project(":domain"))
 
     testImplementation(Libs.Test.junit)
     androidTestImplementation(Libs.Test.runner)
@@ -49,7 +49,6 @@ dependencies {
     implementation(Libs.Android.constraint)
 
     implementation(Libs.Kotlin.std)
-
 
     // For dagger 2
     implementation(Libs.Dagger.core)

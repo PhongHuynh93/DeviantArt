@@ -10,21 +10,21 @@ import javax.inject.Singleton
 /**
  * Created by Phong Huynh on 7/20/2020
  */
-@Singleton
-@RemoteDataSource
-class ArtRemoteDataSource @Inject constructor(): ArtDataSource {
-    @Inject
-    lateinit var restApi: RestApi
+class ArtRemoteDataSource constructor(private val restApi: RestApi): ArtDataSource {
 
-    override suspend fun getDailyDeviations(): ArtList {
-        return restApi.getDailyDeviations()
+    // https://www.deviantart.com/developers/http/v1/20200519/browse_dailydeviations/3de083a0c0a7733a46a53ae9cee74544
+    override suspend fun getDailyDeviations(accessToken: String): ArtList {
+        val map = mapOf("access_token" to accessToken)
+        return restApi.getDailyDeviations(map)
     }
 
-    override suspend fun getNewestDeviations(): ArtList {
-        return restApi.getNewestDeviations();
+    override suspend fun getNewestDeviations(accessToken: String): ArtList {
+        val map = mapOf("access_token" to accessToken)
+        return restApi.getNewestDeviations(map);
     }
 
-    override suspend fun getPopularDeviations(): ArtList {
-        return restApi.getPopularDeviations()
+    override suspend fun getPopularDeviations(accessToken: String): ArtList {
+        val map = mapOf("access_token" to accessToken)
+        return restApi.getPopularDeviations(map)
     }
 }

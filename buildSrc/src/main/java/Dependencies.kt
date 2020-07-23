@@ -26,8 +26,10 @@ object Libs {
     }
 
     object Dagger {
-        const val core = "com.google.dagger:hilt-android:2.28.1-alpha"
-        const val compiler = "com.google.dagger:hilt-android-compiler:2.28-alpha"
+        const val core = "com.google.dagger:hilt-android:2.28.3-alpha"
+        const val compiler = "com.google.dagger:hilt-android-compiler:2.28.3-alpha"
+        const val coreDagger = "com.google.dagger:dagger-android-support:2.28.3"
+        const val compilerDagger = "com.google.dagger:dagger-android-processor:2.28.3"
         const val viewmodel =  "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha01"
         const val viewmodelCompiler = "androidx.hilt:hilt-compiler:1.0.0-alpha01"
     }

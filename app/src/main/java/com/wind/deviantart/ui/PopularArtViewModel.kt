@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.wind.data.model.Art
 import com.wind.data.model.ArtList
 import com.wind.domain.art.GetNewestArtUseCase
+import com.wind.domain.art.GetPopularArtParam
 import com.wind.domain.art.GetPopularArtUseCase
 import com.wind.domain.result.data
 import kotlinx.coroutines.launch
@@ -26,8 +27,8 @@ class PopularArtViewModel @ViewModelInject constructor(
     init {
         viewModelScope.launch {
             // TODO: 7/22/2020 handle param here
-            _data.value = getPopularArtUseCase(null).data?.arts
-            Timber.e("$data")
+            _data.value = getPopularArtUseCase(GetPopularArtParam(accessToken = "fcf423c959ca87b311e4b6f2675b468b028013b08167c1e555")).data?.arts
+            Timber.e("${_data.value}")
         }
     }
 }
