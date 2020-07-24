@@ -1,21 +1,30 @@
 package com.wind.data.di
 
-import com.wind.data.RestApi
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
+import com.wind.data.AuthApi
+import com.wind.data.NonAuthApi
+import com.wind.data.SynchronousCallAdapterFactory
 import com.wind.data.repository.art.BrowseRepository
 import com.wind.data.repository.art.BrowseRepositoryImpl
 import com.wind.data.repository.art.source.ArtDataSource
-import com.wind.data.repository.art.source.local.ArtLocalDataSource
 import com.wind.data.repository.art.source.remote.ArtRemoteDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.CallAdapter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
+import java.lang.reflect.Type
+import java.net.HttpURLConnection
 import javax.inject.Singleton
+import kotlin.concurrent.fixedRateTimer
 
 /**
  * Created by Phong Huynh on 7/20/2020
@@ -27,32 +36,23 @@ object AggregationDataModule {
     @Singleton
     @Provides
     fun getBrowseRepository(
-        @RemoteDataSource remoteDataSource: ArtDataSource,
-        @LocalDataSource localDataSource: ArtDataSource
+        @RemoteDataSource remoteDataSource: ArtDataSource
     ): BrowseRepository {
         return BrowseRepositoryImpl(
-            remoteDataSource,
-            localDataSource
+            remoteDataSource
         )
     }
 
-    @Singleton
-    @Provides
-    @RemoteDataSource
-    fun getArtRemoteDataSource(restApi: RestApi): ArtDataSource {
-        return ArtRemoteDataSource(restApi)
-    }
-
-    @Singleton
-    @Provides
-    @LocalDataSource
-    fun getArtLocalDataSource(): ArtDataSource {
-        return ArtLocalDataSource()
-    }
+//    @Singleton
+//    @Provides
+//    @LocalDataSource
+//    fun getArtLocalDataSource(): ArtDataSource {
+//        return ArtLocalDataSource()
+//    }
 
     @Provides
     @Singleton
-    fun provideRestApi(): RestApi {
+    fun provideNonAuthRestApi(): NonAuthApi {
         val logger = HttpLoggingInterceptor()
         logger.level = HttpLoggingInterceptor.Level.BODY
 
@@ -63,8 +63,79 @@ object AggregationDataModule {
         val retrofit = Retrofit.Builder()
             .baseUrl("https://www.deviantart.com")
             .client(client)
+            .addCallAdapterFactory(SynchronousCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        return retrofit.create(RestApi::class.java)
+        return retrofit.create(NonAuthApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun sharePref(@ApplicationContext context: Context): SharedPreferences {
+        val cacheName = "DeviantArtCache"
+        return context.getSharedPreferences(cacheName, Context.MODE_PRIVATE)
+    }
+
+    @SuppressLint("ApplySharedPref")
+    @Provides
+    @Singleton
+    fun provideRestApi(nonAuthApi: NonAuthApi, pref: SharedPreferences): AuthApi {
+        val logger = HttpLoggingInterceptor()
+        logger.level = HttpLoggingInterceptor.Level.BODY
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor(logger)
+            .addInterceptor { chain ->
+                val keyToken = "token"
+                return@addInterceptor chain.proceed(
+                    chain.request().let { request ->
+                        // 1. sign this request
+                        val url = request.url().newBuilder().addQueryParameter(
+                            "access_token",
+                            pref.getString(keyToken, "") ?: ""
+                        ).build()
+                        request.newBuilder().url(url).build()
+                    }
+                ).let {
+                    if (it.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                        it.close()
+                        chain.proceed(
+                            it.request().let { request ->
+                                // sign the request with the new token and proceed
+                                val token = nonAuthApi.getToken(
+                                    mapOf(
+                                        "client_id" to "12883",
+                                        "client_secret" to "9d83bfaec09967d67b7fa7981160ebda",
+                                        "grant_type" to "client_credentials"
+                                    )
+                                )
+                                pref.edit().putString(keyToken, token.accessToken).commit()
+                                val url = request.url().newBuilder().addQueryParameter(
+                                    "access_token",
+                                    token.accessToken
+                                ).build()
+                                request.newBuilder().url(url).build()
+                            }
+                        )
+                    } else {
+                        it
+                    }
+                }
+            }
+            .build()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://www.deviantart.com")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        return retrofit.create(AuthApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    @RemoteDataSource
+    fun getArtRemoteDataSource(restApi: AuthApi): ArtDataSource {
+        return ArtRemoteDataSource(restApi)
     }
 }

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.wind.deviantart.databinding.FragmentPopularArtBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,5 +33,13 @@ class BrowsePopularFragment: Fragment() {
             lifecycleOwner = viewLifecycleOwner
         }
         return viewBinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewBinding.rcv.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = BrowseNewestAdapter()
+        }
     }
 }

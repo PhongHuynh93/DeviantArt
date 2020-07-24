@@ -10,7 +10,7 @@ import javax.inject.Inject
 /**
  * Created by Phong Huynh on 7/21/2020
  */
-data class GetNewestArtParam(val accessToken: String, val catePath: String? = null, val query:
+data class GetNewestArtParam(val catePath: String? = null, val query:
 String? = null, val offset: Int? = null, val limit: Int? = null)
 
 class GetNewestArtUseCase @Inject constructor(@IoDispatcher dispatcher: CoroutineDispatcher,
@@ -18,6 +18,6 @@ class GetNewestArtUseCase @Inject constructor(@IoDispatcher dispatcher: Coroutin
 ):
     UseCase<GetNewestArtParam, ArtList>(dispatcher) {
     override suspend fun execute(parameters: GetNewestArtParam): ArtList {
-        return browseRepository.getPopularDeviations(parameters.accessToken)
+        return browseRepository.getPopularDeviations()
     }
 }

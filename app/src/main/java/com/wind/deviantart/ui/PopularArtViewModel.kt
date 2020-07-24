@@ -10,6 +10,7 @@ import com.wind.data.model.ArtList
 import com.wind.domain.art.GetNewestArtUseCase
 import com.wind.domain.art.GetPopularArtParam
 import com.wind.domain.art.GetPopularArtUseCase
+import com.wind.domain.result.Result
 import com.wind.domain.result.data
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -26,9 +27,17 @@ class PopularArtViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
-            // TODO: 7/22/2020 handle param here
-            _data.value = getPopularArtUseCase(GetPopularArtParam(accessToken = "fcf423c959ca87b311e4b6f2675b468b028013b08167c1e555")).data?.arts
-            Timber.e("${_data.value}")
+            when (val result = getPopularArtUseCase(GetPopularArtParam())) {
+                is Result.Success -> {
+                    _data.value = result.data.arts
+                }
+                is Result.Error -> {
+                    // TODO: 7/23/2020 handle error state and loading here
+                }
+                is Result.Loading -> {
+
+                }
+            }
         }
     }
 }

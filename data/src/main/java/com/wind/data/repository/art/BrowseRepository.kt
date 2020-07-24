@@ -7,19 +7,18 @@ import com.wind.data.repository.art.source.ArtDataSource
  */
 
 interface BrowseRepository {
-    suspend fun getNewestDeviations(accessToken: String): ArtList
-    suspend fun getPopularDeviations(accessToken: String): ArtList
+    suspend fun getNewestDeviations(): ArtList
+    suspend fun getPopularDeviations(): ArtList
 }
 
 class BrowseRepositoryImpl(
-    private val remoteDataSource: ArtDataSource,
-    private val localDataSource: ArtDataSource
+    private val remoteDataSource: ArtDataSource
 ) : BrowseRepository {
-    override suspend fun getNewestDeviations(accessToken: String): ArtList {
-        return remoteDataSource.getNewestDeviations(accessToken)
+    override suspend fun getNewestDeviations(): ArtList {
+        return remoteDataSource.getNewestDeviations()
     }
 
-    override suspend fun getPopularDeviations(accessToken: String): ArtList {
-        return remoteDataSource.getPopularDeviations(accessToken)
+    override suspend fun getPopularDeviations(): ArtList {
+        return remoteDataSource.getPopularDeviations()
     }
 }

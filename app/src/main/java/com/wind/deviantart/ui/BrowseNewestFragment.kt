@@ -48,14 +48,6 @@ class BrowseNewestFragment: Fragment() {
     }
 }
 
-@BindingAdapter("data")
-fun bindAdapter(recyclerView: RecyclerView, data: List<Art>?) {
-    data?.let {
-        val adapter = recyclerView.adapter
-        (adapter as? BrowseNewestAdapter)?.setData(it)
-    }
-}
-
 class BrowseNewestAdapter: RecyclerView.Adapter<ViewHolder>() {
     private var data: List<Art> = emptyList()
     var callback: Callback? = null
