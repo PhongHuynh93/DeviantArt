@@ -3,6 +3,7 @@ package com.wind.data.model
 
 import com.google.gson.annotations.SerializedName
 
+// https://www.deviantart.com/developers/http/v1/20200519/object/deviation
 data class ArtList(
     @SerializedName("has_more")
     val hasMore: Boolean,
@@ -21,7 +22,9 @@ data class Art(
     @SerializedName("category_path")
     val categoryPath: String,
     @SerializedName("content")
-    val content: Content,
+    val content: Content?,
+    @SerializedName("preview")
+    val preview: Content?,
     @SerializedName("deviationid")
     val id: String,
     @SerializedName("is_deleted")

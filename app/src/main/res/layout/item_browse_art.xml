@@ -17,7 +17,7 @@
         android:scaleType="centerCrop"
         tools:src="@tools:sample/backgrounds/scenic"
         tools:ignore="ContentDescription"
-        app:imageUrl="@{item.thumbs != null ? item.thumbs.get(0).src : null}"/>
+        app:imageUrl="@{item.preview != null ? item.preview.src : null}"/>
 
 </layout>
 
