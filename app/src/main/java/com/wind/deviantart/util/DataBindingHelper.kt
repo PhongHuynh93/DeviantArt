@@ -11,9 +11,13 @@ import com.wind.model.Art
 /**
  * Created by Phong Huynh on 7/12/2020.
  */
-@BindingAdapter("imageUrl")
-fun loadImage(imageView: ImageView, url: String?) {
-    Glide.with(imageView.context).load(url).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView)
+@BindingAdapter("imageUrl", "smallImageUrl", requireAll = false)
+fun loadImage(imageView: ImageView, url: String?, smallImageUrl: String?) {
+    Glide.with(imageView.context)
+        .load(url)
+        .thumbnail(Glide.with(imageView.context).load(smallImageUrl))
+        .diskCacheStrategy(DiskCacheStrategy.ALL)
+        .into(imageView)
 }
 
 @BindingAdapter("imageUrl")

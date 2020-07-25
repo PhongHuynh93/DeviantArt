@@ -22,9 +22,9 @@ data class Art(
     @SerializedName("category_path")
     val categoryPath: String,
     @SerializedName("content")
-    val content: Content?,
+    val content: Thumb?,
     @SerializedName("preview")
-    val preview: Content?,
+    val preview: Thumb?,
     @SerializedName("deviationid")
     val id: String,
     @SerializedName("is_deleted")
@@ -58,7 +58,7 @@ data class Author(
     @SerializedName("username")
     val name: String
 )
-data class Content(
+data class Thumb(
     @SerializedName("filesize")
     val fileSize: Int,
     @SerializedName("height")
@@ -75,14 +75,4 @@ data class Stats(
     val comments: Int,
     @SerializedName("favourites")
     val favourites: Int
-)
-data class Thumb(
-    @SerializedName("height")
-    val height: Int,
-    @SerializedName("src")
-    val src: String,
-    @SerializedName("transparency")
-    val transparency: Boolean,
-    @SerializedName("width")
-    val width: Int
 )

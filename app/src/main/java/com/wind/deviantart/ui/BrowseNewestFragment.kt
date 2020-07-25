@@ -49,7 +49,7 @@ class BrowseNewestFragment: Fragment() {
         val browseNewestAdapter = BrowseNewestAdapter()
         viewBinding.rcv.apply {
             layoutManager = PreloadLinearLayoutManager(requireContext()).apply {
-                setPreloadItemCount(3)
+                setPreloadItemCount(6)
             }
             adapter = browseNewestAdapter
         }
