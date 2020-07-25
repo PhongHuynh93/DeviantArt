@@ -18,7 +18,7 @@ class GetPopularArtUseCase @Inject constructor(@IoDispatcher dispatcher: Corouti
 ):
     UseCase<GetPopularArtParam, ArtList>(dispatcher) {
     override suspend fun execute(parameters: GetPopularArtParam): ArtList {
-        return browseRepository.getNewestDeviations().let { data ->
+        return browseRepository.getPopularDeviations().let { data ->
             data.arts.filter {
                 it.preview?.src == null
             }

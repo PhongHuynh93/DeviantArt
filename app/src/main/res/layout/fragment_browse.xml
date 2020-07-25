@@ -33,7 +33,8 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/botNav"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:menu="@menu/main_bot_navigation"/>
 
     </LinearLayout>
 </layout>
