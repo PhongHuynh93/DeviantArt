@@ -5,11 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wind.data.model.Art
-import com.wind.data.model.ArtList
 import com.wind.domain.art.GetNewestArtParam
 import com.wind.domain.art.GetNewestArtUseCase
 import com.wind.domain.result.data
+import com.wind.model.Art
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

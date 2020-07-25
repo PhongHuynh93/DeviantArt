@@ -23,12 +23,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(ApplicationComponent::class)
 object AggregationDataModule {
-    @Singleton
-    @Provides
-    fun getBrowseRepository(restRepositoryImpl: RestRepositoryImpl): RestRepository {
-        return restRepositoryImpl
-    }
-
     @Provides
     @Singleton
     fun provideNonAuthRestApi(): NonAuthApi {
@@ -110,4 +104,11 @@ object AggregationDataModule {
             .build()
         return retrofit.create(AuthApi::class.java)
     }
+
+    @Singleton
+    @Provides
+    fun getBrowseRepository(restApi: AuthApi): RestRepository {
+        return RestRepositoryImpl(restApi)
+    }
+
 }

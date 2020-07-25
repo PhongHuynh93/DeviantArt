@@ -6,7 +6,7 @@
     <data>
         <variable
             name="item"
-            type="com.wind.data.model.Art" />
+            type="com.wind.model.Art" />
     </data>
 
     <ImageView

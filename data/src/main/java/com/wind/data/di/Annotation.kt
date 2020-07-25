@@ -7,8 +7,8 @@ import javax.inject.Qualifier
  */
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class RemoteDataSource
+internal annotation class RemoteDataSource
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class LocalDataSource
+internal annotation class LocalDataSource

@@ -39,6 +39,7 @@ dependencies {
 
     implementation(project(":domain"))
     implementation(project(":share"))
+    implementation(project(":model"))
 
     testImplementation(Libs.Test.junit)
     androidTestImplementation(Libs.Test.runner)

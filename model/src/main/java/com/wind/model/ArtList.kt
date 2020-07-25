@@ -1,4 +1,4 @@
-package com.wind.data.model
+package com.wind.model
 
 
 import com.google.gson.annotations.SerializedName

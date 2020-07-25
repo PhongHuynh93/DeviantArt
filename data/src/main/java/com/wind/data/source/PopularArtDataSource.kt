@@ -2,15 +2,14 @@ package com.wind.data.source
 
 import androidx.paging.PagingSource
 import com.wind.data.AuthApi
-import com.wind.data.model.Art
+import com.wind.model.Art
 import retrofit2.HttpException
 import java.io.IOException
-import javax.inject.Inject
 
 /**
  * Created by Phong Huynh on 7/25/2020.
  */
-class PopularArtDataSource constructor(private val restApi: AuthApi): PagingSource<Int, Art>() {
+internal class PopularArtDataSource constructor(private val restApi: AuthApi): PagingSource<Int, Art>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Art> {
         return try {
             // Load page 0 if undefined.

@@ -6,8 +6,7 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.wind.data.model.Art
-import com.wind.deviantart.ui.BrowseNewestAdapter
+import com.wind.model.Art
 
 /**
  * Created by Phong Huynh on 7/12/2020.

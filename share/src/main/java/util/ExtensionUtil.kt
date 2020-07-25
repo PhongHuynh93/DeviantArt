@@ -28,8 +28,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.wind.collagePhotoMaker.share.R
 import kotlinx.coroutines.suspendCancellableCoroutine
-import com.wind.collagePhotoMaker.uicomponents.R
 import kotlin.coroutines.resume
 import kotlin.math.max
 

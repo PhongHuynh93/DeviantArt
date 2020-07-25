@@ -1,9 +1,9 @@
 package com.wind.domain.art
 
-import com.wind.data.model.ArtList
 import com.wind.data.RestRepository
 import com.wind.domain.UseCase
 import com.wind.domain.di.IoDispatcher
+import com.wind.model.ArtList
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 

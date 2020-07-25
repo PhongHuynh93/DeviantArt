@@ -1,13 +1,8 @@
 package com.wind.domain.art
 
-import androidx.paging.PagingData
-import com.wind.data.model.Art
 import com.wind.data.RestRepository
 import com.wind.domain.PageUseCase
-import com.wind.domain.UseCase
-import com.wind.domain.di.IoDispatcher
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
+import com.wind.model.Art
 import javax.inject.Inject
 
 /**

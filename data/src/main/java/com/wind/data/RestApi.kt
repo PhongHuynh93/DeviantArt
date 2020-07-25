@@ -1,18 +1,9 @@
 package com.wind.data
 
-import android.util.Log
-import com.wind.data.model.ArtList
-import com.wind.data.model.Token
-import dagger.Provides
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.wind.model.ArtList
+import com.wind.model.Token
 import retrofit2.http.GET
 import retrofit2.http.QueryMap
-import timber.log.Timber
-import javax.inject.Singleton
 
 /**
  * Created by Phong Huynh on 7/20/2020

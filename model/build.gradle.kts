@@ -26,29 +26,7 @@ android {
 }
 
 dependencies {
-    api(project(":model"))
-
     implementation(Libs.Kotlin.std)
     implementation(Libs.Ktx.core)
-
-    // dagger
-    implementation(Libs.Dagger.coreDagger)
-    kapt(Libs.Dagger.compilerDagger)
-    implementation(Libs.Dagger.core)
-    kapt(Libs.Dagger.compiler)
-
-    // network
-    implementation(Libs.Network.retrofit)
     implementation(Libs.Network.gson)
-    implementation(Libs.Network.log)
-
-    // thread
-    implementation(Libs.Thread.coroutine)
-    implementation(Libs.Thread.coroutineAndroid)
-
-    // helper
-    implementation(Libs.Helper.timber)
-
-    // paging
-    implementation(Libs.Android.page)
 }
