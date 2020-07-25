@@ -13,6 +13,7 @@ import com.wind.data.model.Art
 import com.wind.deviantart.databinding.FragmentNewestArtBinding
 import com.wind.deviantart.databinding.ItemBrowseArtBinding
 import dagger.hilt.android.AndroidEntryPoint
+import ui.PreloadLinearLayoutManager
 
 /**
  * Created by Phong Huynh on 7/22/2020
@@ -42,7 +43,9 @@ class BrowseNewestFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding.rcv.apply {
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = PreloadLinearLayoutManager(requireContext()).apply {
+                setPreloadItemCount(3)
+            }
             adapter = BrowseNewestAdapter()
         }
     }

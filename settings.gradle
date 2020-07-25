@@ -1,3 +1,4 @@
+include ':share'
 include ':data'
 include ':domain'
 include ':app'

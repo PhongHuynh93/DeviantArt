@@ -18,6 +18,11 @@ class GetNewestArtUseCase @Inject constructor(@IoDispatcher dispatcher: Coroutin
 ):
     UseCase<GetNewestArtParam, ArtList>(dispatcher) {
     override suspend fun execute(parameters: GetNewestArtParam): ArtList {
-        return browseRepository.getPopularDeviations()
+        return browseRepository.getPopularDeviations().let { data ->
+            data.arts.filter {
+                it.preview?.src == null
+            }
+            data
+        }
     }
 }

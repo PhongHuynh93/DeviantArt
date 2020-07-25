@@ -88,7 +88,7 @@ object Libs {
     object Network {
         const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
         const val gson = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
-        const val page = "androidx.paging:paging-runtime-ktx:3.0.0-alpha02"
+        const val page = "androidx.paging:paging-runtime-ktx:3.0.0-alpha03"
         const val log = "com.squareup.okhttp3:logging-interceptor:3.9.0"
     }
 }

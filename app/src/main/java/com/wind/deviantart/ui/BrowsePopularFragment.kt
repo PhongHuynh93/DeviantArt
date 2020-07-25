@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wind.deviantart.databinding.FragmentPopularArtBinding
 import dagger.hilt.android.AndroidEntryPoint
+import ui.PreloadLinearLayoutManager
 
 /**
  * Created by Phong Huynh on 7/22/2020
@@ -38,7 +39,9 @@ class BrowsePopularFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding.rcv.apply {
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = PreloadLinearLayoutManager(requireContext()).apply {
+                setPreloadItemCount(3)
+            }
             adapter = BrowseNewestAdapter()
         }
     }

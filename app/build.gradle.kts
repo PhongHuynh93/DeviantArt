@@ -37,7 +37,8 @@ android {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-    api(project(":domain"))
+    implementation(project(":domain"))
+    implementation(project(":share"))
 
     testImplementation(Libs.Test.junit)
     androidTestImplementation(Libs.Test.runner)
