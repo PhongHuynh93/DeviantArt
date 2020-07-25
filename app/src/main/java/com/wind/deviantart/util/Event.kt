@@ -1,4 +1,4 @@
-package com.wind.domain.result
+package com.wind.deviantart.util
 
 import androidx.lifecycle.Observer
 

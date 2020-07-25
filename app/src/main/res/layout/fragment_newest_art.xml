@@ -12,7 +12,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:data="@{vm.data}"/>
+        android:layout_height="match_parent" />
 
 </layout>

@@ -44,7 +44,6 @@ dependencies {
 
     // thread
     implementation(Libs.Thread.coroutine)
-    implementation(Libs.Thread.coroutineAndroid)
 
     // helper
     implementation(Libs.Helper.timber)
