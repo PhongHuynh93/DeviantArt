@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wind.data.model.Art
@@ -51,36 +53,41 @@ class BrowseNewestFragment: Fragment() {
     }
 }
 
-class BrowseNewestAdapter: RecyclerView.Adapter<ViewHolder>() {
-    private var data: List<Art> = emptyList()
+class BrowseNewestAdapter: PagingDataAdapter<Art, ViewHolder>(object: DiffUtil.ItemCallback<Art>() {
+    override fun areItemsTheSame(oldItem: Art, newItem: Art): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Art, newItem: Art): Boolean {
+        return oldItem == newItem
+    }
+
+}) {
     var callback: Callback? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemBrowseArtBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
         }).apply {
             itemView.setOnClickListener {
-                val pos = adapterPosition
+                val pos = bindingAdapterPosition
                 if (pos >= 0) {
-                    callback?.onClick(pos, data[pos])
+                    getItem(pos)?.let {
+                        callback?.onClick(pos, it)
+                    }
                 }
             }
         }
     }
 
-    override fun getItemCount(): Int {
-        return data.size
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.item = data[position]
-        holder.binding.executePendingBindings()
+        val item = getItem(position)
+        if (item == null) {
+            // bind the placeholder ?? what is it
+        } else {
+            holder.binding.item = item
+            holder.binding.executePendingBindings()
+        }
     }
-
-    fun setData(data: List<Art>) {
-        this.data = data
-        notifyDataSetChanged()
-    }
-
 
 
     interface Callback {

@@ -42,4 +42,7 @@ dependencies {
 
     // helper
     implementation(Libs.Helper.timber)
+
+    // paging
+    implementation(Libs.Android.page)
 }

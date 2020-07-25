@@ -24,9 +24,9 @@ fun loadImage(imageView: ImageView, url: Drawable) {
 
 @BindingAdapter("data")
 fun bindAdapter(recyclerView: RecyclerView, data: List<Art>?) {
-    data?.let {
-        val adapter = recyclerView.adapter
-        (adapter as? BrowseNewestAdapter)?.setData(it)
-    }
+//    data?.let {
+//        val adapter = recyclerView.adapter
+//        (adapter as? BrowseNewestAdapter)?.setData(it)
+//    }
 }
 

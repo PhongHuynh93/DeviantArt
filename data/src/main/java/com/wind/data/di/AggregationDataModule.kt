@@ -3,13 +3,7 @@ package com.wind.data.di
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import com.wind.data.AuthApi
-import com.wind.data.NonAuthApi
-import com.wind.data.SynchronousCallAdapterFactory
-import com.wind.data.repository.art.BrowseRepository
-import com.wind.data.repository.art.BrowseRepositoryImpl
-import com.wind.data.repository.art.source.ArtDataSource
-import com.wind.data.repository.art.source.remote.ArtRemoteDataSource
+import com.wind.data.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,14 +11,10 @@ import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.CallAdapter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import timber.log.Timber
-import java.lang.reflect.Type
 import java.net.HttpURLConnection
 import javax.inject.Singleton
-import kotlin.concurrent.fixedRateTimer
 
 /**
  * Created by Phong Huynh on 7/20/2020
@@ -35,20 +25,9 @@ import kotlin.concurrent.fixedRateTimer
 object AggregationDataModule {
     @Singleton
     @Provides
-    fun getBrowseRepository(
-        @RemoteDataSource remoteDataSource: ArtDataSource
-    ): BrowseRepository {
-        return BrowseRepositoryImpl(
-            remoteDataSource
-        )
+    fun getBrowseRepository(restRepositoryImpl: RestRepositoryImpl): RestRepository {
+        return restRepositoryImpl
     }
-
-//    @Singleton
-//    @Provides
-//    @LocalDataSource
-//    fun getArtLocalDataSource(): ArtDataSource {
-//        return ArtLocalDataSource()
-//    }
 
     @Provides
     @Singleton
@@ -130,12 +109,5 @@ object AggregationDataModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         return retrofit.create(AuthApi::class.java)
-    }
-
-    @Singleton
-    @Provides
-    @RemoteDataSource
-    fun getArtRemoteDataSource(restApi: AuthApi): ArtDataSource {
-        return ArtRemoteDataSource(restApi)
     }
 }

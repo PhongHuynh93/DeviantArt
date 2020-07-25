@@ -44,11 +44,16 @@ dependencies {
     androidTestImplementation(Libs.Test.runner)
     androidTestImplementation(Libs.Test.espresso)
 
+    // core
     implementation(Libs.Android.appCompat)
     implementation(Libs.Android.material)
     implementation(Libs.Android.recyclerView)
     implementation(Libs.Android.constraint)
 
+    // paging
+    implementation(Libs.Android.page)
+
+    // kotlin
     implementation(Libs.Kotlin.std)
 
     // For dagger 2

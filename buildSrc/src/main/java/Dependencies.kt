@@ -19,6 +19,7 @@ object Libs {
         const val recyclerView = "androidx.recyclerview:recyclerview:${Versions.supportLibrary}"
         const val constraint = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
         const val viewPager = "androidx.viewpager2:viewpager2:1.0.0"
+        const val page = "androidx.paging:paging-runtime-ktx:3.0.0-alpha03"
     }
 
     object Kotlin {
@@ -88,7 +89,6 @@ object Libs {
     object Network {
         const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
         const val gson = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
-        const val page = "androidx.paging:paging-runtime-ktx:3.0.0-alpha03"
         const val log = "com.squareup.okhttp3:logging-interceptor:3.9.0"
     }
 }

@@ -6,9 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wind.deviantart.databinding.FragmentPopularArtBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ui.PreloadLinearLayoutManager
 
 /**
@@ -38,11 +42,35 @@ class BrowsePopularFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val browseNewestAdapter = BrowseNewestAdapter()
         viewBinding.rcv.apply {
             layoutManager = PreloadLinearLayoutManager(requireContext()).apply {
                 setPreloadItemCount(3)
             }
-            adapter = BrowseNewestAdapter()
+            adapter = browseNewestAdapter
+        }
+
+        viewLifecycleOwner.lifecycleScope.apply {
+            launch {
+                browseNewestAdapter.loadStateFlow.collectLatest { loadState ->
+                    when (loadState.refresh) {
+                        is LoadState.Loading -> {
+
+                        }
+                        is LoadState.NotLoading -> {
+
+                        }
+                        is LoadState.Error -> {
+
+                        }
+                    }
+                }
+            }
+            launchWhenCreated {
+                vmPopularArt.getData().collectLatest {
+                    browseNewestAdapter.submitData(it)
+                }
+            }
         }
     }
 }

@@ -1,28 +1,23 @@
 package com.wind.domain.art
 
-import com.wind.data.model.ArtList
-import com.wind.data.repository.art.BrowseRepository
+import androidx.paging.PagingData
+import com.wind.data.model.Art
+import com.wind.data.RestRepository
+import com.wind.domain.PageUseCase
 import com.wind.domain.UseCase
 import com.wind.domain.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 /**
  * Created by Phong Huynh on 7/21/2020
  */
 data class GetPopularArtParam(val catePath: String? = null, val query:
-String? = null, val offset: Int? = null, val limit: Int? = null)
+String? = null, val offset: Int? = null, val pageSize: Int)
 
-class GetPopularArtUseCase @Inject constructor(@IoDispatcher dispatcher: CoroutineDispatcher,
-                                              private val browseRepository: BrowseRepository
-):
-    UseCase<GetPopularArtParam, ArtList>(dispatcher) {
-    override suspend fun execute(parameters: GetPopularArtParam): ArtList {
-        return browseRepository.getPopularDeviations().let { data ->
-            data.arts.filter {
-                it.preview?.src == null
-            }
-            data
-        }
-    }
+class GetPopularArtUseCase @Inject constructor(private val restRepository: RestRepository)
+    : PageUseCase<GetPopularArtParam, Art>() {
+    override fun execute(parameters: GetPopularArtParam) =
+        restRepository.getPopularDeviations(parameters.catePath, parameters.query, parameters.offset, parameters.pageSize)
 }
