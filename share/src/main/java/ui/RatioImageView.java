@@ -6,11 +6,10 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
-import androidx.appcompat.widget.AppCompatImageView;
-
+import com.google.android.material.imageview.ShapeableImageView;
 import com.wind.collagePhotoMaker.share.R;
 
-public class RatioImageView extends AppCompatImageView {
+public class RatioImageView extends ShapeableImageView {
     // height/width
     protected float mRatio = 0f;
 
