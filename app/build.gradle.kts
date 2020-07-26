@@ -5,6 +5,7 @@ plugins {
     kotlin(Plugins.kotlinExtensions)
     kotlin(Plugins.kapt)
     id(Plugins.safeArgs)
+    id("kotlin-android")
 }
 
 android {
@@ -40,6 +41,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":share"))
     implementation(project(":model"))
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
     testImplementation(Libs.Test.junit)
     androidTestImplementation(Libs.Test.runner)

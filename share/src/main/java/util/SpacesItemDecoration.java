@@ -1,4 +1,4 @@
-package ui;
+package util;
 
 import android.graphics.Rect;
 import android.view.View;

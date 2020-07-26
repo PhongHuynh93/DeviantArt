@@ -5,13 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.wind.deviantart.ArtToDetailNavViewModel
 import com.wind.deviantart.R
 import com.wind.deviantart.databinding.FragmentNewestArtBinding
 import com.wind.deviantart.databinding.ItemBrowseArtBinding
@@ -19,7 +22,7 @@ import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ui.SpacesItemDecoration
+import util.SpacesItemDecoration
 
 
 /**
@@ -30,6 +33,7 @@ private const val NUMB_COLUMN: Int = 2
 class BrowseNewestFragment: Fragment() {
     private lateinit var viewBinding: FragmentNewestArtBinding
     private val vmNewestArt by viewModels<NewestArtViewModel>()
+    private val vmArtToDetailNavViewModel by activityViewModels<ArtToDetailNavViewModel>()
 
     companion object {
         fun newInstance(): BrowseNewestFragment {
@@ -50,7 +54,19 @@ class BrowseNewestFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val browseNewestAdapter = BrowseNewestAdapter()
+        val browseNewestAdapter = BrowseNewestAdapter().apply {
+            callback = object: BrowseNewestAdapter.Callback {
+                override fun onClick(
+                    view: View,
+                    pos: Int,
+                    art: Art,
+                    transitionName: String
+                ) {
+                    vmArtToDetailNavViewModel.clickArt.value = ArtToDetailNavViewModel.ArtToDetailNavModel(view,
+                        art, transitionName)
+                }
+            }
+        }
         viewBinding.rcv.apply {
             layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL).apply {
             }
@@ -76,16 +92,17 @@ class BrowseNewestFragment: Fragment() {
                     }
                 }
             }
-            launchWhenCreated {
-                vmNewestArt.getData().collectLatest {
-                    browseNewestAdapter.submitData(it)
-                }
-            }
         }
 
+        vmNewestArt.dataPaging.observe(viewLifecycleOwner) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                browseNewestAdapter.submitData(it)
+            }
+        }
     }
 }
 
+private const val ART_TO_DETAIL_TRANSITION_NAME = "art_to_detail"
 class BrowseNewestAdapter: PagingDataAdapter<Art, ViewHolder>(object: DiffUtil.ItemCallback<Art>() {
     override fun areItemsTheSame(oldItem: Art, newItem: Art): Boolean {
         return oldItem.id == newItem.id
@@ -101,11 +118,11 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, ViewHolder>(object: DiffUtil.I
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemBrowseArtBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
         }).apply {
-            itemView.setOnClickListener {
+            itemView.setOnClickListener {view ->
                 val pos = bindingAdapterPosition
                 if (pos >= 0) {
                     getItem(pos)?.let {
-                        callback?.onClick(pos, it)
+                        callback?.onClick(view, pos, it, view.transitionName)
                     }
                 }
             }
@@ -114,6 +131,7 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, ViewHolder>(object: DiffUtil.I
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
+        holder.itemView.transitionName = "$ART_TO_DETAIL_TRANSITION_NAME$position"
         if (item == null) {
             // bind the placeholder ?? what is it
         } else {
@@ -124,7 +142,7 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, ViewHolder>(object: DiffUtil.I
 
 
     interface Callback {
-        fun onClick(pos: Int, art: Art)
+        fun onClick(view: View, pos: Int, art: Art, transitionName: String)
     }
 }
 

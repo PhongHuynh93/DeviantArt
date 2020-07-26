@@ -265,7 +265,8 @@ inline fun FragmentManager.inTransaction(useAnim: Boolean = false, func: Fragmen
     }
 }
 
-fun AppCompatActivity.addFragment(fragment: Fragment, frameId: Int, tag: String, addToBackStack: Boolean, backStackName: String? = null, useAnim: Boolean = false) {
+fun AppCompatActivity.addFragment(fragment: Fragment, frameId: Int, tag: String? = null, addToBackStack: Boolean =
+    false, backStackName: String? = null, useAnim: Boolean = false) {
     if (supportFragmentManager.findFragmentByTag(tag) == null) {
         supportFragmentManager.inTransaction(useAnim) {
             add(frameId, fragment, tag).apply {

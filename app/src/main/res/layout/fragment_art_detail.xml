@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="item"
+            type="com.wind.model.Art" />
+
+        <variable
+            name="containerTransitionName"
+            type="String" />
+    </data>
+
+    <FrameLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"
+        android:transitionName="@{containerTransitionName}">
+
+        <ui.RatioImageView
+            android:id="@+id/imgv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            app:shapeAppearance="@style/RoundImageView"
+            tools:src="@tools:sample/backgrounds/scenic"
+            tools:ignore="ContentDescription"
+            app:w="@{item.preview.width}"
+            app:h="@{item.preview.height}"
+            app:smallImageUrl="@{item.thumbs.size > 0 ? item.thumbs.get(0).src : null}"
+            app:imageUrl="@{item.preview.src}"/>
+    </FrameLayout>
+
+</layout>

@@ -9,6 +9,15 @@
         android:id="@+id/mainFragment"
         android:name="com.wind.deviantart.ui.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_browse" />
+        tools:layout="@layout/fragment_browse" >
+        <action
+            android:id="@+id/action_mainFragment_to_artDetailFragment"
+            app:destination="@id/artDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/artDetailFragment"
+        android:name="com.wind.deviantart.ui.artdetail.ArtDetailFragment"
+        android:label="fragment_art_detail"
+        tools:layout="@layout/fragment_art_detail" />
 
 </navigation>
