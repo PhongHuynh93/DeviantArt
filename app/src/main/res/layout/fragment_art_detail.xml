@@ -13,11 +13,10 @@
             type="String" />
     </data>
 
-    <FrameLayout
+    <ScrollView
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent"
         android:transitionName="@{containerTransitionName}">
 
         <ui.RatioImageView
@@ -25,14 +24,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            app:shapeAppearance="@style/RoundImageView"
+            android:scaleType="fitXY"
             tools:src="@tools:sample/backgrounds/scenic"
             tools:ignore="ContentDescription"
             app:w="@{item.preview.width}"
             app:h="@{item.preview.height}"
             app:smallImageUrl="@{item.thumbs.size > 0 ? item.thumbs.get(0).src : null}"
             app:imageUrl="@{item.preview.src}"/>
-    </FrameLayout>
+    </ScrollView>
 
 </layout>

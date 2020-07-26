@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         vmArtToDetailNav.clickArt.observe(this) {
             supportFragmentManager.commit {
                 addSharedElement(it.view, it.transitionName)
-                replace(R.id.root, ArtDetailFragment.newInstance(it.transitionName))
+                replace(R.id.root, ArtDetailFragment())
                 addToBackStack(null)
             }
         }

@@ -4,23 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.transition.MaterialContainerTransform
+import com.wind.deviantart.ArtToDetailNavViewModel
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-private const val EXTRA_CONTAINER_TRANSITION_NAME = "containerTransition"
+@AndroidEntryPoint
 class ArtDetailFragment : Fragment() {
     private lateinit var viewBinding: FragmentArtDetailBinding
-
-    companion object {
-
-        fun newInstance(transitionName: String): Fragment {
-            return ArtDetailFragment().apply {
-                arguments = bundleOf(EXTRA_CONTAINER_TRANSITION_NAME to transitionName)
-            }
-        }
-    }
+    private val vmArtToDetailNavViewModel by activityViewModels<ArtToDetailNavViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +27,9 @@ class ArtDetailFragment : Fragment() {
     ): View? {
         viewBinding = FragmentArtDetailBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
-            containerTransitionName = arguments?.getString(EXTRA_CONTAINER_TRANSITION_NAME)
+            val data = vmArtToDetailNavViewModel.clickArt.value
+            containerTransitionName = data?.transitionName
+            item = data?.art
         }
         return viewBinding.root
     }
