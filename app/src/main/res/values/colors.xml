@@ -6,5 +6,4 @@
     <color name="colorSurface">@color/colorPrimary</color>
     <color name="colorOnSurface">#f3f4f9</color>
     <color name="colorOnPrimary">@color/colorOnSurface</color>
-
 </resources>
