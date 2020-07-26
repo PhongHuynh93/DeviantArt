@@ -15,6 +15,7 @@ import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
 import util.SingleLiveEvent
 import util.addFragment
+import java.lang.ref.WeakReference
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         }
         vmArtToDetailNav.clickArt.observe(this) {
             supportFragmentManager.commit {
-                addSharedElement(it.view, it.transitionName)
+                addSharedElement(it.weakRefView.get()!!, it.transitionName)
                 replace(R.id.root, ArtDetailFragment())
                 addToBackStack(null)
             }
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 class ArtToDetailNavViewModel @ViewModelInject constructor() : ViewModel() {
-    data class ArtToDetailNavModel(val view: View, val art: Art, val transitionName: String)
+    data class ArtToDetailNavModel(val weakRefView: WeakReference<View>, val art: Art, val transitionName: String)
     val clickArt: SingleLiveEvent<ArtToDetailNavModel> by lazy {
         SingleLiveEvent<ArtToDetailNavModel>()
     }

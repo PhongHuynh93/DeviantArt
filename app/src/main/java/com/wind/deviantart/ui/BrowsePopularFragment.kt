@@ -19,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import util.SpacesItemDecoration
+import java.lang.ref.WeakReference
 
 /**
  * Created by Phong Huynh on 7/22/2020
@@ -29,6 +30,7 @@ class BrowsePopularFragment: Fragment() {
     private lateinit var viewBinding: FragmentPopularArtBinding
     private val vmPopularArt by viewModels<PopularArtViewModel>()
     private val vmArtToDetailNavViewModel by activityViewModels<ArtToDetailNavViewModel>()
+    private val browseNewestAdapter = BrowseNewestAdapter()
 
     companion object {
         fun newInstance(): BrowsePopularFragment {
@@ -49,10 +51,8 @@ class BrowsePopularFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val browseNewestAdapter = BrowseNewestAdapter()
         viewBinding.rcv.apply {
-            layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL).apply {
-            }
+            layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL)
             adapter = browseNewestAdapter.apply {
                 callback = object: BrowseNewestAdapter.Callback {
                     override fun onClick(
@@ -61,8 +61,7 @@ class BrowsePopularFragment: Fragment() {
                         art: Art,
                         transitionName: String
                     ) {
-                        vmArtToDetailNavViewModel.clickArt.value = ArtToDetailNavViewModel.ArtToDetailNavModel(view,
-                            art, transitionName)
+                        vmArtToDetailNavViewModel.clickArt.value = ArtToDetailNavViewModel.ArtToDetailNavModel(WeakReference(view), art, transitionName)
                     }
                 }
             }

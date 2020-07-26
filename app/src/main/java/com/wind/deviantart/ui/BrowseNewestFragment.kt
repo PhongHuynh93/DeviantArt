@@ -23,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import util.SpacesItemDecoration
+import java.lang.ref.WeakReference
 
 
 /**
@@ -62,7 +63,8 @@ class BrowseNewestFragment: Fragment() {
                     art: Art,
                     transitionName: String
                 ) {
-                    vmArtToDetailNavViewModel.clickArt.value = ArtToDetailNavViewModel.ArtToDetailNavModel(view,
+                    vmArtToDetailNavViewModel.clickArt.value = ArtToDetailNavViewModel.ArtToDetailNavModel(
+                        WeakReference( view),
                         art, transitionName)
                 }
             }
@@ -113,6 +115,10 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, ViewHolder>(object: DiffUtil.I
     }
 
 }) {
+
+    init {
+        stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
+    }
     var callback: Callback? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
