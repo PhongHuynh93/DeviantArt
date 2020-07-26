@@ -9,10 +9,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.wind.deviantart.R
 import com.wind.deviantart.databinding.FragmentPopularArtBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import ui.SpacesItemDecoration
 
 /**
  * Created by Phong Huynh on 7/22/2020
@@ -48,6 +50,7 @@ class BrowsePopularFragment: Fragment() {
             }
             adapter = browseNewestAdapter
             setHasFixedSize(true)
+            addItemDecoration(SpacesItemDecoration(resources.getDimensionPixelOffset(R.dimen.space_tiny)))
         }
 
         viewLifecycleOwner.lifecycleScope.apply {

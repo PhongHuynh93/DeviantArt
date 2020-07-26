@@ -12,12 +12,14 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.wind.deviantart.R
 import com.wind.deviantart.databinding.FragmentNewestArtBinding
 import com.wind.deviantart.databinding.ItemBrowseArtBinding
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import ui.SpacesItemDecoration
 
 
 /**
@@ -53,6 +55,8 @@ class BrowseNewestFragment: Fragment() {
             layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL).apply {
             }
             adapter = browseNewestAdapter
+            setHasFixedSize(true)
+            addItemDecoration(SpacesItemDecoration(resources.getDimensionPixelOffset(R.dimen.space_tiny)))
         }
 
         viewLifecycleOwner.lifecycleScope.apply {
