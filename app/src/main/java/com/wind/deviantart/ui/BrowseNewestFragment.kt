@@ -11,17 +11,18 @@ import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.wind.deviantart.databinding.FragmentNewestArtBinding
 import com.wind.deviantart.databinding.ItemBrowseArtBinding
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ui.PreloadLinearLayoutManager
 
 /**
  * Created by Phong Huynh on 7/22/2020
  */
+private const val NUMB_COLUMN: Int = 2
 @AndroidEntryPoint
 class BrowseNewestFragment: Fragment() {
     private lateinit var viewBinding: FragmentNewestArtBinding
@@ -48,8 +49,7 @@ class BrowseNewestFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val browseNewestAdapter = BrowseNewestAdapter()
         viewBinding.rcv.apply {
-            layoutManager = PreloadLinearLayoutManager(requireContext()).apply {
-                setPreloadItemCount(6)
+            layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL).apply {
             }
             adapter = browseNewestAdapter
         }

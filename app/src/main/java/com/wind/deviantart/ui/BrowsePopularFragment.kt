@@ -8,15 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.wind.deviantart.databinding.FragmentPopularArtBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ui.PreloadLinearLayoutManager
 
 /**
  * Created by Phong Huynh on 7/22/2020
  */
+private const val NUMB_COLUMN: Int = 2
 @AndroidEntryPoint
 class BrowsePopularFragment: Fragment() {
     private lateinit var viewBinding: FragmentPopularArtBinding
@@ -43,10 +44,10 @@ class BrowsePopularFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val browseNewestAdapter = BrowseNewestAdapter()
         viewBinding.rcv.apply {
-            layoutManager = PreloadLinearLayoutManager(requireContext()).apply {
-                setPreloadItemCount(6)
+            layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL).apply {
             }
             adapter = browseNewestAdapter
+            setHasFixedSize(true)
         }
 
         viewLifecycleOwner.lifecycleScope.apply {
