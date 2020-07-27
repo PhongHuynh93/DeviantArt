@@ -9,14 +9,10 @@
         <item name="colorOnSurface">@color/colorOnSurface</item>
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
         <item name="textAppearanceButton">@style/TextAppearance.App.Button</item>
+        <item name="fontFamily">@font/playfair_display</item>
     </style>
 
     <style name="TextAppearance.App.Button" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:textAllCaps">false</item>
-    </style>
-
-    <style name="RoundImageView">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/image_radius</item>
     </style>
 </resources>
