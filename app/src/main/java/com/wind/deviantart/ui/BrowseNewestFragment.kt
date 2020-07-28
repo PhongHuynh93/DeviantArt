@@ -23,6 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import util.SpacesItemDecoration
+import util.dp
 import java.lang.ref.WeakReference
 
 
@@ -74,7 +75,7 @@ class BrowseNewestFragment: Fragment() {
             }
             adapter = browseNewestAdapter
             setHasFixedSize(true)
-            addItemDecoration(SpacesItemDecoration(resources.getDimensionPixelOffset(R.dimen.space_tiny)))
+            addItemDecoration(SpacesItemDecoration((6 * dp()).toInt()))
         }
 
         viewLifecycleOwner.lifecycleScope.apply {

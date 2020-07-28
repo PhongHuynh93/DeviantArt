@@ -2,13 +2,16 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:colorBackground">@color/colorBackground</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorSurface">@color/colorSurface</item>
         <item name="colorOnSurface">@color/colorOnSurface</item>
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
-        <item name="textAppearanceButton">@style/TextAppearance.App.Button</item>
+        <item name="colorOnBackground">@color/colorOnBackground</item>
+<!--        style for title in tablayout-->
+<!--        <item name="textAppearanceButton">@style/TextAppearance.App.Button</item>-->
         <item name="fontFamily">@font/playfair_display</item>
     </style>
 

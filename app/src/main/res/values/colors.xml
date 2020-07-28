@@ -3,7 +3,11 @@
     <color name="colorPrimary">#0c0c0c</color>
     <color name="colorPrimaryDark">#020202</color>
     <color name="colorAccent">#00f4c5</color>
-    <color name="colorSurface">@color/colorPrimary</color>
-    <color name="colorOnSurface">#f3f4f9</color>
-    <color name="colorOnPrimary">@color/colorOnSurface</color>
+    <color name="colorAccentDark">#00c094</color>
+    <color name="colorSurface">@color/grey</color>
+    <color name="colorOnSurface">#0c0c0c</color>
+    <color name="colorOnPrimary">#f3f4f9</color>
+    <color name="colorBackground">#f2f4f9</color>
+    <color name="colorOnBackground">#0c0c0c</color>
+    <color name="grey">#e0e0e0</color>
 </resources>

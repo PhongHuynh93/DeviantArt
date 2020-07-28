@@ -18,8 +18,17 @@ import ui.RatioImageView
 fun loadImage(imageView: ImageView, url: String?, smallImageUrl: String?) {
     Glide.with(imageView.context)
         .load(url)
-        .thumbnail(Glide.with(imageView.context).load(smallImageUrl))
+        .thumbnail(Glide.with(imageView.context).load(smallImageUrl).diskCacheStrategy(DiskCacheStrategy.ALL))
         .diskCacheStrategy(DiskCacheStrategy.ALL)
+        .into(imageView)
+}
+
+@BindingAdapter("imageUrlCircle")
+fun loadImageCircle(imageView: ImageView, url: String?) {
+    Glide.with(imageView.context)
+        .load(url)
+        .diskCacheStrategy(DiskCacheStrategy.ALL)
+        .circleCrop()
         .into(imageView)
 }
 

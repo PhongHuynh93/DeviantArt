@@ -22,6 +22,7 @@
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
+            app:titleTextColor="?attr/colorOnPrimary"
             app:title="@{title}" />
 
         <androidx.viewpager2.widget.ViewPager2
@@ -34,6 +35,7 @@
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
             app:tabTextColor="@drawable/tab_text" />
     </LinearLayout>
 </layout>

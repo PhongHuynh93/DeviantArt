@@ -16,7 +16,7 @@ object Libs {
     object Android {
         const val appCompat = "androidx.appcompat:appcompat:${Versions.supportLibrary}"
         const val material = "com.google.android.material:material:${Versions.material}"
-        const val recyclerView = "androidx.recyclerview:recyclerview:1.2.0-alpha05"
+        const val recyclerView = "androidx.recyclerview:recyclerview:1.2.0-alpha02"
         const val constraint = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
         const val viewPager = "androidx.viewpager2:viewpager2:1.0.0"
         const val page = "androidx.paging:paging-runtime-ktx:3.0.0-alpha03"

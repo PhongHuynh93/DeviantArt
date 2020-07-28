@@ -19,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import util.SpacesItemDecoration
+import util.dp
 import java.lang.ref.WeakReference
 
 /**
@@ -66,7 +67,7 @@ class BrowsePopularFragment: Fragment() {
                 }
             }
             setHasFixedSize(true)
-            addItemDecoration(SpacesItemDecoration(resources.getDimensionPixelOffset(R.dimen.space_tiny)))
+            addItemDecoration(SpacesItemDecoration((6 * dp()).toInt()))
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
