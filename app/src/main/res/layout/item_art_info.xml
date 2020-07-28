@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="item"
+            type="com.wind.model.Art" />
+
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/root"
+        android:tag="artDetailContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ui.RatioImageView
+            android:id="@+id/imgv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            tools:src="@tools:sample/backgrounds/scenic"
+            tools:ignore="ContentDescription"
+            app:w="@{item.preview.width}"
+            app:h="@{item.preview.height}"
+            app:smallImageUrl="@{item.thumbs.size > 0 ? item.thumbs.get(0).src : null}"
+            app:imageUrl="@{item.preview.src}"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgvUserAvatar"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:layout_below="@+id/imgv"
+            android:layout_marginStart="@dimen/space_normal"
+            android:layout_marginTop="@dimen/space_normal"
+            app:imageUrlCircle="@{item.author.userIcon}"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/tvUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_alignTop="@+id/imgvUserAvatar"
+            android:layout_alignBottom="@+id/imgvUserAvatar"
+            android:layout_toEndOf="@+id/imgvUserAvatar"
+            android:layout_marginStart="@dimen/space_small"
+            android:textColor="?attr/colorOnBackground"
+            android:text="@{item.author.name}"
+            tools:text="@tools:sample/full_names"/>
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imgvUserAvatar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginHorizontal="@dimen/space_large"
+            android:layout_marginTop="@dimen/space_normal"
+            android:fontFamily="@font/playfair_display_bold"
+            android:gravity="center_horizontal"
+            android:text="@{item.title}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            android:textColor="?attr/colorOnBackground"
+            tools:maxLines="3"
+            tools:text="@tools:sample/lorem/random" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imgvUserAvatar"
+            android:layout_alignBottom="@+id/imgvUserAvatar"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/space_normal"
+            android:fontFamily="@font/playfair_display_bold"
+            android:minHeight="40dp"
+            android:text="@string/watch"
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textStyle="bold"
+            app:backgroundTint="@color/colorSurface"
+            app:icon="@drawable/ic_baseline_add_16"
+            app:shapeAppearance="@style/RoundButton" />
+    </RelativeLayout>
+</layout>

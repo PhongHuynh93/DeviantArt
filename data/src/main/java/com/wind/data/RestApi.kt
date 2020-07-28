@@ -1,6 +1,7 @@
 package com.wind.data
 
 import com.wind.model.ArtList
+import com.wind.model.RelatedArt
 import com.wind.model.Token
 import retrofit2.http.GET
 import retrofit2.http.QueryMap
@@ -15,6 +16,8 @@ interface AuthApi {
     suspend fun getNewestDeviations(@QueryMap queryMap: Map<String, String>): ArtList
     @GET("/api/v1/oauth2/browse/popular")
     suspend fun getPopularDeviations(@QueryMap queryMap: Map<String, String>): ArtList
+    @GET("api/v1/oauth2/browse/morelikethis/preview")
+    suspend fun getArtMoreLikeThis(@QueryMap queryMap: Map<String, String>): RelatedArt
 }
 
 interface NonAuthApi {

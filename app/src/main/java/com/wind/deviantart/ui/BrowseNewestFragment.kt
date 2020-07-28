@@ -106,7 +106,7 @@ class BrowseNewestFragment: Fragment() {
 }
 
 private const val ART_TO_DETAIL_TRANSITION_NAME = "art_to_detail"
-class BrowseNewestAdapter: PagingDataAdapter<Art, ViewHolder>(object: DiffUtil.ItemCallback<Art>() {
+class BrowseNewestAdapter: PagingDataAdapter<Art, BrowseNewestAdapter.ViewHolder>(object: DiffUtil.ItemCallback<Art>() {
     override fun areItemsTheSame(oldItem: Art, newItem: Art): Boolean {
         return oldItem.id == newItem.id
     }
@@ -151,6 +151,7 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, ViewHolder>(object: DiffUtil.I
     interface Callback {
         fun onClick(view: View, pos: Int, art: Art, transitionName: String)
     }
+
+    inner class ViewHolder(val binding: ItemBrowseArtBinding): RecyclerView.ViewHolder(binding.root)
 }
 
-class ViewHolder(val binding: ItemBrowseArtBinding): RecyclerView.ViewHolder(binding.root)
