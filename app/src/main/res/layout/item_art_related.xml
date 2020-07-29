@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="item"
             type="com.wind.model.Art" />
 
     </data>
+
     <ui.RatioImageView
         android:id="@+id/imgv"
         android:layout_width="match_parent"
@@ -18,6 +20,8 @@
         app:h="@{item.preview.height}"
         app:imageUrl="@{item.preview.src}"
         app:smallImageUrl="@{item.thumbs.size > 0 ? item.thumbs.get(0).src : null}"
+        app:useFade="@{true}"
+        app:useBlur="@{true}"
         app:w="@{item.preview.width}"
         tools:ignore="ContentDescription"
         tools:src="@tools:sample/backgrounds/scenic" />
