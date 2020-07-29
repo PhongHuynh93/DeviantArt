@@ -7,21 +7,25 @@ import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.*
 import com.google.android.material.transition.MaterialContainerTransform
 import com.wind.deviantart.ArtToDetailNavViewModel
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
-import com.wind.deviantart.databinding.ItemArtInfoBinding
+import com.wind.deviantart.databinding.ItemBrowseArtBinding
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_art_detail.view.*
 import util.SpacesItemDecoration
 import util.dp
 
+private const val NUMB_COLUMN: Int = 2
 @AndroidEntryPoint
 class ArtDetailFragment : Fragment() {
     private lateinit var viewBinding: FragmentArtDetailBinding
     private val vmArtToDetailNavViewModel by activityViewModels<ArtToDetailNavViewModel>()
+    private val vmArtDetailViewModel by viewModels<ArtDetailViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,24 +42,36 @@ class ArtDetailFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
             val data = vmArtToDetailNavViewModel.clickArt.value
             containerTransitionName = data?.transitionName
+            item = data?.art
+            appBar.clipToOutline = true
+            appBar.outlineProvider = ViewOutlineProvider.BACKGROUND
         }
         return viewBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewBinding.rcv.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            setHasFixedSize(true)
-            // TODO: 7/28/2020 use merge adapter here
-            adapter = ArtDetailAdapter().apply {
-                submitList(listOf(vmArtToDetailNavViewModel.clickArt.value!!.art))
-            }
-        }
-    }
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//        val artDetailData = vmArtToDetailNavViewModel.clickArt.value!!.art
+//        val stagGridArtAdapter = StagGridArtAdapter()
+//        viewBinding.rcv.apply {
+//            layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL)
+//            setHasFixedSize(true)
+//            // TODO: 7/28/2020 use merge adapter here to render the comment and other layout type
+//            adapter = stagGridArtAdapter
+//            addItemDecoration(SpacesItemDecoration((6 * dp()).toInt()))
+//        }
+//        vmArtDetailViewModel.apply {
+//            getRelatedArtUseCase(artDetailData.id)
+//            relatedArtLiveData.observe(viewLifecycleOwner) { relatedArt ->
+//                stagGridArtAdapter.submitList(relatedArt.moreFromArtist)
+//            }
+//        }
+//    }
 }
 
-class ArtDetailAdapter : ListAdapter<Art, ArtDetailAdapter.ViewHolder>(object: DiffUtil
+
+private const val ART_TO_DETAIL_TRANSITION_NAME = "art_to_detail"
+class StagGridArtAdapter: ListAdapter<Art, StagGridArtAdapter.ViewHolder>(object: DiffUtil
 .ItemCallback<Art>() {
     override fun areItemsTheSame(oldItem: Art, newItem: Art): Boolean {
         return oldItem.id == newItem.id
@@ -64,6 +80,7 @@ class ArtDetailAdapter : ListAdapter<Art, ArtDetailAdapter.ViewHolder>(object: D
     override fun areContentsTheSame(oldItem: Art, newItem: Art): Boolean {
         return oldItem == newItem
     }
+
 }) {
 
     init {
@@ -72,14 +89,13 @@ class ArtDetailAdapter : ListAdapter<Art, ArtDetailAdapter.ViewHolder>(object: D
     var callback: Callback? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemArtInfoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            .apply {
+        return ViewHolder(ItemBrowseArtBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
         }).apply {
             itemView.setOnClickListener {view ->
                 val pos = bindingAdapterPosition
                 if (pos >= 0) {
                     getItem(pos)?.let {
-                        callback?.onClick(view, pos, it)
+                        callback?.onClick(view, pos, it, view.transitionName)
                     }
                 }
             }
@@ -88,14 +104,14 @@ class ArtDetailAdapter : ListAdapter<Art, ArtDetailAdapter.ViewHolder>(object: D
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
+        holder.itemView.transitionName = "$ART_TO_DETAIL_TRANSITION_NAME$position"
         holder.binding.item = item
         holder.binding.executePendingBindings()
     }
 
     interface Callback {
-        fun onClick(view: View, pos: Int, item: Art)
+        fun onClick(view: View, pos: Int, art: Art, transitionName: String)
     }
 
-    inner class ViewHolder(val binding: ItemArtInfoBinding): RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder(val binding: ItemBrowseArtBinding): RecyclerView.ViewHolder(binding.root)
 }
-
