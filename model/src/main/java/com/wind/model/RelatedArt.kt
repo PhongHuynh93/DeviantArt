@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName
 
 data class RelatedArt (
     @SerializedName("author")
-    val author: Author,
+    val author: Author?,
     @SerializedName("more_from_artist")
-    val moreFromArtist: List<Art>,
+    val moreFromArtist: List<Art> = emptyList(),
     @SerializedName("more_from_da")
-    val moreFromDa: List<Art>,
+    val moreFromDa: List<Art> = emptyList(),
     @SerializedName("seed")
     val seed: String
 )

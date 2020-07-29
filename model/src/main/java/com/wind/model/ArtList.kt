@@ -10,13 +10,13 @@ data class ArtList(
     @SerializedName("next_offset")
     val nextOffset: Int,
     @SerializedName("results")
-    val arts: List<Art>
+    val arts: List<Art> = emptyList()
 )
 data class Art(
     @SerializedName("allows_comments")
     val allowsComments: Boolean,
     @SerializedName("author")
-    val author: Author,
+    val author: Author?,
     @SerializedName("category")
     val category: String,
     @SerializedName("category_path")
@@ -36,13 +36,13 @@ data class Art(
     @SerializedName("is_mature")
     val isMature: Boolean,
     @SerializedName("printid")
-    val printId: String?,
+    val printId: String,
     @SerializedName("published_time")
     val publishedTime: Int,
     @SerializedName("stats")
     val stats: Stats,
     @SerializedName("thumbs")
-    val thumbs: List<Thumb>?,
+    val thumbs: List<Thumb> = emptyList(),
     @SerializedName("title")
     val title: String,
     @SerializedName("url")
