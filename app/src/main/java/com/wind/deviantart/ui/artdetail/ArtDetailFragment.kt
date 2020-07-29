@@ -45,32 +45,34 @@ class ArtDetailFragment : Fragment() {
             item = data?.art
             appBar.clipToOutline = true
             appBar.outlineProvider = ViewOutlineProvider.BACKGROUND
+            rcv.clipToOutline = true
+            rcv.outlineProvider = ViewOutlineProvider.BACKGROUND
         }
         return viewBinding.root
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        val artDetailData = vmArtToDetailNavViewModel.clickArt.value!!.art
-//        val stagGridArtAdapter = StagGridArtAdapter()
-//        viewBinding.rcv.apply {
-//            layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL)
-//            setHasFixedSize(true)
-//            // TODO: 7/28/2020 use merge adapter here to render the comment and other layout type
-//            adapter = stagGridArtAdapter
-//            addItemDecoration(SpacesItemDecoration((6 * dp()).toInt()))
-//        }
-//        vmArtDetailViewModel.apply {
-//            getRelatedArtUseCase(artDetailData.id)
-//            relatedArtLiveData.observe(viewLifecycleOwner) { relatedArt ->
-//                stagGridArtAdapter.submitList(relatedArt.moreFromArtist)
-//            }
-//        }
-//    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val artDetailData = vmArtToDetailNavViewModel.clickArt.value!!.art
+        val stagGridArtAdapter = StagGridArtAdapter()
+        viewBinding.rcv.apply {
+            layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL)
+            setHasFixedSize(true)
+            // TODO: 7/28/2020 use merge adapter here to render the comment and other layout type
+            adapter = stagGridArtAdapter
+            addItemDecoration(SpacesItemDecoration((6 * dp()).toInt()))
+        }
+        vmArtDetailViewModel.apply {
+            getRelatedArtUseCase(artDetailData.id)
+            relatedArtLiveData.observe(viewLifecycleOwner) { relatedArt ->
+                stagGridArtAdapter.submitList(relatedArt.moreFromArtist)
+            }
+        }
+    }
 }
 
 
-private const val ART_TO_DETAIL_TRANSITION_NAME = "art_to_detail"
+private const val ART_TO_DETAIL_TRANSITION_NAME = "art_detail_to_detail_transition"
 class StagGridArtAdapter: ListAdapter<Art, StagGridArtAdapter.ViewHolder>(object: DiffUtil
 .ItemCallback<Art>() {
     override fun areItemsTheSame(oldItem: Art, newItem: Art): Boolean {

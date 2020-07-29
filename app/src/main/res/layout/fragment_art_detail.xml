@@ -35,7 +35,8 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:background="?android:attr/colorBackground"
+            android:layout_marginTop="@dimen/space_tiny"
+            android:background="@drawable/round_bg"
             android:id="@+id/rcv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
