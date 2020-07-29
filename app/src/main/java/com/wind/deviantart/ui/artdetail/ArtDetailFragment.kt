@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.*
@@ -13,6 +14,9 @@ import com.wind.deviantart.databinding.FragmentArtDetailBinding
 import com.wind.deviantart.databinding.ItemArtInfoBinding
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_art_detail.view.*
+import util.SpacesItemDecoration
+import util.dp
 
 @AndroidEntryPoint
 class ArtDetailFragment : Fragment() {

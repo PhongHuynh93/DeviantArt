@@ -2,7 +2,7 @@
 <resources>
     <style name="RoundImageView">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">12dp</item>
+        <item name="cornerSize">@dimen/default_radius</item>
     </style>
 
     <style name="CircleImageView">
@@ -14,4 +14,5 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">20dp</item>
     </style>
+
 </resources>
