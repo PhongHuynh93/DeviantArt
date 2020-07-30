@@ -1,3 +1,4 @@
+include ':shimmer'
 include ':model'
 include ':share'
 include ':data'

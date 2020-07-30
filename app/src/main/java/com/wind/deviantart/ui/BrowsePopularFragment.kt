@@ -1,5 +1,6 @@
 package com.wind.deviantart.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
+import com.ethanhua.skeleton.Skeleton
 import com.wind.deviantart.ArtToDetailNavViewModel
 import com.wind.deviantart.R
 import com.wind.deviantart.databinding.FragmentPopularArtBinding
@@ -19,6 +23,7 @@ import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import util.SpacesItemDecoration
 import util.dp
 import java.lang.ref.WeakReference
@@ -70,19 +75,30 @@ class BrowsePopularFragment: Fragment() {
             setHasFixedSize(true)
             addItemDecoration(SpacesItemDecoration((6 * dp()).toInt()))
         }
+        var skeleton: RecyclerViewSkeletonScreen? = Skeleton.bind(viewBinding.rcv)
+            .adapter(browseNewestAdapter)
+            .load(R.layout.item_place_holder)
+            .shimmer(true)
+            .count(10)
+            .color(R.color.greyLight)
+            .angle(20)
+            .duration(1300)
+            .maskWidth(1f)
+            .frozen(true)
+            .show()
+
+        Timber.e("show skeleton")
 
         viewLifecycleOwner.lifecycleScope.launch {
                 // TODO: 7/25/2020 handle the loading state change
                 browseNewestAdapter.loadStateFlow.collectLatest { loadState ->
-                    when (loadState.refresh) {
-                        is LoadState.Loading -> {
-
-                        }
-                        is LoadState.NotLoading -> {
-
-                        }
-                        is LoadState.Error -> {
-
+                    Timber.e("load state $loadState")
+                    if (loadState.refresh != LoadState.Loading && browseNewestAdapter.itemCount
+                        > 0) {
+                        skeleton?.let {
+                            Timber.e("hide skeleton")
+                            it.hide()
+                            skeleton = null
                         }
                     }
                 }

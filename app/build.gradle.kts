@@ -41,6 +41,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":share"))
     implementation(project(":model"))
+    implementation(project(":shimmer"))
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
     testImplementation(Libs.Test.junit)

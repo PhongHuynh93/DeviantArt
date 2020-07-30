@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui.RatioImageView android:id="@+id/imgv"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorSurface"
+    app:shapeAppearance="@style/RoundImageView"
+    android:adjustViewBounds="true"
+    android:scaleType="fitXY"
+    app:riv_dimensionRatio="1:1"
+    tools:src="@tools:sample/backgrounds/scenic"
+    tools:ignore="ContentDescription"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" />
