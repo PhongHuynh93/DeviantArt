@@ -107,8 +107,9 @@ object AggregationDataModule {
 
     @Singleton
     @Provides
-    fun getBrowseRepository(restApi: AuthApi): RestRepository {
-        return RestRepositoryImpl(restApi)
+    fun getBrowseRepository(@ApplicationContext context: Context, restApi: AuthApi):
+            RestRepository {
+        return RestRepositoryImpl(context, restApi)
     }
 
 }

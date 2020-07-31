@@ -6,8 +6,10 @@ import androidx.core.view.doOnNextLayout
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
+import com.bumptech.glide.request.RequestOptions
 import com.wind.deviantart.R
 import com.wind.model.Art
 import jp.wasabeef.glide.transformations.BlurTransformation
@@ -19,6 +21,8 @@ import ui.RatioImageView
  */
 @BindingAdapter("imageUrl", "smallImageUrl", "useFade", requireAll = false)
 fun loadImage(imageView: ImageView, url: String?, smallImageUrl: String?, useFade: Boolean) {
+    val requestOptions = RequestOptions().format(DecodeFormat.PREFER_RGB_565)
+
     Glide.with(imageView.context)
         .load(url)
         .thumbnail(
@@ -31,6 +35,7 @@ fun loadImage(imageView: ImageView, url: String?, smallImageUrl: String?, useFad
                 transition(withCrossFade())
             }
         }
+        .apply(requestOptions)
         .placeholder(R.drawable.image_placeholder)
         .into(imageView)
 }
@@ -47,9 +52,11 @@ fun loadImageCircle(imageView: ImageView, url: String?) {
 
 @BindingAdapter("imageUrl")
 fun loadImage(imageView: ImageView, url: Drawable) {
+    val requestOptions = RequestOptions().format(DecodeFormat.PREFER_RGB_565)
     Glide.with(imageView.context).load(url)
         .diskCacheStrategy(DiskCacheStrategy.ALL)
         .placeholder(R.drawable.image_placeholder)
+        .apply(requestOptions)
         .into(imageView)
 }
 
@@ -61,6 +68,7 @@ fun loadImageWithRatio(
     imageView: RatioImageView, url: String?, smallImageUrl: String?, w: Int,
     h: Int, useFade: Boolean, useBlur: Boolean = false) {
     if (w > 0) {
+        val requestOptions = RequestOptions().format(DecodeFormat.PREFER_RGB_565)
         imageView.setRatio(h / w.toFloat())
         imageView.doOnNextLayout {
             Glide.with(imageView.context)
@@ -81,6 +89,7 @@ fun loadImageWithRatio(
                     }
                 }
                 .placeholder(R.drawable.image_placeholder)
+                .apply(requestOptions)
                 .into(imageView)
         }
     } else {

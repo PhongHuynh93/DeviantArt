@@ -50,4 +50,8 @@ dependencies {
 
     // paging
     implementation(Libs.Android.page)
+
+    // image
+    implementation(Libs.Glide.glide1)
+    implementation(Libs.Glide.glideTransform)
 }
