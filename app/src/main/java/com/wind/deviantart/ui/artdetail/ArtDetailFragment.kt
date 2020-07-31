@@ -8,21 +8,31 @@ import android.view.ViewOutlineProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import com.wind.deviantart.ArtToDetailNavViewModel
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
 import com.wind.deviantart.databinding.ItemBrowseArtBinding
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_art_detail.view.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import util.SpacesItemDecoration
 import util.dp
+import util.gone
+import util.show
 
 private const val NUMB_COLUMN: Int = 2
+private const val ENTER_TRANSITION_DURATION: Long = 300
+
 @AndroidEntryPoint
 class ArtDetailFragment : Fragment() {
+
     private lateinit var viewBinding: FragmentArtDetailBinding
     private val vmArtToDetailNavViewModel by activityViewModels<ArtToDetailNavViewModel>()
     private val vmArtDetailViewModel by viewModels<ArtDetailViewModel>()
@@ -30,7 +40,7 @@ class ArtDetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = MaterialContainerTransform().apply {
-
+            duration = ENTER_TRANSITION_DURATION
         }
     }
 
@@ -61,6 +71,12 @@ class ArtDetailFragment : Fragment() {
             // TODO: 7/28/2020 use merge adapter here to render the comment and other layout type
             adapter = stagGridArtAdapter
             addItemDecoration(SpacesItemDecoration((6 * dp()).toInt()))
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            // prevent measuring the rcv during the animation running
+            viewBinding.rcv.gone()
+            delay(ENTER_TRANSITION_DURATION)
+            viewBinding.rcv.show()
         }
         vmArtDetailViewModel.apply {
             getRelatedArtUseCase(artDetailData.id)

@@ -7,10 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wind.domain.art.GetRelatedArtUseCase
 import com.wind.domain.result.Result
-import com.wind.domain.result.data
 import com.wind.model.RelatedArt
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * Created by Phong Huynh on 7/28/2020
