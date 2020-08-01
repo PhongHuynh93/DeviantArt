@@ -7,6 +7,8 @@ import androidx.paging.PagingData
 import com.wind.data.source.NewestArtDataSource
 import com.wind.data.source.PopularArtDataSource
 import com.wind.model.Art
+import com.wind.model.Comment
+import com.wind.model.DeviantArtList
 import com.wind.model.RelatedArt
 import kotlinx.coroutines.flow.Flow
 
@@ -18,6 +20,7 @@ interface RestRepository {
     fun getNewestDeviations(catePath: String?, query: String?, offset: Int?, pageSize: Int): Flow<PagingData<Art>>
     fun getPopularDeviations(catePath: String?, query: String?, offset: Int?, pageSize: Int): Flow<PagingData<Art>>
     suspend fun getArtFromThisArtist(id: String): RelatedArt
+    suspend fun getComment(artId: String): DeviantArtList<Comment>
 }
 
 internal class RestRepositoryImpl internal constructor(
@@ -39,5 +42,7 @@ internal class RestRepositoryImpl internal constructor(
         return authApi.getMoreFromThisArtist(mapOf("seed" to id))
     }
 
-
+    override suspend fun getComment(artId: String): DeviantArtList<Comment> {
+        return authApi.getComment(artId, emptyMap())
+    }
 }

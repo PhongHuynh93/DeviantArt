@@ -9,7 +9,7 @@
         android:id="@+id/mainFragment"
         android:name="com.wind.deviantart.ui.main.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_popular_art" >
+        tools:layout="@layout/recyclerView" >
         <action
             android:id="@+id/action_mainFragment_to_artDetailFragment"
             app:destination="@id/artDetailFragment" />

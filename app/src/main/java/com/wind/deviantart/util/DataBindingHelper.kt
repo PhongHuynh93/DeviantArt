@@ -1,17 +1,17 @@
 package com.wind.deviantart.util
 
 import android.graphics.drawable.Drawable
+import android.text.Html
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.view.doOnNextLayout
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestOptions
 import com.wind.deviantart.R
-import com.wind.model.Art
 import jp.wasabeef.glide.transformations.BlurTransformation
 import timber.log.Timber
 import ui.RatioImageView
@@ -97,11 +97,8 @@ fun loadImageWithRatio(
     }
 }
 
-@BindingAdapter("data")
-fun bindAdapter(recyclerView: RecyclerView, data: List<Art>?) {
-//    data?.let {
-//        val adapter = recyclerView.adapter
-//        (adapter as? BrowseNewestAdapter)?.setData(it)
-//    }
+@BindingAdapter("textHtml")
+fun loadTextHtml(textView: TextView, textHtml: String) {
+    textView.text = Html.fromHtml(textHtml)
 }
 

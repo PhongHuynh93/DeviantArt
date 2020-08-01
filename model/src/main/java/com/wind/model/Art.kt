@@ -6,14 +6,6 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 // https://www.deviantart.com/developers/http/v1/20200519/object/deviation
-data class ArtList(
-    @SerializedName("has_more")
-    val hasMore: Boolean,
-    @SerializedName("next_offset")
-    val nextOffset: Int,
-    @SerializedName("results")
-    val arts: List<Art> = emptyList()
-)
 
 @Parcelize
 data class Art (

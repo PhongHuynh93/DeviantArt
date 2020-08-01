@@ -1,5 +1,7 @@
 package com.wind.deviantart.ui.artdetail
 
+import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +12,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.*
 import com.google.android.material.transition.MaterialContainerTransform
+import com.wind.deviantart.R
+import com.wind.deviantart.adapter.HeaderAdapter
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
 import com.wind.deviantart.databinding.ItemBrowseArtBinding
 import com.wind.model.Art
@@ -36,7 +37,6 @@ class ArtDetailFragment : Fragment() {
             }
         }
     }
-
 
     private lateinit var art: Art
     private lateinit var viewBinding: FragmentArtDetailBinding
@@ -90,7 +90,28 @@ class ArtDetailFragment : Fragment() {
             close.observe(viewLifecycleOwner, EventObserver {
                 requireActivity().onBackPressed()
             })
+            openComment.observe(viewLifecycleOwner, EventObserver {
+                callBack?.openComment(it)
+            })
         }
+    }
+
+    private var callBack: CallBack? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is CallBack) {
+            callBack = context as CallBack
+        }
+    }
+
+    override fun onDetach() {
+        callBack = null
+        super.onDetach()
+    }
+
+    interface CallBack {
+        fun openComment(id: String)
     }
 }
 

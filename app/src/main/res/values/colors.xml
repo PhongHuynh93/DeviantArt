@@ -11,4 +11,5 @@
     <color name="colorOnBackground">#0c0c0c</color>
     <color name="grey">#eeeeee</color>
     <color name="greyLight">#f5f5f5</color>
+    <color name="textColorPrimary">#0c0c0c</color>
 </resources>

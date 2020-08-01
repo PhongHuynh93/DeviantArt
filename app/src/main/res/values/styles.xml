@@ -10,6 +10,7 @@
         <item name="colorOnSurface">@color/colorOnSurface</item>
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
         <item name="colorOnBackground">@color/colorOnBackground</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
 <!--        style for title in tablayout-->
 <!--        <item name="textAppearanceButton">@style/TextAppearance.App.Button</item>-->
         <item name="fontFamily">@font/playfair_display</item>

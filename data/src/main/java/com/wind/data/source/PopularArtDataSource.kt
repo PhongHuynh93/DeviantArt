@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import timber.log.Timber
-import java.io.FileNotFoundException
 import java.io.IOException
 import java.lang.Exception
 
@@ -32,7 +31,7 @@ internal class PopularArtDataSource(
             val response = restApi.getPopularDeviations(map)
             // load ahead the preview images
             val requestOptions = RequestOptions().format(DecodeFormat.PREFER_RGB_565)
-            response.arts.forEach { art ->
+            response.data.forEach { art ->
                 art.thumbs.let { listThumb ->
                     if (listThumb.isNotEmpty()) {
                         withContext(Dispatchers.IO) {
@@ -53,7 +52,7 @@ internal class PopularArtDataSource(
             }
 
             return LoadResult.Page(
-                data = response.arts,
+                data = response.data,
                 prevKey = null, // Only paging forward.
                 nextKey = response.nextOffset
             )

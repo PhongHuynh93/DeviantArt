@@ -1,9 +1,8 @@
 package com.wind.data
 
-import com.wind.model.ArtList
-import com.wind.model.RelatedArt
-import com.wind.model.Token
+import com.wind.model.*
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.QueryMap
 
 /**
@@ -11,13 +10,15 @@ import retrofit2.http.QueryMap
  */
 interface AuthApi {
     @GET("/api/v1/oauth2/browse/dailydeviations")
-    suspend fun getDailyDeviations(@QueryMap queryMap: Map<String, String>): ArtList
+    suspend fun getDailyDeviations(@QueryMap queryMap: Map<String, String>): DeviantArtList<Art>
     @GET("/api/v1/oauth2/browse/newest")
-    suspend fun getNewestDeviations(@QueryMap queryMap: Map<String, String>): ArtList
+    suspend fun getNewestDeviations(@QueryMap queryMap: Map<String, String>): DeviantArtList<Art>
     @GET("/api/v1/oauth2/browse/popular")
-    suspend fun getPopularDeviations(@QueryMap queryMap: Map<String, String>): ArtList
+    suspend fun getPopularDeviations(@QueryMap queryMap: Map<String, String>): DeviantArtList<Art>
     @GET("api/v1/oauth2/browse/morelikethis/preview")
     suspend fun getMoreFromThisArtist(@QueryMap queryMap: Map<String, String>): RelatedArt
+    @GET("api/v1/oauth2/comments/deviation/{id}")
+    suspend fun getComment(@Path("id") id: String, @QueryMap queryMap: Map<String, String>): DeviantArtList<Comment>
 }
 
 interface NonAuthApi {

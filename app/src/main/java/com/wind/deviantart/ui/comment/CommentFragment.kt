@@ -1,0 +1,94 @@
+package com.wind.deviantart.ui.comment
+
+import android.graphics.Rect
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.wind.deviantart.R
+import com.wind.deviantart.databinding.ItemCommentBinding
+import com.wind.model.Comment
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.recyclerview.*
+import util.getDimen
+
+/**
+ * Created by Phong Huynh on 8/1/2020.
+ */
+private const val ID = "id"
+
+@AndroidEntryPoint
+class CommentFragment: Fragment(R.layout.fragment_comment) {
+    companion object {
+        fun newInstance(id: String): Fragment {
+            return CommentFragment().apply {
+                arguments = bundleOf(ID to id)
+            }
+        }
+    }
+
+    private val vmCommentViewModel by viewModels<CommentViewModel>()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val commentAdapter = CommentAdapter()
+        rcv.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = commentAdapter
+            setHasFixedSize(true)
+            val verSpace = getDimen(R.dimen.space_small).toInt()
+            val hozSpace = getDimen(R.dimen.space_pretty_small).toInt()
+            addItemDecoration(object: RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    outRect.top = verSpace
+                    outRect.bottom = verSpace
+                    outRect.left = hozSpace
+                    outRect.right = hozSpace
+                }
+            })
+        }
+        vmCommentViewModel.apply {
+            getComment(requireArguments().getString(ID)!!)
+            getCommentLiveData.observe(viewLifecycleOwner) {
+                commentAdapter.submitList(it)
+            }
+        }
+    }
+}
+
+class CommentAdapter : ListAdapter<Comment, CommentAdapter.ViewHolder>(object : DiffUtil.ItemCallback<Comment>() {
+    override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
+        return oldItem == newItem
+    }
+
+    override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
+        return true
+    }
+}) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(ItemCommentBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
+        })
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = getItem(position)
+        holder.binding.comment = item
+        holder.binding.executePendingBindings()
+    }
+
+    inner class ViewHolder(val binding: ItemCommentBinding) : RecyclerView.ViewHolder(binding.root)
+}

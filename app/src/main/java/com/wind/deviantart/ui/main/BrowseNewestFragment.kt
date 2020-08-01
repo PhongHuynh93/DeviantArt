@@ -18,10 +18,10 @@ import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.ethanhua.skeleton.Skeleton
 import com.wind.deviantart.ArtToDetailNavViewModel
 import com.wind.deviantart.R
-import com.wind.deviantart.databinding.FragmentNewestArtBinding
 import com.wind.deviantart.databinding.ItemBrowseArtBinding
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.recyclerview.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -35,8 +35,7 @@ import util.dp
  */
 private const val NUMB_COLUMN: Int = 2
 @AndroidEntryPoint
-class BrowseNewestFragment: Fragment() {
-    private lateinit var viewBinding: FragmentNewestArtBinding
+class BrowseNewestFragment: Fragment(R.layout.recyclerview) {
     private val vmNewestArt by viewModels<NewestArtViewModel>()
     private val vmArtToDetailNavViewModel by activityViewModels<ArtToDetailNavViewModel>()
 
@@ -44,17 +43,6 @@ class BrowseNewestFragment: Fragment() {
         fun newInstance(): BrowseNewestFragment {
             return BrowseNewestFragment()
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        viewBinding = FragmentNewestArtBinding.inflate(inflater, container, false).apply {
-            vm = vmNewestArt
-            lifecycleOwner = viewLifecycleOwner
-        }
-        return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,7 +60,7 @@ class BrowseNewestFragment: Fragment() {
                 }
             }
         }
-        viewBinding.rcv.apply {
+        rcv.apply {
             layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL).apply {
             }
             adapter = browseNewestAdapter
@@ -80,7 +68,7 @@ class BrowseNewestFragment: Fragment() {
             addItemDecoration(SpacesItemDecoration((6 * dp()).toInt()))
         }
 
-        var skeleton: RecyclerViewSkeletonScreen? = Skeleton.bind(viewBinding.rcv)
+        var skeleton: RecyclerViewSkeletonScreen? = Skeleton.bind(rcv)
             .adapter(browseNewestAdapter)
             .load(R.layout.item_place_holder)
             .shimmer(true)

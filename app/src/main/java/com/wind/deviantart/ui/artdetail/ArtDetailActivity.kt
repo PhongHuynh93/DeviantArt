@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.View
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import com.google.android.material.transition.Hold
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import com.wind.deviantart.R
+import com.wind.deviantart.ui.comment.CommentFragment
 import dagger.hilt.android.AndroidEntryPoint
 import util.addFragment
 
@@ -16,7 +18,7 @@ import util.addFragment
  */
 
 @AndroidEntryPoint
-class ArtDetailActivity: AppCompatActivity() {
+class ArtDetailActivity: AppCompatActivity(), ArtDetailFragment.CallBack {
     companion object {
         val TRANSITION_NAME = "transitionName"
         val DATA = "data"
@@ -41,6 +43,13 @@ class ArtDetailActivity: AppCompatActivity() {
             addFragment(ArtDetailFragment.newInstance(intent.getParcelableExtra(DATA)).apply {
                 exitTransition = Hold()
             }, R.id.root)
+        }
+    }
+
+    override fun openComment(id: String) {
+        supportFragmentManager.commit {
+            add(R.id.root, CommentFragment.newInstance(id))
+            addToBackStack(null)
         }
     }
 }

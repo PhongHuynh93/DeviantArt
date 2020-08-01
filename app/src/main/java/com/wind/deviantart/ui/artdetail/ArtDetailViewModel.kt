@@ -20,6 +20,8 @@ class ArtDetailViewModel @ViewModelInject constructor(private val getMoreFromThi
     val relatedArtLiveData: LiveData<RelatedArt> = _relatedArtLiveData
     private val _close: MutableLiveData<Event<Unit>> = MutableLiveData()
     val close: LiveData<Event<Unit>> = _close
+    private val _openComment: MutableLiveData<Event<String>> = MutableLiveData()
+    val openComment: LiveData<Event<String>> = _openComment
 
     fun getRelatedArtUseCase(id: String) {
         viewModelScope.launch {
@@ -41,5 +43,9 @@ class ArtDetailViewModel @ViewModelInject constructor(private val getMoreFromThi
 
     fun clickClose() {
         _close.value = Event(Unit)
+    }
+
+    fun clickComment(id: String) {
+        _openComment.value = Event(id)
     }
 }
