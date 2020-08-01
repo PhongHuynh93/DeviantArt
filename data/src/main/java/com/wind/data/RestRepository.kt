@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.Flow
 interface RestRepository {
     fun getNewestDeviations(catePath: String?, query: String?, offset: Int?, pageSize: Int): Flow<PagingData<Art>>
     fun getPopularDeviations(catePath: String?, query: String?, offset: Int?, pageSize: Int): Flow<PagingData<Art>>
-    suspend fun getArtMoreLikeThis(id: String): RelatedArt
+    suspend fun getArtFromThisArtist(id: String): RelatedArt
 }
 
 internal class RestRepositoryImpl internal constructor(
@@ -35,8 +35,8 @@ internal class RestRepositoryImpl internal constructor(
             PopularArtDataSource(context, authApi)
         }.flow
 
-    override suspend fun getArtMoreLikeThis(id: String): RelatedArt {
-        return authApi.getArtMoreLikeThis(mapOf("seed" to id))
+    override suspend fun getArtFromThisArtist(id: String): RelatedArt {
+        return authApi.getMoreFromThisArtist(mapOf("seed" to id))
     }
 
 

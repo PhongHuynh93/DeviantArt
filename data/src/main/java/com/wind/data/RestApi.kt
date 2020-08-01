@@ -17,7 +17,7 @@ interface AuthApi {
     @GET("/api/v1/oauth2/browse/popular")
     suspend fun getPopularDeviations(@QueryMap queryMap: Map<String, String>): ArtList
     @GET("api/v1/oauth2/browse/morelikethis/preview")
-    suspend fun getArtMoreLikeThis(@QueryMap queryMap: Map<String, String>): RelatedArt
+    suspend fun getMoreFromThisArtist(@QueryMap queryMap: Map<String, String>): RelatedArt
 }
 
 interface NonAuthApi {
