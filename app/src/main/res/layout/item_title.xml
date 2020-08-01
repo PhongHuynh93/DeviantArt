@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="@{text}"
         android:textAllCaps="true"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         android:textColor="?attr/colorOnBackground"
         tools:text="@tools:sample/full_names" />
 </layout>

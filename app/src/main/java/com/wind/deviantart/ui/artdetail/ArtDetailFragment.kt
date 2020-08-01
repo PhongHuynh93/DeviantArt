@@ -18,6 +18,7 @@ import com.wind.deviantart.R
 import com.wind.deviantart.adapter.HeaderAdapter
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
 import com.wind.deviantart.databinding.ItemBrowseArtBinding
+import com.wind.deviantart.util.AdapterType
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -85,10 +86,14 @@ class ArtDetailFragment : Fragment() {
                     val pos = parent.getChildAdapterPosition(view)
                     if (pos == RecyclerView.NO_POSITION)
                         return
-                    outRect.left = (10 * dp()).toInt()
-                    outRect.right = (10 * dp()).toInt()
-                    outRect.top = (10 * dp()).toInt()
-                    outRect.bottom = (10 * dp()).toInt()
+                    when (adapter?.getItemViewType(pos)) {
+                        AdapterType.TYPE_TITLE -> {
+                            outRect.left = (10 * dp()).toInt()
+                            outRect.right = (10 * dp()).toInt()
+                            outRect.top = (10 * dp()).toInt()
+                            outRect.bottom = (10 * dp()).toInt()
+                        }
+                    }
                 }
             })
         }
@@ -152,6 +157,10 @@ class StagGridArtAdapter: ListAdapter<Art, StagGridArtAdapter.ViewHolder>(object
         stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
     }
     var callback: Callback? = null
+
+    override fun getItemViewType(position: Int): Int {
+        return AdapterType.TYPE_ART
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemBrowseArtBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
