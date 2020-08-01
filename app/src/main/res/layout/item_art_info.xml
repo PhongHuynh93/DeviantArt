@@ -93,8 +93,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/space_small"
-            android:layout_marginBottom="@dimen/space_normal"
+            android:layout_marginTop="@dimen/space_normal"
+            android:layout_marginBottom="@dimen/space_small"
             android:layout_below="@+id/tvTitle">
 
             <com.google.android.material.button.MaterialButton
