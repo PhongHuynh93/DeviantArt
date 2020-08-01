@@ -1,4 +1,4 @@
-package com.wind.deviantart.ui
+package com.wind.deviantart.ui.main
 
 import android.os.Bundle
 import android.view.LayoutInflater

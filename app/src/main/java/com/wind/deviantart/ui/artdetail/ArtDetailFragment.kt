@@ -25,12 +25,21 @@ import util.*
 
 private const val NUMB_COLUMN: Int = 2
 private const val ENTER_TRANSITION_DURATION: Long = 300
+private const val DATA = "data"
 
 @AndroidEntryPoint
 class ArtDetailFragment : Fragment() {
+    companion object {
+        fun newInstance(data: Art): Fragment {
+            return ArtDetailFragment().apply {
+                arguments = bundleOf(DATA to data)
+            }
+        }
+    }
 
+
+    private lateinit var art: Art
     private lateinit var viewBinding: FragmentArtDetailBinding
-    private val vmArtToDetailNavViewModel by activityViewModels<ArtToDetailNavViewModel>()
     private val vmArtDetailViewModel by viewModels<ArtDetailViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,9 +55,9 @@ class ArtDetailFragment : Fragment() {
     ): View? {
         viewBinding = FragmentArtDetailBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
-            val data = vmArtToDetailNavViewModel.clickArt.value
-            containerTransitionName = data?.transitionName
-            item = data?.art
+            art = requireArguments().getParcelable(DATA)!!
+            item = art
+            vm = vmArtDetailViewModel
             appBar.clipToOutline = true
             appBar.outlineProvider = ViewOutlineProvider.BACKGROUND
             rcv.clipToOutline = true
@@ -59,7 +68,6 @@ class ArtDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val artDetailData = vmArtToDetailNavViewModel.clickArt.value!!.art
         val stagGridArtAdapter = StagGridArtAdapter()
         viewBinding.rcv.apply {
             layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL)
@@ -75,7 +83,7 @@ class ArtDetailFragment : Fragment() {
             viewBinding.rcv.show()
         }
         vmArtDetailViewModel.apply {
-            getRelatedArtUseCase(artDetailData.id)
+            getRelatedArtUseCase(art.id)
             relatedArtLiveData.observe(viewLifecycleOwner) { relatedArt ->
                 stagGridArtAdapter.submitList(relatedArt.moreFromArtist)
             }

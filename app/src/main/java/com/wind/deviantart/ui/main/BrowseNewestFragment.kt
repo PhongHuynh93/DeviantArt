@@ -1,4 +1,4 @@
-package com.wind.deviantart.ui
+package com.wind.deviantart.ui.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -25,9 +25,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import util.Event
 import util.SpacesItemDecoration
 import util.dp
-import java.lang.ref.WeakReference
 
 
 /**
@@ -67,9 +67,8 @@ class BrowseNewestFragment: Fragment() {
                     art: Art,
                     transitionName: String
                 ) {
-                    vmArtToDetailNavViewModel.clickArt.value = ArtToDetailNavViewModel.ArtToDetailNavModel(
-                        WeakReference( view),
-                        art, transitionName)
+                    vmArtToDetailNavViewModel.clickArt.value = Event(ArtToDetailNavViewModel.ArtToDetailNavModel(
+                        view, art, transitionName))
                 }
             }
         }

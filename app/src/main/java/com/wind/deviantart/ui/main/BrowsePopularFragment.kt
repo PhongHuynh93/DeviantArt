@@ -1,6 +1,5 @@
-package com.wind.deviantart.ui
+package com.wind.deviantart.ui.main
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +10,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.ethanhua.skeleton.Skeleton
@@ -24,9 +21,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import util.Event
 import util.SpacesItemDecoration
 import util.dp
-import java.lang.ref.WeakReference
 
 /**
  * Created by Phong Huynh on 7/22/2020
@@ -68,8 +65,8 @@ class BrowsePopularFragment: Fragment() {
                         art: Art,
                         transitionName: String
                     ) {
-                        vmArtToDetailNavViewModel.clickArt.value = ArtToDetailNavViewModel.ArtToDetailNavModel(WeakReference(view), art, transitionName)
-                    }
+                        vmArtToDetailNavViewModel.clickArt.value = Event(ArtToDetailNavViewModel.ArtToDetailNavModel(
+                            view, art, transitionName))                    }
                 }
             }
             setHasFixedSize(true)

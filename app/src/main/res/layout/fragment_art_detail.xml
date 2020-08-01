@@ -11,13 +11,11 @@
             type="com.wind.model.Art" />
 
         <variable
-            name="containerTransitionName"
-            type="String" />
+            name="vm"
+            type="com.wind.deviantart.ui.artdetail.ArtDetailViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:transitionName="@{containerTransitionName}"
-        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary">

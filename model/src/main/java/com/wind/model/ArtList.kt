@@ -1,7 +1,9 @@
 package com.wind.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 // https://www.deviantart.com/developers/http/v1/20200519/object/deviation
 data class ArtList(
@@ -12,7 +14,9 @@ data class ArtList(
     @SerializedName("results")
     val arts: List<Art> = emptyList()
 )
-data class Art(
+
+@Parcelize
+data class Art (
     @SerializedName("allows_comments")
     val allowsComments: Boolean,
     @SerializedName("author")
@@ -36,7 +40,7 @@ data class Art(
     @SerializedName("is_mature")
     val isMature: Boolean,
     @SerializedName("printid")
-    val printId: String,
+    val printId: String?,
     @SerializedName("published_time")
     val publishedTime: Int,
     @SerializedName("stats")
@@ -47,7 +51,9 @@ data class Art(
     val title: String,
     @SerializedName("url")
     val url: String
-)
+) : Parcelable
+
+@Parcelize
 data class Author(
     @SerializedName("type")
     val type: String,
@@ -57,7 +63,9 @@ data class Author(
     val id: String,
     @SerializedName("username")
     val name: String
-)
+) : Parcelable
+
+@Parcelize
 data class Thumb(
     @SerializedName("filesize")
     val fileSize: Int,
@@ -69,10 +77,12 @@ data class Thumb(
     val transparency: Boolean,
     @SerializedName("width")
     val width: Int
-)
+) : Parcelable
+
+@Parcelize
 data class Stats(
     @SerializedName("comments")
     val comments: Int,
     @SerializedName("favourites")
     val favourites: Int
-)
+) : Parcelable

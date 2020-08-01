@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.wind.deviantart.ui.MainFragment"
+        android:name="com.wind.deviantart.ui.main.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_browse" >
+        tools:layout="@layout/fragment_popular_art" >
         <action
             android:id="@+id/action_mainFragment_to_artDetailFragment"
             app:destination="@id/artDetailFragment" />
