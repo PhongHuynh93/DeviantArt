@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
@@ -15,17 +15,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
-import com.wind.deviantart.ArtToDetailNavViewModel
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
 import com.wind.deviantart.databinding.ItemBrowseArtBinding
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import util.SpacesItemDecoration
-import util.dp
-import util.gone
-import util.show
+import util.*
 
 private const val NUMB_COLUMN: Int = 2
 private const val ENTER_TRANSITION_DURATION: Long = 300
@@ -83,6 +79,9 @@ class ArtDetailFragment : Fragment() {
             relatedArtLiveData.observe(viewLifecycleOwner) { relatedArt ->
                 stagGridArtAdapter.submitList(relatedArt.moreFromArtist)
             }
+            close.observe(viewLifecycleOwner, EventObserver {
+                requireActivity().onBackPressed()
+            })
         }
     }
 }

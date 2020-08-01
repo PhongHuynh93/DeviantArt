@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorSurface"
-    app:shapeAppearance="@style/RoundImageView"
+    app:shapeAppearance="@style/RoundView"
     android:adjustViewBounds="true"
     android:scaleType="fitXY"
     app:riv_dimensionRatio="1:1"

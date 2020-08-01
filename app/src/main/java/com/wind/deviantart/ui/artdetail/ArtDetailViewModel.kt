@@ -9,6 +9,7 @@ import com.wind.domain.art.GetRelatedArtUseCase
 import com.wind.domain.result.Result
 import com.wind.model.RelatedArt
 import kotlinx.coroutines.launch
+import util.Event
 
 /**
  * Created by Phong Huynh on 7/28/2020
@@ -17,6 +18,8 @@ class ArtDetailViewModel @ViewModelInject constructor(private val getRelatedArtU
     ViewModel() {
     private val _relatedArtLiveData: MutableLiveData<RelatedArt> = MutableLiveData()
     val relatedArtLiveData: LiveData<RelatedArt> = _relatedArtLiveData
+    private val _close: MutableLiveData<Event<Unit>> = MutableLiveData()
+    val close: LiveData<Event<Unit>> = _close
 
     fun getRelatedArtUseCase(id: String) {
         viewModelScope.launch {
@@ -34,5 +37,9 @@ class ArtDetailViewModel @ViewModelInject constructor(private val getRelatedArtU
                 }
             }
         }
+    }
+
+    fun clickClose() {
+        _close.value = Event(Unit)
     }
 }

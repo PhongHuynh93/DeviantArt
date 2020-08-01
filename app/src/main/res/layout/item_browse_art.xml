@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
-        app:shapeAppearance="@style/RoundImageView"
+        app:shapeAppearance="@style/RoundView"
         tools:src="@tools:sample/backgrounds/scenic"
         tools:ignore="ContentDescription"
         app:w="@{item.preview.width}"

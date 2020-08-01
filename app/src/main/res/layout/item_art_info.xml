@@ -61,7 +61,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginHorizontal="@dimen/space_large"
             android:layout_marginTop="@dimen/space_pretty_small"
-            android:layout_marginBottom="@dimen/space_above_normal"
             android:fontFamily="@font/playfair_display_bold"
             android:gravity="center_horizontal"
             android:text="@{item.title}"
@@ -77,16 +76,60 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/imgvUserAvatar"
             android:layout_alignBottom="@+id/imgvUserAvatar"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/space_normal"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/space_normal"
             android:fontFamily="@font/playfair_display_bold"
             android:minHeight="40dp"
             android:text="@string/watch"
             android:textAllCaps="true"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             android:textStyle="bold"
-            app:backgroundTint="@color/colorSurface"
+            app:backgroundTint="?attr/colorSurface"
             app:icon="@drawable/ic_baseline_add_16"
-            app:shapeAppearance="@style/RoundButton" />
+            app:shapeAppearance="@style/RoundViewLargeRadius" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/space_small"
+            android:layout_marginBottom="@dimen/space_normal"
+            android:layout_below="@+id/tvTitle">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnComment"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:minWidth="100dp"
+                android:minHeight="56dp"
+                android:text="@{String.valueOf(item.stats.comments)}"
+                app:backgroundTint="?attr/colorAccent"
+                app:icon="@drawable/ic_baseline_comment_24dp"
+                app:iconGravity="textStart"
+                app:iconSize="@dimen/icon_size_default"
+                app:shapeAppearance="@style/RoundViewLargeRadius"
+                tools:text="3000" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLike"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_normal"
+                android:backgroundTint="?attr/colorAccent"
+                android:drawablePadding="@dimen/space_small"
+                android:gravity="center"
+                android:minWidth="100dp"
+                android:minHeight="56dp"
+                android:text="@{String.valueOf(item.stats.favourites)}"
+                app:icon="@drawable/ic_baseline_favorite_border_24dp"
+                app:iconGravity="textStart"
+                app:iconSize="@dimen/icon_size_default"
+                app:shapeAppearance="@style/RoundViewLargeRadius"
+                tools:text="3000" />
+        </LinearLayout>
     </RelativeLayout>
 </layout>

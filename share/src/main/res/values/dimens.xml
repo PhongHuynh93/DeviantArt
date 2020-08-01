@@ -9,4 +9,5 @@
     <dimen name="default_radius">12dp</dimen>
     <dimen name="large_radius">20dp</dimen>
     <dimen name="space_pretty_small">12dp</dimen>
+    <dimen name="icon_size_default">20dp</dimen>
 </resources>

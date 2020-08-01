@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="RoundImageView">
+    <style name="RoundView">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">@dimen/default_radius</item>
     </style>
 
-    <style name="CircleImageView">
+    <style name="CircleView">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
 
-    <style name="RoundButton">
+    <style name="RoundViewLargeRadius">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">20dp</item>
     </style>

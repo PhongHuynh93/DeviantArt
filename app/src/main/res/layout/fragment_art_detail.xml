@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -19,28 +19,44 @@
         android:transitionName="@{containerTransitionName}"
         android:background="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
-            android:background="@drawable/round_bg"
-            android:stateListAnimator="@null"
-            android:outlineProvider="background"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_bg"
+            android:outlineProvider="background"
+            android:stateListAnimator="@null">
 
-            <include layout="@layout/item_art_info"
+            <include
+                layout="@layout/item_art_info"
                 app:layout_scrollFlags="scroll"
-                bind:item="@{item}"/>
+                bind:item="@{item}" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="@dimen/space_tiny"
-            android:background="@drawable/round_bg"
             android:id="@+id/rcv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/space_tiny"
+            android:background="@drawable/round_bg"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:listitem="@layout/item_art_info"/>
+            tools:listitem="@layout/item_art_info" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/btnClose"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:adjustViewBounds="true"
+            android:background="?attr/colorSurface"
+            android:onClick="@{() -> vm.clickClose()}"
+            android:padding="10dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            android:tint="?attr/colorPrimary"
+            app:shapeAppearance="@style/CircleView" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
