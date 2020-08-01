@@ -76,6 +76,7 @@ class ArtDetailFragment : Fragment() {
             setHasFixedSize(true)
             adapter = ConcatAdapter(headerAdapter, stagGridArtAdapter)
             addItemDecoration(SpacesItemDecoration((6 * dp()).toInt()))
+            val space = (10 * dp()).toInt()
             addItemDecoration(object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(
                     outRect: Rect,
@@ -88,10 +89,10 @@ class ArtDetailFragment : Fragment() {
                         return
                     when (adapter?.getItemViewType(pos)) {
                         AdapterType.TYPE_TITLE -> {
-                            outRect.left = (10 * dp()).toInt()
-                            outRect.right = (10 * dp()).toInt()
-                            outRect.top = (10 * dp()).toInt()
-                            outRect.bottom = (10 * dp()).toInt()
+                            outRect.left = space
+                            outRect.right = space
+                            outRect.top = space
+                            outRect.bottom = space
                         }
                     }
                 }

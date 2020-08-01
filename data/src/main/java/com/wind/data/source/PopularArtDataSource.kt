@@ -11,7 +11,6 @@ import com.wind.model.Art
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
-import timber.log.Timber
 import java.io.IOException
 
 /**
@@ -33,11 +32,13 @@ internal class PopularArtDataSource(
                 art.thumbs.let { listThumb ->
                     if (listThumb.isNotEmpty()) {
                         withContext(Dispatchers.IO) {
-                            Timber.e("current thread ${Thread.currentThread()}")
                             try {
+                                // just download the image in the disk ahead
+                                // if use memory cache, that would make too much using mem
                                 Glide.with(context)
                                     .load(listThumb[0].src)
                                     .apply(requestOptions)
+                                    .skipMemoryCache(true)
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .submit().get()
                             } catch (e: Exception) {
