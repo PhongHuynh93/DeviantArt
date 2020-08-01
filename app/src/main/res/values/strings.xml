@@ -5,4 +5,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="watch">Watch</string>
+    <string name="more_from_artist_header">More by this artist</string>
 </resources>

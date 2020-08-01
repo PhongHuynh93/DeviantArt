@@ -69,12 +69,28 @@ class ArtDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val stagGridArtAdapter = StagGridArtAdapter()
+        val headerAdapter = HeaderAdapter()
         viewBinding.rcv.apply {
             layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL)
             setHasFixedSize(true)
-            // TODO: 7/28/2020 use merge adapter here to render the comment and other layout type
-            adapter = stagGridArtAdapter
+            adapter = ConcatAdapter(headerAdapter, stagGridArtAdapter)
             addItemDecoration(SpacesItemDecoration((6 * dp()).toInt()))
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    val pos = parent.getChildAdapterPosition(view)
+                    if (pos == RecyclerView.NO_POSITION)
+                        return
+                    outRect.left = (10 * dp()).toInt()
+                    outRect.right = (10 * dp()).toInt()
+                    outRect.top = (10 * dp()).toInt()
+                    outRect.bottom = (10 * dp()).toInt()
+                }
+            })
         }
         viewLifecycleOwner.lifecycleScope.launch {
             // prevent measuring the rcv during the animation running
@@ -85,6 +101,9 @@ class ArtDetailFragment : Fragment() {
         vmArtDetailViewModel.apply {
             getRelatedArtUseCase(art.id)
             relatedArtLiveData.observe(viewLifecycleOwner) { relatedArt ->
+                if (headerAdapter.itemCount == 0) {
+                    headerAdapter.submitList(listOf(getString(R.string.more_from_artist_header)))
+                }
                 stagGridArtAdapter.submitList(relatedArt.moreFromArtist)
             }
             close.observe(viewLifecycleOwner, EventObserver {
