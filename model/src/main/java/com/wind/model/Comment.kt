@@ -7,7 +7,7 @@ data class Comment(
     @SerializedName("body")
     val body: String,
     @SerializedName("commentid")
-    val commentid: String,
+    val id: String,
     @SerializedName("hidden")
     val hidden: String?,
     @SerializedName("parentid")

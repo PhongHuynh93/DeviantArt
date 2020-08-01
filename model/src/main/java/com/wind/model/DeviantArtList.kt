@@ -9,7 +9,7 @@ data class DeviantArtList<T> (
     @SerializedName("has_more")
     val hasMore: Boolean,
     @SerializedName("next_offset")
-    val nextOffset: Int,
+    val nextOffset: Int?,
     @SerializedName(value = "results", alternate = ["thread"])
     val data: List<T> = emptyList()
 )

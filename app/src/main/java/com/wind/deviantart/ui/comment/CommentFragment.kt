@@ -8,16 +8,18 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.wind.deviantart.R
 import com.wind.deviantart.databinding.ItemCommentBinding
 import com.wind.model.Comment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.recyclerview.*
+import kotlinx.coroutines.launch
 import util.getDimen
 
 /**
@@ -62,20 +64,22 @@ class CommentFragment: Fragment(R.layout.fragment_comment) {
         }
         vmCommentViewModel.apply {
             getComment(requireArguments().getString(ID)!!)
-            getCommentLiveData.observe(viewLifecycleOwner) {
-                commentAdapter.submitList(it)
+            dataPaging.observe(viewLifecycleOwner) {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    commentAdapter.submitData(it)
+                }
             }
         }
     }
 }
 
-class CommentAdapter : ListAdapter<Comment, CommentAdapter.ViewHolder>(object : DiffUtil.ItemCallback<Comment>() {
+class CommentAdapter : PagingDataAdapter<Comment, CommentAdapter.ViewHolder>(object : DiffUtil.ItemCallback<Comment>() {
     override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-        return oldItem == newItem
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-        return true
+        return oldItem == newItem
     }
 }) {
 
@@ -86,8 +90,12 @@ class CommentAdapter : ListAdapter<Comment, CommentAdapter.ViewHolder>(object : 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        holder.binding.comment = item
-        holder.binding.executePendingBindings()
+        if (item == null) {
+            // bind the placeholder ?? what is it
+        } else {
+            holder.binding.comment = item
+            holder.binding.executePendingBindings()
+        }
     }
 
     inner class ViewHolder(val binding: ItemCommentBinding) : RecyclerView.ViewHolder(binding.root)
