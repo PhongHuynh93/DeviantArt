@@ -11,6 +11,7 @@
         android:id="@+id/tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
         android:text="@{text}"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
