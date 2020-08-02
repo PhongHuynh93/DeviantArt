@@ -20,6 +20,7 @@
         tools:ignore="ContentDescription"
         app:w="@{item.preview.width}"
         app:h="@{item.preview.height}"
+        app:maxRatio="@{2f/1}"
         app:smallImageUrl="@{item.thumbs.size > 0 ? item.thumbs.get(0).src : null}"
         app:imageUrl="@{item.preview.src}"
         app:useFade="@{true}"

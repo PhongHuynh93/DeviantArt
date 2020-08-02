@@ -63,13 +63,20 @@ fun loadImage(imageView: ImageView, url: Drawable) {
 /**
  * ratio: height / width
  */
-@BindingAdapter("imageUrl", "smallImageUrl", "w", "h", "useFade", "useBlur", requireAll = false)
+@BindingAdapter("imageUrl", "smallImageUrl", "w", "h", "useFade", "useBlur", "maxRatio", requireAll = false)
 fun loadImageWithRatio(
     imageView: RatioImageView, url: String?, smallImageUrl: String?, w: Int,
-    h: Int, useFade: Boolean, useBlur: Boolean = false) {
+    h: Int, useFade: Boolean, useBlur: Boolean = false, maxRatio: Float = -1f) {
     if (w > 0) {
-        val requestOptions = RequestOptions().format(DecodeFormat.PREFER_RGB_565)
-        imageView.setRatio(h / w.toFloat())
+        val requestOptions = RequestOptions().format(DecodeFormat.PREFER_RGB_565).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL)
+        imageView.setRatio((h / w.toFloat()).let {
+            return@let if (maxRatio > 0) {
+                it.coerceAtMost(maxRatio)
+            } else {
+                it
+            }
+        })
+
         imageView.doOnNextLayout {
             Glide.with(imageView.context)
                 .load(url)
@@ -80,9 +87,8 @@ fun loadImageWithRatio(
                                 transform(BlurTransformation())
                             }
                         }
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .apply(requestOptions)
                 )
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .apply {
                     if (useFade) {
                         transition(withCrossFade())
