@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.paging.PagingDataAdapter
@@ -41,7 +42,7 @@ class CommentFragment: Fragment(R.layout.fragment_comment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val commentAdapter = CommentAdapter()
+        val commentAdapter = CommentAdapter(viewLifecycleOwner.lifecycleScope)
         rcv.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = commentAdapter
@@ -73,7 +74,8 @@ class CommentFragment: Fragment(R.layout.fragment_comment) {
     }
 }
 
-class CommentAdapter : PagingDataAdapter<Comment, CommentAdapter.ViewHolder>(object : DiffUtil.ItemCallback<Comment>() {
+class CommentAdapter(private val lifecycleScope: LifecycleCoroutineScope) : PagingDataAdapter<Comment, CommentAdapter
+.ViewHolder>(object : DiffUtil.ItemCallback<Comment>() {
     override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
         return oldItem.id == newItem.id
     }
@@ -85,6 +87,7 @@ class CommentAdapter : PagingDataAdapter<Comment, CommentAdapter.ViewHolder>(obj
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(ItemCommentBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
+            scope = lifecycleScope
         })
     }
 

@@ -7,6 +7,10 @@
         <variable
             name="comment"
             type="com.wind.model.Comment" />
+
+        <variable
+            name="scope"
+            type="androidx.lifecycle.LifecycleCoroutineScope" />
     </data>
 
     <RelativeLayout
@@ -41,6 +45,7 @@
             android:layout_toEndOf="@+id/imgvAvatar"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             app:textHtml="@{comment.body}"
+            app:scope="@{scope}"
             tools:text="@tools:sample/lorem/random" />
 
 

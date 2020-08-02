@@ -1,11 +1,11 @@
 package com.wind.deviantart.util
 
 import android.graphics.drawable.Drawable
-import android.text.Html
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.doOnNextLayout
 import androidx.databinding.BindingAdapter
+import androidx.lifecycle.LifecycleCoroutineScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -15,6 +15,7 @@ import com.wind.deviantart.R
 import jp.wasabeef.glide.transformations.BlurTransformation
 import timber.log.Timber
 import ui.RatioImageView
+import util.HtmlImageText
 
 /**
  * Created by Phong Huynh on 7/12/2020.
@@ -103,8 +104,8 @@ fun loadImageWithRatio(
     }
 }
 
-@BindingAdapter("textHtml")
-fun loadTextHtml(textView: TextView, textHtml: String) {
-    textView.text = Html.fromHtml(textHtml)
+@BindingAdapter("textHtml", "scope")
+fun loadTextHtml(textView: TextView, textHtml: String, lifecycleCoroutineScope: LifecycleCoroutineScope) {
+    textView.text = HtmlImageText.getTextFromHtml(html = textHtml, view = textView, lifecycleCoroutineScope = lifecycleCoroutineScope)
 }
 

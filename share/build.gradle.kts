@@ -49,4 +49,8 @@ dependencies {
     implementation(Libs.Ktx.viewModel)
     implementation(Libs.Ktx.nav1)
     implementation(Libs.Ktx.nav2)
+
+    // glide
+    implementation(Libs.Glide.glide1)
+    kapt(Libs.Glide.glide2)
 }
