@@ -17,7 +17,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import com.wind.deviantart.R
 import com.wind.deviantart.adapter.HeaderAdapter
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
-import com.wind.deviantart.databinding.ItemBrowseArtBinding
+import com.wind.deviantart.databinding.ItemArtBinding
 import com.wind.deviantart.util.AdapterType
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
@@ -164,7 +164,7 @@ class StagGridArtAdapter: ListAdapter<Art, StagGridArtAdapter.ViewHolder>(object
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemBrowseArtBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
+        return ViewHolder(ItemArtBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
         }).apply {
             itemView.setOnClickListener {view ->
                 val pos = bindingAdapterPosition
@@ -188,5 +188,5 @@ class StagGridArtAdapter: ListAdapter<Art, StagGridArtAdapter.ViewHolder>(object
         fun onClick(view: View, pos: Int, art: Art, transitionName: String)
     }
 
-    inner class ViewHolder(val binding: ItemBrowseArtBinding): RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder(val binding: ItemArtBinding): RecyclerView.ViewHolder(binding.root)
 }

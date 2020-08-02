@@ -22,7 +22,7 @@ import com.ethanhua.skeleton.Skeleton
 import com.wind.deviantart.ArtToDetailNavViewModel
 import com.wind.deviantart.R
 import com.wind.deviantart.adapter.FooterAdapter
-import com.wind.deviantart.databinding.ItemBrowseArtBinding
+import com.wind.deviantart.databinding.ItemArtBinding
 import com.wind.deviantart.util.AdapterType
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
@@ -166,7 +166,7 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, BrowseNewestAdapter.ViewHolder
     var callback: Callback? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemBrowseArtBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
+        return ViewHolder(ItemArtBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
         }).apply {
             itemView.setOnClickListener {view ->
                 val pos = bindingAdapterPosition
@@ -195,5 +195,5 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, BrowseNewestAdapter.ViewHolder
         fun onClick(view: View, pos: Int, art: Art, transitionName: String)
     }
 
-    inner class ViewHolder(val binding: ItemBrowseArtBinding): RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder(val binding: ItemArtBinding): RecyclerView.ViewHolder(binding.root)
 }
