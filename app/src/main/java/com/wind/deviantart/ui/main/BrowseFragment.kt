@@ -12,8 +12,8 @@ import com.wind.deviantart.databinding.FragmentBrowseBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val NUMB_PAGE = 2
-private const val NEWEST_POS = 1
-private const val POPULAR_POS = 0
+const val NEWEST_POS = 1
+const val POPULAR_POS = 0
 @AndroidEntryPoint
 class MainFragment : Fragment() {
     private lateinit var viewBinding: FragmentBrowseBinding
@@ -55,17 +55,7 @@ class BrowsePagerAdapter(frag: Fragment) : FragmentStateAdapter(frag) {
     }
 
     override fun createFragment(position: Int): Fragment {
-        return when (position) {
-            NEWEST_POS -> {
-                BrowseNewestFragment.newInstance()
-            }
-            POPULAR_POS -> {
-                BrowsePopularFragment.newInstance()
-            }
-            else -> {
-                throw IllegalStateException()
-            }
-        }
+        return ArtListFragment.newInstance(position)
     }
 }
 

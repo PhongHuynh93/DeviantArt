@@ -36,8 +36,6 @@ class FooterAdapter : RecyclerView.Adapter<FooterAdapter.ViewHolder>() {
                 } else if (displayOldItem && displayNewItem) {
                     notifyItemChanged(0)
                 }
-                Timber.e("loadState getItemcount $itemCount")
-
                 field = loadState
             }
         }
@@ -56,9 +54,7 @@ class FooterAdapter : RecyclerView.Adapter<FooterAdapter.ViewHolder>() {
         return AdapterType.TYPE_FOOTER
     }
 
-    override fun getItemCount(): Int = (if (displayLoadStateAsItem(loadState)) 1 else 0).apply {
-        Timber.e("getItemcount $this")
-    }
+    override fun getItemCount(): Int = (if (displayLoadStateAsItem(loadState)) 1 else 0)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_footer, parent, false)).apply {
