@@ -3,6 +3,7 @@ package util
 import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorListenerAdapter
+import android.app.Activity
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.res.ColorStateList
@@ -62,6 +63,12 @@ fun Context.getColorAttribute(
 
 fun Context.getColorEx(colorId: Int): Int {
     return ContextCompat.getColor(this, colorId)
+}
+
+fun Context.getColorAttr(activity: Activity, @AttrRes colorAttr: Int): Int {
+    val typedValue = TypedValue()
+    activity.theme.resolveAttribute(colorAttr, typedValue, true)
+    return typedValue.data
 }
 
 fun Context.getDrawableEx(drawableId: Int): Drawable {
@@ -350,15 +357,19 @@ fun AppCompatActivity.findFragmentByTag(tag: String?): Fragment? {
     return supportFragmentManager.findFragmentByTag(tag)
 }
 
-fun Fragment.setUpToolbar(toolbar: Toolbar) {
+fun Fragment.setUpToolbar(toolbar: Toolbar, title: String = "") {
     if (activity is AppCompatActivity) {
         val appActivity = activity as AppCompatActivity
         appActivity.setSupportActionBar(toolbar)
 
         val actionbar = appActivity.supportActionBar
         actionbar?.apply {
-            title = ""
+            this.title = title
             setDisplayHomeAsUpEnabled(true)
+        }
+        toolbar.navigationIcon?.tint(context!!.getColorAttr(appActivity, R.attr.colorOnPrimary))
+        toolbar.setNavigationOnClickListener {
+            appActivity.onBackPressed()
         }
     }
 }

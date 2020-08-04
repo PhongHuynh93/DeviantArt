@@ -19,9 +19,11 @@ import com.wind.deviantart.R
 import com.wind.deviantart.databinding.ItemCommentBinding
 import com.wind.model.Comment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_comment.*
 import kotlinx.android.synthetic.main.recyclerview.*
 import kotlinx.coroutines.launch
 import util.getDimen
+import util.setUpToolbar
 
 /**
  * Created by Phong Huynh on 8/1/2020.
@@ -43,6 +45,7 @@ class CommentFragment: Fragment(R.layout.fragment_comment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val commentAdapter = CommentAdapter(viewLifecycleOwner.lifecycleScope)
+        setUpToolbar(toolbar, getString(R.string.comment))
         rcv.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = commentAdapter

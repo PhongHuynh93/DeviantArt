@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity() {
     private val vmArtToDetailNav by viewModels<ArtToDetailNavViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
         // Keep system bars (status bar, navigation bar) persistent throughout the transition.
         window.sharedElementsUseOverlay = false
