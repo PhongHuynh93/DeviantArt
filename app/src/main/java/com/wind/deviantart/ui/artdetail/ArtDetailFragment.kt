@@ -7,13 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
+import androidx.activity.viewModels
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.*
 import com.google.android.material.transition.MaterialContainerTransform
+import com.wind.deviantart.NavViewModel
 import com.wind.deviantart.R
 import com.wind.deviantart.adapter.HeaderAdapter
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
@@ -42,6 +45,7 @@ class ArtDetailFragment : Fragment() {
     private lateinit var art: Art
     private lateinit var viewBinding: FragmentArtDetailBinding
     private val vmArtDetailViewModel by viewModels<ArtDetailViewModel>()
+    private val vmNav by activityViewModels<NavViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +73,13 @@ class ArtDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val stagGridArtAdapter = StagGridArtAdapter()
+        val stagGridArtAdapter = StagGridArtAdapter().apply {
+            callback = object: StagGridArtAdapter.Callback {
+                override fun onClick(pos: Int, art: Art) {
+                    vmNav.openArt.value = Event(art)
+                }
+            }
+        }
         val headerAdapter = HeaderAdapter()
         viewBinding.rcv.apply {
             layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL)
@@ -100,45 +110,21 @@ class ArtDetailFragment : Fragment() {
                 }
             })
         }
-        viewLifecycleOwner.lifecycleScope.launch {
-            // prevent measuring the rcv during the animation running
-            viewBinding.rcv.gone()
-            delay(ENTER_TRANSITION_DURATION)
-            viewBinding.rcv.show()
-        }
         vmArtDetailViewModel.apply {
-            getRelatedArtUseCase(art.id)
-            relatedArtLiveData.observe(viewLifecycleOwner) { relatedArt ->
+            id.value = art.id
+            data.observe(viewLifecycleOwner) { data ->
                 if (headerAdapter.itemCount == 0) {
                     headerAdapter.submitList(listOf(getString(R.string.more_from_artist_header)))
                 }
-                stagGridArtAdapter.submitList(relatedArt.moreFromArtist)
+                stagGridArtAdapter.submitList(data)
             }
             close.observe(viewLifecycleOwner, EventObserver {
                 requireActivity().onBackPressed()
             })
             openComment.observe(viewLifecycleOwner, EventObserver {
-                callBack?.openComment(it)
+                vmNav.openComment.value = Event(it)
             })
         }
-    }
-
-    private var callBack: CallBack? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is CallBack) {
-            callBack = context as CallBack
-        }
-    }
-
-    override fun onDetach() {
-        callBack = null
-        super.onDetach()
-    }
-
-    interface CallBack {
-        fun openComment(id: String)
     }
 }
 
@@ -172,7 +158,7 @@ class StagGridArtAdapter: ListAdapter<Art, StagGridArtAdapter.ViewHolder>(object
                 val pos = bindingAdapterPosition
                 if (pos >= 0) {
                     getItem(pos)?.let {
-                        callback?.onClick(view, pos, it, view.transitionName)
+                        callback?.onClick(pos, it)
                     }
                 }
             }
@@ -181,13 +167,13 @@ class StagGridArtAdapter: ListAdapter<Art, StagGridArtAdapter.ViewHolder>(object
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        holder.itemView.transitionName = "$ART_TO_DETAIL_TRANSITION_NAME$position"
+        holder.itemView.transitionName = "$ART_TO_DETAIL_TRANSITION_NAME$position${holder.hashCode()}"
         holder.binding.item = item
         holder.binding.executePendingBindings()
     }
 
     interface Callback {
-        fun onClick(view: View, pos: Int, art: Art, transitionName: String)
+        fun onClick(pos: Int, art: Art)
     }
 
     inner class ViewHolder(val binding: ItemArtBinding): RecyclerView.ViewHolder(binding.root)

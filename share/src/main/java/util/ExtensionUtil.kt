@@ -309,8 +309,9 @@ fun Fragment.addFragment(fragment: Fragment, frameId: Int, tag: String? = null, 
     }
 }
 
-fun AppCompatActivity.replaceFragment(fragment: Fragment, frameId: Int, tag: String, isAddBackStack: Boolean = true) {
-    supportFragmentManager.inTransaction {
+fun AppCompatActivity.replaceFragment(fragment: Fragment, frameId: Int, tag: String,
+                                      isAddBackStack: Boolean = true, useAnim: Boolean = false) {
+    supportFragmentManager.inTransaction(useAnim) {
         replace(frameId, fragment, tag)
                 .apply {
                     if (isAddBackStack) {

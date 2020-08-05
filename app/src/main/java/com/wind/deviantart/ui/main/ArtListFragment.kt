@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.ethanhua.skeleton.Skeleton
-import com.wind.deviantart.ArtToDetailNavViewModel
+import com.wind.deviantart.NavViewModel
 import com.wind.deviantart.R
 import com.wind.deviantart.adapter.FooterAdapter
 import com.wind.deviantart.databinding.ItemArtBinding
@@ -44,7 +44,7 @@ private const val EXTRA_TYPE = "type"
 class ArtListFragment: Fragment(R.layout.recyclerview) {
     private val vmPopularArt by viewModels<PopularArtViewModel>()
     private val vmNewestArt by viewModels<NewestArtViewModel>()
-    private val vmArtToDetailNavViewModel by activityViewModels<ArtToDetailNavViewModel>()
+    private val vmArtToDetailNavViewModel by activityViewModels<NavViewModel>()
     private val browseNewestAdapter = BrowseNewestAdapter()
 
     companion object {
@@ -74,8 +74,7 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
                         art: Art,
                         transitionName: String
                     ) {
-                        vmArtToDetailNavViewModel.clickArt.value = Event(ArtToDetailNavViewModel.ArtToDetailNavModel(
-                            view, art, transitionName))                    }
+                        vmArtToDetailNavViewModel.openArt.value = Event(art)                    }
                 }
             }, footerAdapter)
             setHasFixedSize(true)

@@ -1,12 +1,12 @@
 package com.wind.deviantart.ui.artdetail
 
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.wind.domain.art.GetMoreFromThisArtistUseCase
 import com.wind.domain.result.Result
+import com.wind.domain.result.data
+import com.wind.domain.result.successOr
+import com.wind.model.Art
 import com.wind.model.RelatedArt
 import kotlinx.coroutines.launch
 import util.Event
@@ -16,29 +16,19 @@ import util.Event
  */
 class ArtDetailViewModel @ViewModelInject constructor(private val getMoreFromThisArtistUseCase: GetMoreFromThisArtistUseCase) :
     ViewModel() {
-    private val _relatedArtLiveData: MutableLiveData<RelatedArt> = MutableLiveData()
-    val relatedArtLiveData: LiveData<RelatedArt> = _relatedArtLiveData
     private val _close: MutableLiveData<Event<Unit>> = MutableLiveData()
     val close: LiveData<Event<Unit>> = _close
     private val _openComment: MutableLiveData<Event<String>> = MutableLiveData()
     val openComment: LiveData<Event<String>> = _openComment
-
-    fun getRelatedArtUseCase(id: String) {
-        viewModelScope.launch {
-            getMoreFromThisArtistUseCase.invoke(id).let {
-                when (it) {
-                    is Result.Success -> {
-                        _relatedArtLiveData.value = it.data
-                    }
-                    is Result.Error -> {
-
-                    }
-                    is Result.Loading -> {
-
-                    }
-                }
+    val id = MutableLiveData<String>()
+    private val getMoreFromArtist: LiveData<Result<List<Art>>> = id.distinctUntilChanged()
+        .switchMap { id ->
+            liveData {
+                emit(getMoreFromThisArtistUseCase(id))
             }
         }
+    val data: LiveData<List<Art>> = getMoreFromArtist.map {
+        it.successOr(emptyList())
     }
 
     fun clickClose() {
