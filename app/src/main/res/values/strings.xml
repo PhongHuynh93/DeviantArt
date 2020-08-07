@@ -8,4 +8,5 @@
     <string name="more_from_artist_header">More by this artist</string>
     <string name="retry">Retry</string>
     <string name="comment">Comment</string>
+    <string name="title_daily_deviation">Daily Deviations</string>
 </resources>

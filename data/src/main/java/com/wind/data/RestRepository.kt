@@ -9,6 +9,7 @@ import com.wind.data.source.NewestArtDataSource
 import com.wind.data.source.PopularArtDataSource
 import com.wind.model.Art
 import com.wind.model.Comment
+import com.wind.model.DeviantArtList
 import com.wind.model.RelatedArt
 import kotlinx.coroutines.flow.Flow
 
@@ -21,6 +22,7 @@ interface RestRepository {
     fun getPopularDeviations(catePath: String?, query: String?, offset: Int?, pageSize: Int): Flow<PagingData<Art>>
     suspend fun getArtFromThisArtist(id: String): RelatedArt
     fun getComment(artId: String, pageSize: Int): Flow<PagingData<Comment>>
+    suspend fun getDailyDeviations(): DeviantArtList<Art>
 }
 
 internal class RestRepositoryImpl internal constructor(
@@ -40,6 +42,10 @@ internal class RestRepositoryImpl internal constructor(
 
     override suspend fun getArtFromThisArtist(id: String): RelatedArt {
         return authApi.getMoreFromThisArtist(mapOf("seed" to id))
+    }
+
+    override suspend fun getDailyDeviations(): DeviantArtList<Art> {
+        return authApi.getDailyDeviations(emptyMap())
     }
 
     override fun getComment(artId: String, pageSize: Int) =

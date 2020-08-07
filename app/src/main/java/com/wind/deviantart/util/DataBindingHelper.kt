@@ -6,12 +6,15 @@ import android.widget.TextView
 import androidx.core.view.doOnNextLayout
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestOptions
 import com.wind.deviantart.R
+import com.wind.model.Art
 import jp.wasabeef.glide.transformations.BlurTransformation
 import timber.log.Timber
 import ui.RatioImageView
@@ -107,5 +110,12 @@ fun loadImageWithRatio(
 @BindingAdapter("textHtml", "scope")
 fun loadTextHtml(textView: TextView, textHtml: String, lifecycleCoroutineScope: LifecycleCoroutineScope) {
     textView.text = HtmlImageText.getTextFromHtml(html = textHtml, view = textView, lifecycleCoroutineScope = lifecycleCoroutineScope)
+}
+
+@BindingAdapter("data")
+fun loadDataToList(recyclerView: RecyclerView, data: List<Art>?) {
+    (recyclerView.adapter as? ListAdapter<Art, *>)?.apply {
+        submitList(data)
+    }
 }
 

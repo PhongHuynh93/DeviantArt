@@ -11,9 +11,10 @@ import com.wind.deviantart.R
 import com.wind.deviantart.databinding.FragmentBrowseBinding
 import dagger.hilt.android.AndroidEntryPoint
 
-private const val NUMB_PAGE = 2
-const val NEWEST_POS = 1
+private const val NUMB_PAGE = 3
+const val NEWEST_POS = 2
 const val POPULAR_POS = 0
+const val DAILY_DEVIATION = 1
 @AndroidEntryPoint
 class MainFragment : Fragment() {
     private lateinit var viewBinding: FragmentBrowseBinding
@@ -44,6 +45,9 @@ class MainFragment : Fragment() {
                 POPULAR_POS -> {
                     tab.text = getString(R.string.title_popular)
                 }
+                DAILY_DEVIATION -> {
+                    tab.text = getString(R.string.title_daily_deviation)
+                }
             }
         }.attach()
     }
@@ -55,7 +59,14 @@ class BrowsePagerAdapter(frag: Fragment) : FragmentStateAdapter(frag) {
     }
 
     override fun createFragment(position: Int): Fragment {
-        return ArtListFragment.newInstance(position)
+        return when (position) {
+            DAILY_DEVIATION -> {
+                DailyDeviationFragment.newInstance()
+            }
+            else -> {
+                ArtListFragment.newInstance(position)
+            }
+        }
     }
 }
 
