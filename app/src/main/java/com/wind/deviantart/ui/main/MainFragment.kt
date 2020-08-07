@@ -1,15 +1,16 @@
 package com.wind.deviantart.ui.main
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import com.wind.deviantart.NavViewModel
 import com.wind.deviantart.R
 import com.wind.deviantart.databinding.FragmentBrowseBinding
 import dagger.hilt.android.AndroidEntryPoint
+import util.Event
 
 private const val NUMB_PAGE = 3
 const val NEWEST_POS = 2
@@ -18,7 +19,29 @@ const val DAILY_DEVIATION = 1
 @AndroidEntryPoint
 class MainFragment : Fragment() {
     private lateinit var viewBinding: FragmentBrowseBinding
+    private val vmNavViewModel by activityViewModels<NavViewModel>()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.search -> {
+                vmNavViewModel.openSearch.value = Event(Unit)
+                true
+            }
+            else -> {
+                false
+            }
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

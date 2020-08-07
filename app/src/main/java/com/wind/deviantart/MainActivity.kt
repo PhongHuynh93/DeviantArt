@@ -1,5 +1,6 @@
 package com.wind.deviantart
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import com.wind.deviantart.ui.artdetail.ArtDetailFragment
 import com.wind.deviantart.ui.comment.CommentFragment
 import com.wind.deviantart.ui.main.MainFragment
+import com.wind.deviantart.ui.search.SearchActivity
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
 import util.Event
@@ -38,11 +40,17 @@ class MainActivity : AppCompatActivity() {
                 replaceFragment(CommentFragment.newInstance(it), R.id.root, TAG_COMMENT,
                     isAddBackStack = true, useAnim = true)
             })
+            openSearch.observe(this@MainActivity, EventObserver {
+                startActivity(Intent(this@MainActivity, SearchActivity::class.java))
+            })
         }
     }
 }
 
 class NavViewModel @ViewModelInject constructor() : ViewModel() {
+    val openSearch: MutableLiveData<Event<Unit>> by lazy {
+        MutableLiveData<Event<Unit>>()
+    }
     val openArt: MutableLiveData<Event<Art>> by lazy {
         MutableLiveData<Event<Art>>()
     }
