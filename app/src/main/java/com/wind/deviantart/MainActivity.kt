@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                     isAddBackStack = true, useAnim = true)
             })
             openSearch.observe(this@MainActivity, EventObserver {
-                startActivity(Intent(this@MainActivity, SearchActivity::class.java))
+                Navigator.openSearch(this@MainActivity)
             })
         }
     }

@@ -1,6 +1,11 @@
 package com.wind.deviantart.ui.search
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.wind.deviantart.databinding.FragmentSearchSuggestionBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -8,5 +13,16 @@ import dagger.hilt.android.AndroidEntryPoint
  */
 @AndroidEntryPoint
 class SearchSuggestionFragment: Fragment() {
+    private lateinit var viewBinding: FragmentSearchSuggestionBinding
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        viewBinding = FragmentSearchSuggestionBinding.inflate(inflater, container, false).apply {
+//            vm = vmSearchSuggestion
+            lifecycleOwner = viewLifecycleOwner
+        }
+        return viewBinding.root
+    }
 }
