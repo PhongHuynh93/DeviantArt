@@ -42,8 +42,33 @@ data class Art (
     @SerializedName("title")
     val title: String,
     @SerializedName("url")
-    val url: String
+    val url: String,
+    @SerializedName("daily_deviation")
+    val dailyDeviation: DailyDeviation?
+
 ) : Parcelable
+
+@Parcelize
+data class DailyDeviation(
+    @SerializedName("body")
+    val body: String,
+    @SerializedName("giver")
+    val giver: Giver?,
+    @SerializedName("time")
+    val time: String
+): Parcelable
+
+@Parcelize
+data class Giver(
+    @SerializedName("type")
+    val type: String,
+    @SerializedName("usericon")
+    val usericon: String,
+    @SerializedName("userid")
+    val userid: String,
+    @SerializedName("username")
+    val username: String
+): Parcelable
 
 @Parcelize
 data class Author(

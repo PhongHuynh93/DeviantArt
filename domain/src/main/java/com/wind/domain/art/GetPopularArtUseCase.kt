@@ -11,12 +11,12 @@ import javax.inject.Inject
  * Created by Phong Huynh on 7/21/2020
  */
 data class GetPopularArtParam(val catePath: String? = null, val query:
-String? = null, val offset: Int? = null, val pageSize: Int)
+String? = null, val pageSize: Int)
 
 class GetPopularArtUseCase @Inject constructor(
     @IoDispatcher private val coroutineDispatcher: CoroutineDispatcher,
     private val restRepository: RestRepository)
     : PageUseCase<GetPopularArtParam, Art>(coroutineDispatcher) {
     override fun execute(parameters: GetPopularArtParam) =
-        restRepository.getPopularDeviations(parameters.catePath, parameters.query, parameters.offset, parameters.pageSize)
+        restRepository.getPopularDeviations(parameters.catePath, parameters.query, parameters.pageSize)
 }

@@ -19,6 +19,10 @@ interface AuthApi {
     suspend fun getMoreFromThisArtist(@QueryMap queryMap: Map<String, String>): RelatedArt
     @GET("api/v1/oauth2/comments/deviation/{id}")
     suspend fun getComment(@Path("id") id: String, @QueryMap queryMap: Map<String, String>): DeviantArtList<Comment>
+    @GET("/api/v1/oauth2/browse/topics")
+    suspend fun getTopics(@QueryMap queryMap: Map<String, String>): DeviantArtList<Topic>
+    @GET("/api/v1/oauth2/browse/topic")
+    suspend fun getTopic(@QueryMap queryMap: Map<String, String>): DeviantArtList<Art>
 }
 
 interface NonAuthApi {

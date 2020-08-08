@@ -13,7 +13,7 @@
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
 <!--        style for title in tablayout-->
 <!--        <item name="textAppearanceButton">@style/TextAppearance.App.Button</item>-->
-        <item name="fontFamily">@font/playfair_display</item>
+        <item name="fontFamily">@font/fontastic_beast</item>
         <item  name="android:windowActivityTransitions">true</item>
     </style>
 
