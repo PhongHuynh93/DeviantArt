@@ -65,6 +65,7 @@
             android:layout_marginTop="@dimen/space_pretty_small"
             android:fontFamily="sans-serif-medium"
             android:gravity="center_horizontal"
+            android:lineSpacingExtra="6dp"
             android:text="@{item.title}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
             android:textColor="?attr/colorOnBackground"

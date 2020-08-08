@@ -14,14 +14,14 @@ import javax.inject.Inject
  */
 data class GetNewestArtParam(
     val catePath: String? = null, val query:
-    String? = null, val offset: Int? = null, val pageSize: Int)
+    String? = null, val pageSize: Int)
 
 class GetNewestArtUseCase @Inject constructor(
     @IoDispatcher dispatcher: CoroutineDispatcher,
     private val restRepository: RestRepository
 ) : PageUseCase<GetNewestArtParam, Art>(dispatcher) {
     override fun execute(parameters: GetNewestArtParam) =
-        restRepository.getNewestDeviations(parameters.catePath, parameters.query, parameters.offset, parameters.pageSize)
+        restRepository.getNewestDeviations(parameters.catePath, parameters.query, parameters.pageSize)
             .map { pagingData ->
                 pagingData.filter { art ->
                     art.preview?.src != null
