@@ -9,13 +9,16 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.wind.deviantart.NavViewModel
 import com.wind.deviantart.R
 import com.wind.deviantart.databinding.FragmentBrowseBinding
+import com.wind.deviantart.ui.main.topic.TopicFragment
 import dagger.hilt.android.AndroidEntryPoint
 import util.Event
+import java.lang.IllegalStateException
 
-private const val NUMB_PAGE = 3
-const val NEWEST_POS = 2
-const val POPULAR_POS = 0
-const val DAILY_DEVIATION = 1
+private const val NUMB_PAGE = 4
+private const val POPULAR_POS = 0
+private const val NEWEST_POS = 1
+private const val TOPIC_POS = 2
+private const val DAILY_DEVIATION_POS = 3
 @AndroidEntryPoint
 class MainFragment : Fragment() {
     private lateinit var viewBinding: FragmentBrowseBinding
@@ -63,13 +66,16 @@ class MainFragment : Fragment() {
         TabLayoutMediator(viewBinding.tabLayout, viewBinding.vpager) { tab, pos ->
             when (pos) {
                 NEWEST_POS -> {
-                    tab.text = getString(R.string.title_newest)
+                    tab.text = getString(R.string.newest)
                 }
                 POPULAR_POS -> {
-                    tab.text = getString(R.string.title_popular)
+                    tab.text = getString(R.string.popular)
                 }
-                DAILY_DEVIATION -> {
-                    tab.text = getString(R.string.title_daily_deviation)
+                TOPIC_POS -> {
+                    tab.text = getString(R.string.topic)
+                }
+                DAILY_DEVIATION_POS -> {
+                    tab.text = getString(R.string.daily_deviation)
                 }
             }
         }.attach()
@@ -83,11 +89,20 @@ class BrowsePagerAdapter(frag: Fragment) : FragmentStateAdapter(frag) {
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            DAILY_DEVIATION -> {
+            DAILY_DEVIATION_POS -> {
                 DailyDeviationFragment.newInstance()
             }
+            TOPIC_POS -> {
+                TopicFragment.newInstance()
+            }
+            POPULAR_POS -> {
+                ArtListFragment.makePopularInstance()
+            }
+            NEWEST_POS -> {
+                ArtListFragment.makeNewestInstance()
+            }
             else -> {
-                ArtListFragment.newInstance(position)
+                throw IllegalStateException()
             }
         }
     }

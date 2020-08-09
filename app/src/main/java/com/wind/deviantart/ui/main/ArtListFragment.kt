@@ -23,6 +23,7 @@ import com.wind.deviantart.NavViewModel
 import com.wind.deviantart.R
 import com.wind.deviantart.adapter.FooterAdapter
 import com.wind.deviantart.databinding.ItemArtBinding
+import com.wind.deviantart.ui.main.topic.TopicDetailViewModel
 import com.wind.deviantart.util.AdapterType
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,17 +41,33 @@ import util.getDimen
  */
 private const val NUMB_COLUMN: Int = 2
 private const val EXTRA_TYPE = "type"
+private const val EXTRA_TOPIC_NAME = "xTopicName"
+private const val POPULAR_TYPE = 1
+private const val NEWEST_TYPE = 2
+private const val TOPIC_TYPE = 3
+
 @AndroidEntryPoint
 class ArtListFragment: Fragment(R.layout.recyclerview) {
     private val vmPopularArt by viewModels<PopularArtViewModel>()
     private val vmNewestArt by viewModels<NewestArtViewModel>()
+    private val vmTopic by viewModels<NewestArtViewModel>()
+    private val vmTopicDetail by viewModels<TopicDetailViewModel>()
+
     private val vmArtToDetailNavViewModel by activityViewModels<NavViewModel>()
     private val browseNewestAdapter = BrowseNewestAdapter()
 
     companion object {
-        fun newInstance(type: Int): ArtListFragment {
+        private fun newInstance(type: Int): ArtListFragment {
             return ArtListFragment().apply {
                 arguments = bundleOf(EXTRA_TYPE to type)
+            }
+        }
+
+        fun makePopularInstance() = newInstance(POPULAR_TYPE)
+        fun makeNewestInstance() = newInstance(NEWEST_TYPE)
+        fun makeTopicInstance(topicName: String): ArtListFragment {
+            return ArtListFragment().apply {
+                arguments = bundleOf(EXTRA_TYPE to TOPIC_TYPE, EXTRA_TOPIC_NAME to topicName)
             }
         }
     }
@@ -80,8 +97,8 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
             setHasFixedSize(true)
             addItemDecoration(SpacesItemDecoration((6 * dp()).toInt()))
             // top and bot is 16dp, currently top is 10 plus 6 is 16
-            val spaceTop = (10 * dp()).toInt()
-            val spaceBot = getDimen(R.dimen.space_normal).toInt()
+            val spaceTopFooter = (10 * dp()).toInt()
+            val spaceBotFooter = getDimen(R.dimen.space_normal).toInt()
             addItemDecoration(object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(
                     outRect: Rect,
@@ -94,8 +111,8 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
                         return
                     when (adapter?.getItemViewType(pos)) {
                         AdapterType.TYPE_FOOTER -> {
-                            outRect.top = spaceTop
-                            outRect.bottom = spaceBot
+                            outRect.top = spaceTopFooter
+                            outRect.bottom = spaceBotFooter
                         }
                     }
                 }
@@ -130,16 +147,27 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
                 }
             }
         val type = requireArguments().getInt(EXTRA_TYPE)
-        if (type == POPULAR_POS) {
-            vmPopularArt.dataPaging.observe(viewLifecycleOwner) {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    browseNewestAdapter.submitData(it)
+        when (type) {
+            POPULAR_TYPE -> {
+                vmPopularArt.dataPaging.observe(viewLifecycleOwner) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        browseNewestAdapter.submitData(it)
+                    }
                 }
             }
-        } else if (type == NEWEST_POS) {
-            vmNewestArt.dataPaging.observe(viewLifecycleOwner) {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    browseNewestAdapter.submitData(it)
+            NEWEST_TYPE -> {
+                vmNewestArt.dataPaging.observe(viewLifecycleOwner) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        browseNewestAdapter.submitData(it)
+                    }
+                }
+            }
+            TOPIC_TYPE -> {
+                vmTopicDetail.id.value = requireArguments()[EXTRA_TOPIC_NAME] as String
+                vmTopicDetail.dataPaging.observe(viewLifecycleOwner) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        browseNewestAdapter.submitData(it)
+                    }
                 }
             }
         }

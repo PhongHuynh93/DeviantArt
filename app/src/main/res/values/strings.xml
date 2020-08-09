@@ -1,13 +1,14 @@
 <resources>
     <string name="app_name">DeviantArt</string>
-    <string name="title_popular">Popular</string>
-    <string name="title_newest">Newest</string>
+    <string name="popular">Popular</string>
+    <string name="newest">Newest</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="watch">Watch</string>
     <string name="more_from_artist_header">More by this artist</string>
     <string name="retry">Retry</string>
     <string name="comment">Comment</string>
-    <string name="title_daily_deviation">Daily Deviations</string>
+    <string name="daily_deviation">Daily Deviations</string>
     <string name="search">search</string>
+    <string name="topic">Topic</string>
 </resources>

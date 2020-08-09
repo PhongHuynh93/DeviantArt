@@ -5,15 +5,14 @@
 
     <data>
         <variable
-            name="title"
-            type="String" />
+            name="item"
+            type="com.wind.model.Topic" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".ui.main.MainFragment">
+        android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -23,20 +22,12 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
             app:titleTextColor="?attr/colorOnPrimary"
-            app:title="@{title}" />
+            app:title="@{item.name}" />
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vpager"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            app:tabMode="auto"
-            app:tabTextColor="@drawable/tab_text" />
     </LinearLayout>
 </layout>

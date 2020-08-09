@@ -4,13 +4,8 @@ import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.wind.data.source.CommentDataSource
-import com.wind.data.source.NewestArtDataSource
-import com.wind.data.source.PopularArtDataSource
-import com.wind.model.Art
-import com.wind.model.Comment
-import com.wind.model.DeviantArtList
-import com.wind.model.RelatedArt
+import com.wind.data.source.*
+import com.wind.model.*
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -18,24 +13,26 @@ import kotlinx.coroutines.flow.Flow
  */
 
 interface RestRepository {
-    fun getNewestDeviations(catePath: String?, query: String?, offset: Int?, pageSize: Int): Flow<PagingData<Art>>
-    fun getPopularDeviations(catePath: String?, query: String?, offset: Int?, pageSize: Int): Flow<PagingData<Art>>
+    fun getNewestDeviations(catePath: String?, query: String?, pageSize: Int): Flow<PagingData<Art>>
+    fun getPopularDeviations(catePath: String?, query: String?, pageSize: Int): Flow<PagingData<Art>>
     suspend fun getArtFromThisArtist(id: String): RelatedArt
     fun getComment(artId: String, pageSize: Int): Flow<PagingData<Comment>>
     suspend fun getDailyDeviations(): DeviantArtList<Art>
+    fun getTopics(pageSize: Int): Flow<PagingData<Topic>>
+    fun getTopicDetail(pageSize: Int, topicName: String): Flow<PagingData<Art>>
 }
 
 internal class RestRepositoryImpl internal constructor(
     private val context: Context,
     private val authApi: AuthApi
 ) : RestRepository {
-    override fun getNewestDeviations(catePath: String?, query: String?, offset: Int?, pageSize: Int) =
+    override fun getNewestDeviations(catePath: String?, query: String?, pageSize: Int) =
         Pager(config = PagingConfig(pageSize = pageSize)) {
             NewestArtDataSource(context, authApi)
         }.flow
 
 
-    override fun getPopularDeviations(catePath: String?, query: String?, offset: Int?, pageSize: Int) =
+    override fun getPopularDeviations(catePath: String?, query: String?, pageSize: Int) =
         Pager(config = PagingConfig(pageSize = pageSize)) {
             PopularArtDataSource(context, authApi)
         }.flow
@@ -51,5 +48,15 @@ internal class RestRepositoryImpl internal constructor(
     override fun getComment(artId: String, pageSize: Int) =
         Pager(config = PagingConfig(pageSize = pageSize)) {
             CommentDataSource(authApi, artId)
+        }.flow
+
+    override fun getTopics(pageSize: Int) =
+        Pager(config = PagingConfig(pageSize = pageSize)) {
+            TopicListDataSource(authApi)
+        }.flow
+
+    override fun getTopicDetail(pageSize: Int, topicName: String) =
+        Pager(config = PagingConfig(pageSize = pageSize)) {
+            TopicDetailDataSource(context, authApi, topicName)
         }.flow
 }
