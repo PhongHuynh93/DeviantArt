@@ -1,6 +1,5 @@
 package com.wind.deviantart
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +10,7 @@ import com.wind.deviantart.ui.artdetail.ArtDetailFragment
 import com.wind.deviantart.ui.comment.CommentFragment
 import com.wind.deviantart.ui.main.MainFragment
 import com.wind.deviantart.ui.main.topic.TopicDetailFragment
-import com.wind.deviantart.ui.search.SearchActivity
+import com.wind.deviantart.ui.search.SearchSuggestionFragment
 import com.wind.model.Art
 import com.wind.model.Topic
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +22,7 @@ import util.replaceFragment
 private const val TAG_ART_DETAIL = "art_detail"
 private const val TAG_COMMENT = "comment"
 private const val TAG_TOPIC_DETAIL = "topic_detail"
+private const val TAG_SEARCH = "search"
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val vmNav by viewModels<NavViewModel>()
@@ -45,7 +45,9 @@ class MainActivity : AppCompatActivity() {
                     isAddBackStack = true, useAnim = true)
             })
             openSearch.observe(lifecycleOwner, EventObserver {
-                startActivity(Intent(lifecycleOwner, SearchActivity::class.java))
+                replaceFragment(
+                    SearchSuggestionFragment.newInstance(), R.id.root, TAG_SEARCH,
+                    isAddBackStack = true, useAnim = true)
             })
             openTopic.observe(lifecycleOwner, EventObserver {
                 replaceFragment(

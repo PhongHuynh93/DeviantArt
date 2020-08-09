@@ -13,6 +13,12 @@ import dagger.hilt.android.AndroidEntryPoint
  */
 @AndroidEntryPoint
 class SearchSuggestionFragment: Fragment() {
+    companion object {
+        fun newInstance(): Fragment {
+            return SearchSuggestionFragment()
+        }
+    }
+
     private lateinit var viewBinding: FragmentSearchSuggestionBinding
 
     override fun onCreateView(
@@ -24,5 +30,12 @@ class SearchSuggestionFragment: Fragment() {
             lifecycleOwner = viewLifecycleOwner
         }
         return viewBinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewBinding.btnClose.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
     }
 }

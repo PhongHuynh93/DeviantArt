@@ -45,7 +45,7 @@ class CommentFragment: Fragment(R.layout.fragment_comment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val commentAdapter = CommentAdapter(viewLifecycleOwner.lifecycleScope)
-        setUpToolbar(toolbar, getString(R.string.comment))
+        setUpToolbar(toolbar, getString(R.string.comment), true)
         rcv.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = commentAdapter

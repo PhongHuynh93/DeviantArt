@@ -12,7 +12,7 @@ import com.wind.deviantart.databinding.FragmentBrowseBinding
 import com.wind.deviantart.ui.main.topic.TopicFragment
 import dagger.hilt.android.AndroidEntryPoint
 import util.Event
-import java.lang.IllegalStateException
+import util.setUpToolbar
 
 private const val NUMB_PAGE = 4
 private const val POPULAR_POS = 0
@@ -30,7 +30,6 @@ class MainFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.main_menu, menu)
     }
 
@@ -51,7 +50,6 @@ class MainFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         viewBinding = FragmentBrowseBinding.inflate(inflater, container, false).apply {
-            title = "Browse"
             lifecycleOwner = viewLifecycleOwner
         }
         return viewBinding.root
@@ -59,6 +57,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpToolbar(viewBinding.toolbar, getString(R.string.browse))
         viewBinding.vpager.apply {
             adapter = BrowsePagerAdapter(this@MainFragment)
         }

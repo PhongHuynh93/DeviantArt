@@ -12,4 +12,5 @@
     <color name="grey">#e0e0e0</color>
     <color name="greyLight">#eeeeee</color>
     <color name="textColorPrimary">#0c0c0c</color>
+    <color name="colorDrawable">#f3f4f9</color>
 </resources>

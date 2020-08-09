@@ -358,7 +358,7 @@ fun AppCompatActivity.findFragmentByTag(tag: String?): Fragment? {
     return supportFragmentManager.findFragmentByTag(tag)
 }
 
-fun Fragment.setUpToolbar(toolbar: Toolbar, title: String = "") {
+fun Fragment.setUpToolbar(toolbar: Toolbar, title: String = "", showUpIcon: Boolean = false) {
     if (activity is AppCompatActivity) {
         val appActivity = activity as AppCompatActivity
         appActivity.setSupportActionBar(toolbar)
@@ -366,11 +366,15 @@ fun Fragment.setUpToolbar(toolbar: Toolbar, title: String = "") {
         val actionbar = appActivity.supportActionBar
         actionbar?.apply {
             this.title = title
-            setDisplayHomeAsUpEnabled(true)
+            if (showUpIcon) {
+                setDisplayHomeAsUpEnabled(true)
+            }
         }
-        toolbar.navigationIcon?.tint(context!!.getColorAttr(appActivity, R.attr.colorOnPrimary))
-        toolbar.setNavigationOnClickListener {
-            appActivity.onBackPressed()
+        if (showUpIcon) {
+            toolbar.navigationIcon?.tint(context!!.getColorAttr(appActivity, R.attr.colorOnPrimary))
+            toolbar.setNavigationOnClickListener {
+                appActivity.onBackPressed()
+            }
         }
     }
 }

@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import com.wind.deviantart.R
 import com.wind.deviantart.databinding.FragmentTopicDetailBinding
 import com.wind.deviantart.ui.main.ArtListFragment
-import com.wind.deviantart.ui.main.MainFragment
 import com.wind.model.Topic
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_comment.*
@@ -50,6 +49,6 @@ class TopicDetailFragment: Fragment() {
         if (savedInstanceState == null) {
             addFragment(ArtListFragment.makeTopicInstance(topic.name), R.id.container)
         }
-        setUpToolbar(toolbar, getString(R.string.comment))
+        setUpToolbar(toolbar, getString(R.string.comment), true)
     }
 }

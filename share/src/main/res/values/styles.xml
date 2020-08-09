@@ -16,4 +16,5 @@
         <item name="cornerSize">180dp</item>
     </style>
 
+    <attr name="colorDrawable" format="reference|color"/>
 </resources>
