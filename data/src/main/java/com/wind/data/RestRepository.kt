@@ -4,10 +4,7 @@ import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.wind.data.source.CommentDataSource
-import com.wind.data.source.NewestArtDataSource
-import com.wind.data.source.PopularArtDataSource
-import com.wind.data.source.TopicsDataSource
+import com.wind.data.source.*
 import com.wind.model.*
 import kotlinx.coroutines.flow.Flow
 
@@ -22,6 +19,7 @@ interface RestRepository {
     fun getComment(artId: String, pageSize: Int): Flow<PagingData<Comment>>
     suspend fun getDailyDeviations(): DeviantArtList<Art>
     fun getTopics(pageSize: Int): Flow<PagingData<Topic>>
+    fun getTopicDetail(pageSize: Int, topicName: String): Flow<PagingData<Art>>
 }
 
 internal class RestRepositoryImpl internal constructor(
@@ -55,5 +53,10 @@ internal class RestRepositoryImpl internal constructor(
     override fun getTopics(pageSize: Int) =
         Pager(config = PagingConfig(pageSize = pageSize)) {
             TopicsDataSource(authApi)
+        }.flow
+
+    override fun getTopicDetail(pageSize: Int, topicName: String) =
+        Pager(config = PagingConfig(pageSize = pageSize)) {
+            TopicDetailDataSource(context, authApi, topicName)
         }.flow
 }

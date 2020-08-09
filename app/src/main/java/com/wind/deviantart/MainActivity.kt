@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import com.wind.deviantart.ui.artdetail.ArtDetailFragment
 import com.wind.deviantart.ui.comment.CommentFragment
 import com.wind.deviantart.ui.main.MainFragment
+import com.wind.deviantart.ui.main.topic.TopicDetailFragment
 import com.wind.deviantart.ui.search.SearchActivity
 import com.wind.model.Art
 import com.wind.model.Topic
@@ -21,6 +22,7 @@ import util.replaceFragment
 
 private const val TAG_ART_DETAIL = "art_detail"
 private const val TAG_COMMENT = "comment"
+private const val TAG_TOPIC_DETAIL = "topic_detail"
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val vmNav by viewModels<NavViewModel>()
@@ -33,16 +35,22 @@ class MainActivity : AppCompatActivity() {
             addFragment(MainFragment(), R.id.root)
         }
         vmNav.apply {
-            openArt.observe(this@MainActivity, EventObserver {
+            val lifecycleOwner = this@MainActivity
+            openArt.observe(lifecycleOwner, EventObserver {
                 replaceFragment(ArtDetailFragment.newInstance(it), R.id.root, TAG_ART_DETAIL,
                     isAddBackStack = true, useAnim = true)
             })
-            openComment.observe(this@MainActivity, EventObserver {
+            openComment.observe(lifecycleOwner, EventObserver {
                 replaceFragment(CommentFragment.newInstance(it), R.id.root, TAG_COMMENT,
                     isAddBackStack = true, useAnim = true)
             })
-            openSearch.observe(this@MainActivity, EventObserver {
-                startActivity(Intent(this@MainActivity, SearchActivity::class.java))
+            openSearch.observe(lifecycleOwner, EventObserver {
+                startActivity(Intent(lifecycleOwner, SearchActivity::class.java))
+            })
+            openTopic.observe(lifecycleOwner, EventObserver {
+                replaceFragment(
+                    TopicDetailFragment.newInstance(it), R.id.root, TAG_TOPIC_DETAIL,
+                    isAddBackStack = true, useAnim = true)
             })
         }
     }
