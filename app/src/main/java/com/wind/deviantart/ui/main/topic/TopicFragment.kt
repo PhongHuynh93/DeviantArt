@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
@@ -13,13 +14,16 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.wind.deviantart.NavViewModel
 import com.wind.deviantart.R
 import com.wind.deviantart.databinding.FragmentTopicBinding
 import com.wind.deviantart.databinding.ItemTopicListBinding
 import com.wind.deviantart.databinding.ItemTopicTitleBinding
+import com.wind.model.Art
+import com.wind.model.Topic
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import util.dp
+import util.Event
 import util.getDimen
 
 /**
@@ -35,6 +39,7 @@ class TopicFragment: Fragment() {
 
     private lateinit var viewBinding: FragmentTopicBinding
     private val vmTopicViewModel by viewModels<TopicViewModel>()
+    private val vmNavViewModel by activityViewModels<NavViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +53,17 @@ class TopicFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val topicAdapter = TopicAdapter()
+        val topicAdapter = TopicAdapter().apply {
+            callback = object: TopicAdapter.Callback {
+                override fun onClickTopic(pos: Int, topic: Topic) {
+                    vmNavViewModel.openTopic.value = Event(topic)
+                }
+
+                override fun onClickArt(pos: Int, art: Art) {
+                    vmNavViewModel.openArt.value = Event(art)
+                }
+            }
+        }
 
         viewBinding.rcv.apply {
             layoutManager = GridLayoutManager(requireContext(), 2).apply {
@@ -74,8 +89,6 @@ class TopicFragment: Fragment() {
                 val spaceLarge = getDimen(R.dimen.space_large).toInt()
                 val spaceNormal = getDimen(R.dimen.space_normal).toInt()
                 val spaceSmall = getDimen(R.dimen.space_small).toInt()
-                val spaceHoz = (6 * dp()).toInt()
-
                 override fun getItemOffsets(
                     outRect: Rect,
                     view: View,
@@ -134,8 +147,8 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
                     itemView.setOnClickListener {view ->
                         val pos = bindingAdapterPosition
                         if (pos >= 0) {
-                            getItem(pos)?.let {
-                                callback?.onClick(pos, it)
+                            (getItem(pos) as? UiTopic.TitleModel)?.let {
+                                callback?.onClickTopic(pos, it.topic)
                             }
                         }
                     }
@@ -147,8 +160,8 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
                     itemView.setOnClickListener {view ->
                         val pos = bindingAdapterPosition
                         if (pos >= 0) {
-                            getItem(pos)?.let {
-                                callback?.onClick(pos, it)
+                            (getItem(pos) as? UiTopic.ArtModel)?.let {
+                                callback?.onClickArt(pos, it.art)
                             }
                         }
                     }
@@ -185,7 +198,8 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
     }
 
     interface Callback {
-        fun onClick(pos: Int, art: UiTopic)
+        fun onClickTopic(pos: Int, topic: Topic)
+        fun onClickArt(pos: Int, art: Art)
     }
 
     inner class TitleTopicViewHolder(val binding: ItemTopicTitleBinding): RecyclerView.ViewHolder(binding.root)

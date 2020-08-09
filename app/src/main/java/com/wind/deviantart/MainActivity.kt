@@ -12,6 +12,7 @@ import com.wind.deviantart.ui.comment.CommentFragment
 import com.wind.deviantart.ui.main.MainFragment
 import com.wind.deviantart.ui.search.SearchActivity
 import com.wind.model.Art
+import com.wind.model.Topic
 import dagger.hilt.android.AndroidEntryPoint
 import util.Event
 import util.EventObserver
@@ -56,5 +57,8 @@ class NavViewModel @ViewModelInject constructor() : ViewModel() {
     }
     val openComment: MutableLiveData<Event<String>> by lazy {
         MutableLiveData<Event<String>>()
+    }
+    val openTopic: MutableLiveData<Event<Topic>> by lazy {
+        MutableLiveData<Event<Topic>>()
     }
 }
