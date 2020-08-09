@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wind.deviantart.R
 import com.wind.deviantart.databinding.FragmentTopicBinding
@@ -51,7 +51,23 @@ class TopicFragment: Fragment() {
         val topicAdapter = TopicAdapter()
 
         viewBinding.rcv.apply {
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = GridLayoutManager(requireContext(), 2).apply {
+                spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        return when (topicAdapter.getItemViewType(position)) {
+                            UiTopic.TYPE_TITLE -> {
+                               2
+                            }
+                            UiTopic.TYPE_ART -> {
+                                1
+                            }
+                            else -> {
+                                2
+                            }
+                        }
+                    }
+                }
+            }
             adapter = topicAdapter
             setHasFixedSize(true)
             addItemDecoration(object: RecyclerView.ItemDecoration() {
@@ -76,10 +92,6 @@ class TopicFragment: Fragment() {
                             outRect.right = spaceNormal
                             outRect.top = spaceLarge
                             outRect.bottom = spaceSmall
-                        }
-                        else -> {
-                            outRect.left = spaceHoz
-                            outRect.right = spaceHoz
                         }
                     }
                 }
@@ -129,7 +141,7 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
                     }
                 }
             }
-            UiTopic.TYPE_TOPIC -> {
+            UiTopic.TYPE_ART -> {
                 TopicViewHolder(ItemTopicListBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
                 }).apply {
                     itemView.setOnClickListener {view ->
@@ -157,28 +169,13 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
             when (getItemViewType(position)) {
                 UiTopic.TYPE_TITLE -> {
                     (holder as TitleTopicViewHolder).apply {
-                        binding.item = item.topic
+                        binding.item = (item as UiTopic.TitleModel).topic
                         binding.executePendingBindings()
                     }
                 }
-                UiTopic.TYPE_TOPIC -> {
+                UiTopic.TYPE_ART -> {
                     (holder as TopicViewHolder).apply {
-                        for ((i, art) in item.topic.listArt.withIndex()) {
-                            when (i) {
-                                0 -> {
-                                    binding.art1 = art
-                                }
-                                1 -> {
-                                    binding.art2 = art
-                                }
-                                2 -> {
-                                    binding.art3 = art
-                                }
-                                3 -> {
-                                    binding.art4 = art
-                                }
-                            }
-                        }
+                        binding.item = (item as UiTopic.ArtModel).art
                         binding.executePendingBindings()
                     }
                 }
