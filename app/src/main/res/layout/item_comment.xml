@@ -24,16 +24,15 @@
             app:imageUrlCircle="@{comment.user.userIcon}"
             tools:srcCompat="@tools:sample/avatars" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/imgvAvatar"
             android:layout_marginStart="@dimen/space_small"
             android:layout_toEndOf="@+id/imgvAvatar"
-            android:fontFamily="@font/playfair_display_bold"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:text="@{comment.user.name}"
+            android:textStyle="bold"
             tools:text="@tools:sample/full_names" />
 
         <TextView
@@ -44,8 +43,8 @@
             android:layout_marginStart="@dimen/space_small"
             android:layout_toEndOf="@+id/imgvAvatar"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-            app:textHtml="@{comment.body}"
             app:scope="@{scope}"
+            app:textHtml="@{comment.body}"
             tools:text="@tools:sample/lorem/random" />
 
 
