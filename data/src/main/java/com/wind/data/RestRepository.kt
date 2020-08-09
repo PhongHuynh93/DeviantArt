@@ -52,7 +52,7 @@ internal class RestRepositoryImpl internal constructor(
 
     override fun getTopics(pageSize: Int) =
         Pager(config = PagingConfig(pageSize = pageSize)) {
-            TopicsDataSource(authApi)
+            TopicListDataSource(authApi)
         }.flow
 
     override fun getTopicDetail(pageSize: Int, topicName: String) =

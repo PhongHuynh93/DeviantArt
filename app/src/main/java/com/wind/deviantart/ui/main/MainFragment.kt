@@ -12,12 +12,13 @@ import com.wind.deviantart.databinding.FragmentBrowseBinding
 import com.wind.deviantart.ui.main.topic.TopicFragment
 import dagger.hilt.android.AndroidEntryPoint
 import util.Event
+import java.lang.IllegalStateException
 
-private const val NUMB_PAGE = 3
-const val POPULAR_POS = 0
-const val NEWEST_POS = 1
-const val TOPIC_POS = 2
-const val DAILY_DEVIATION_POS = 3
+private const val NUMB_PAGE = 4
+private const val POPULAR_POS = 0
+private const val NEWEST_POS = 1
+private const val TOPIC_POS = 2
+private const val DAILY_DEVIATION_POS = 3
 @AndroidEntryPoint
 class MainFragment : Fragment() {
     private lateinit var viewBinding: FragmentBrowseBinding
@@ -94,8 +95,14 @@ class BrowsePagerAdapter(frag: Fragment) : FragmentStateAdapter(frag) {
             TOPIC_POS -> {
                 TopicFragment.newInstance()
             }
+            POPULAR_POS -> {
+                ArtListFragment.makePopularInstance()
+            }
+            NEWEST_POS -> {
+                ArtListFragment.makeNewestInstance()
+            }
             else -> {
-                ArtListFragment.newInstance(position)
+                throw IllegalStateException()
             }
         }
     }

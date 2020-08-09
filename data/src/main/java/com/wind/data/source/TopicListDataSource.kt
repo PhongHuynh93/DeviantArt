@@ -9,21 +9,20 @@ import java.io.IOException
 /**
  * Created by Phong Huynh on 7/25/2020.
  */
-internal class TopicsDataSource(
+internal class TopicListDataSource(
     private val restApi: AuthApi
 ): PagingSource<Int, Topic>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Topic> {
         return try {
             // Load page 0 if undefined.
             val nextPageNumber = params.key ?: 0
-            val map = mapOf("offset" to nextPageNumber.toString(), "limit" to 10.coerceAtMost(params.loadSize)
-                .toString())
-            val response = restApi.getTopics(map)
+            // max topic is 10 followed by BE document
+            val response = restApi.getTopics(mapOf("offset" to nextPageNumber.toString(), "limit" to 10.coerceAtMost(params.loadSize)
+                .toString()))
             // load addition api to get the image in each topic
             for (topic in response.data) {
-                val mapSpecificTopic = mapOf("topic" to topic.name)
                 try {
-                    topic.listArt = restApi.getTopic(mapSpecificTopic).data
+                    topic.listArt = restApi.getTopic(mapOf("topic" to topic.name)).data
                 } catch (ignored: Exception) {
                     // just ignore this list art
                     topic.listArt = emptyList()

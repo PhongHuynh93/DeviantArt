@@ -36,6 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
+            app:tabMode="auto"
             app:tabTextColor="@drawable/tab_text" />
     </LinearLayout>
 </layout>
