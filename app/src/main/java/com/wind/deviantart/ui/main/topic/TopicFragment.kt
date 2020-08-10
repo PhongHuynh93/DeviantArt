@@ -10,19 +10,27 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
+import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
+import com.ethanhua.skeleton.Skeleton
 import com.wind.deviantart.NavViewModel
 import com.wind.deviantart.R
+import com.wind.deviantart.adapter.FooterAdapter
 import com.wind.deviantart.databinding.FragmentTopicBinding
 import com.wind.deviantart.databinding.ItemTopicListBinding
 import com.wind.deviantart.databinding.ItemTopicTitleBinding
+import com.wind.deviantart.util.AdapterType
 import com.wind.model.Art
 import com.wind.model.Topic
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import util.Event
 import util.getDimen
 
@@ -51,30 +59,47 @@ class TopicFragment: Fragment() {
         return viewBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val topicAdapter = TopicAdapter().apply {
-            callback = object: TopicAdapter.Callback {
-                override fun onClickTopic(pos: Int, topic: Topic) {
-                    vmNavViewModel.openTopic.value = Event(topic)
-                }
+    private val topicAdapter = TopicAdapter().apply {
+        callback = object : TopicAdapter.Callback {
+            override fun onClickTopic(pos: Int, topic: Topic) {
+                vmNavViewModel.openTopic.value = Event(topic)
+            }
 
-                override fun onClickArt(pos: Int, art: Art) {
-                    vmNavViewModel.openArt.value = Event(art)
-                }
+            override fun onClickArt(pos: Int, art: Art) {
+                vmNavViewModel.openArt.value = Event(art)
             }
         }
+    }
 
+    private val footerAdapter = FooterAdapter().apply {
+        setCallback(object: FooterAdapter.Callback {
+            override fun retry() {
+                topicAdapter.retry()
+            }
+        })
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewBinding.rcv.apply {
+            val config = ConcatAdapter.Config.Builder().setIsolateViewTypes(false).build()
+            val concatAdapter = ConcatAdapter(config, topicAdapter, footerAdapter)
             layoutManager = GridLayoutManager(requireContext(), 2).apply {
                 spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
                     override fun getSpanSize(position: Int): Int {
-                        return when (topicAdapter.getItemViewType(position)) {
+                        return when (try {
+                            concatAdapter.getItemViewType(position)
+                        } catch (ignored: Exception) {
+                            -1
+                        }) {
                             UiTopic.TYPE_TITLE -> {
                                2
                             }
                             UiTopic.TYPE_ART -> {
                                 1
+                            }
+                            AdapterType.TYPE_FOOTER -> {
+                                2
                             }
                             else -> {
                                 2
@@ -83,7 +108,7 @@ class TopicFragment: Fragment() {
                     }
                 }
             }
-            adapter = topicAdapter
+            adapter = concatAdapter
             setHasFixedSize(true)
             addItemDecoration(object: RecyclerView.ItemDecoration() {
                 val spaceLarge = getDimen(R.dimen.space_large).toInt()
@@ -101,10 +126,7 @@ class TopicFragment: Fragment() {
                         return
                     when (adapter?.getItemViewType(pos)) {
                         UiTopic.TYPE_TITLE -> {
-                            outRect.left = spaceNormal
-                            outRect.right = spaceNormal
-                            outRect.top = spaceLarge
-                            outRect.bottom = spaceSmall
+                            outRect.top = spaceNormal
                         }
                     }
                 }
@@ -113,6 +135,36 @@ class TopicFragment: Fragment() {
         vmTopicViewModel.dataPaging.observe(viewLifecycleOwner) {
             viewLifecycleOwner.lifecycleScope.launch {
                 topicAdapter.submitData(it)
+            }
+        }
+        initSkeletonView()
+    }
+
+    private fun initSkeletonView() {
+        var skeleton: RecyclerViewSkeletonScreen? = Skeleton.bind(viewBinding.rcv)
+            .adapter(viewBinding.rcv.adapter)
+            .load(R.layout.item_place_holder)
+            .shimmer(true)
+            .count(10)
+            .color(R.color.greyLight)
+            .angle(20)
+            .duration(1300)
+            .maskWidth(1f)
+            .frozen(true)
+            .show()
+        Timber.e("show skeleton")
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            topicAdapter.loadStateFlow.collectLatest { loadState ->
+                Timber.e("load state $loadState")
+                if (loadState.refresh != LoadState.Loading && topicAdapter.itemCount > 0) {
+                    skeleton?.let {
+                        Timber.e("hide skeleton")
+                        it.hide()
+                        skeleton = null
+                    }
+                }
+                footerAdapter.loadState = loadState.append
             }
         }
     }
