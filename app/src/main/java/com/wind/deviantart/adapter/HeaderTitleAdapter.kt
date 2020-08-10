@@ -12,7 +12,7 @@ import com.wind.deviantart.util.AdapterType
 /**
  * Created by Phong Huynh on 8/1/2020.
  */
-class HeaderAdapter : ListAdapter<String, HeaderAdapter.ViewHolder>(object: DiffUtil.ItemCallback<String>() {
+class HeaderTitleAdapter : ListAdapter<String, HeaderTitleAdapter.ViewHolder>(object: DiffUtil.ItemCallback<String>() {
     override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
         return oldItem == newItem
     }

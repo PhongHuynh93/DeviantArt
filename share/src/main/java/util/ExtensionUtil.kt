@@ -71,6 +71,12 @@ fun Context.getColorAttr(activity: Activity, @AttrRes colorAttr: Int): Int {
     return typedValue.data
 }
 
+fun Fragment.getColorAttr(@AttrRes colorAttr: Int): Int {
+    val typedValue = TypedValue()
+    requireActivity().theme.resolveAttribute(colorAttr, typedValue, true)
+    return typedValue.data
+}
+
 fun Context.getDrawableEx(drawableId: Int): Drawable {
     return ContextCompat.getDrawable(this, drawableId)!!
 }

@@ -15,32 +15,14 @@
             type="com.wind.deviantart.ui.artdetail.ArtDetailViewModel" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary">
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/round_bg"
-            android:outlineProvider="background"
-            android:stateListAnimator="@null">
-
-            <include
-                layout="@layout/item_art_info"
-                app:layout_scrollFlags="scroll"
-                bind:item="@{item}"
-                bind:vm="@{vm}"/>
-        </com.google.android.material.appbar.AppBarLayout>
+        android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/space_tiny"
-            android:background="@drawable/round_bg"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@layout/item_art_info" />
 
@@ -57,5 +39,5 @@
             android:tint="?attr/colorPrimary"
             app:shapeAppearance="@style/CircleView" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </FrameLayout>
 </layout>

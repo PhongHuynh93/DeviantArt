@@ -30,7 +30,7 @@
             app:h="@{item.preview.height}"
             app:smallImageUrl="@{item.thumbs.size > 0 ? item.thumbs.get(0).src : null}"
             app:imageUrl="@{item.preview.src}"
-            app:useFade="@{false}"/>
+            app:useBlur="@{true}"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgvUserAvatar"

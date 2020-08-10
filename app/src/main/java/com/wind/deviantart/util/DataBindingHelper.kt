@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.RequestOptions
 import com.wind.deviantart.R
@@ -18,6 +19,7 @@ import com.wind.model.Art
 import jp.wasabeef.glide.transformations.BlurTransformation
 import ui.RatioImageView
 import util.HtmlImageText
+import util.dp
 
 /**
  * Created by Phong Huynh on 7/12/2020.
@@ -38,10 +40,10 @@ fun loadImageCircle(imageView: ImageView, url: String?) {
 @BindingAdapter("imageUrl", "smallImageUrl", "w", "h", "useFade", "useBlur", "maxRatio", requireAll = false)
 fun loadImage(
     imageView: ImageView, url: String?, smallImageUrl: String?, w: Int,
-    h: Int, useFade: Boolean, useBlur: Boolean = false, maxRatio: Float = -1f
+    h: Int, useFade: Boolean = false, useBlur: Boolean = false, maxRatio: Float = -1f
 ) {
     val requestOptions =
-        RequestOptions().format(DecodeFormat.PREFER_RGB_565).centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL)
+        RequestOptions().format(DecodeFormat.PREFER_RGB_565).diskCacheStrategy(DiskCacheStrategy.ALL)
     // priority load the smallImageFirst
     val loadImage = Glide.with(imageView.context)
         .load(url)
@@ -50,7 +52,7 @@ fun loadImage(
             Glide.with(imageView.context).load(smallImageUrl).priority(Priority.IMMEDIATE)
                 .apply {
                     if (useBlur) {
-                        transform(BlurTransformation())
+                        transform(CenterCrop(), BlurTransformation(25, 4))
                     }
                 }
                 .apply(requestOptions)
@@ -62,6 +64,7 @@ fun loadImage(
         }
         .placeholder(R.drawable.image_placeholder)
         .apply(requestOptions)
+        .centerCrop()
     if (w > 0 && imageView is RatioImageView) {
         imageView.setRatio((h / w.toFloat()).let {
             return@let if (maxRatio > 0) {
