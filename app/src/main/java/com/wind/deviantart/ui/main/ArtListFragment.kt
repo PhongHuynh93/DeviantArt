@@ -51,6 +51,7 @@ private const val TAG_TYPE = 4
 
 @AndroidEntryPoint
 class ArtListFragment: Fragment(R.layout.recyclerview) {
+    private var type: Int = -1
     private val vmPopularArt by viewModels<PopularArtViewModel>()
     private val vmNewestArt by viewModels<NewestArtViewModel>()
     private val vmTopic by viewModels<NewestArtViewModel>()
@@ -77,6 +78,19 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
         fun makeTagInstance(tag: String): ArtListFragment {
             return ArtListFragment().apply {
                 arguments = bundleOf(EXTRA_TYPE to TAG_TYPE, EXTRA_TAG to tag)
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        type = requireArguments().getInt(EXTRA_TYPE)
+        when (type) {
+            TOPIC_TYPE -> {
+                vmTopicDetail.id.value = requireArguments()[EXTRA_TOPIC_NAME] as String
+            }
+            TAG_TYPE -> {
+                vmTagViewModel.tag.value = requireArguments()[EXTRA_TAG] as String
             }
         }
     }
@@ -155,7 +169,6 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
                     footerAdapter.loadState = loadState.append
                 }
             }
-        val type = requireArguments().getInt(EXTRA_TYPE)
         when (type) {
             POPULAR_TYPE -> {
                 vmPopularArt.dataPaging.observe(viewLifecycleOwner) {
@@ -172,7 +185,6 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
                 }
             }
             TOPIC_TYPE -> {
-                vmTopicDetail.id.value = requireArguments()[EXTRA_TOPIC_NAME] as String
                 vmTopicDetail.dataPaging.observe(viewLifecycleOwner) {
                     viewLifecycleOwner.lifecycleScope.launch {
                         browseNewestAdapter.submitData(it)
@@ -180,7 +192,6 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
                 }
             }
             TAG_TYPE -> {
-                vmTagViewModel.tag.value = requireArguments()[EXTRA_TAG] as String
                 vmTagViewModel.dataPaging.observe(viewLifecycleOwner) {
                     viewLifecycleOwner.lifecycleScope.launch {
                         browseNewestAdapter.submitData(it)

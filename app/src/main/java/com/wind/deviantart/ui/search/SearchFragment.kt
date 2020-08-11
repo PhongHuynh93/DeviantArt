@@ -20,6 +20,7 @@ import util.setUpToolbar
  * Created by Phong Huynh on 8/7/2020.
  */
 private const val EXTRA_DATA = "xData"
+private const val TAG_SEARCH_TAG = "tag_search_tag"
 @AndroidEntryPoint
 class SearchFragment: Fragment() {
     companion object {
@@ -48,7 +49,7 @@ class SearchFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState == null) {
-            addFragment(ArtListFragment.makeTagInstance(tagName), R.id.container)
+            addFragment(ArtListFragment.makeTagInstance(tagName), R.id.container, TAG_SEARCH_TAG)
         }
         setUpToolbar(toolbar, tagName, true)
     }

@@ -7,6 +7,8 @@ import androidx.paging.cachedIn
 import com.wind.domain.comment.GetCommentParam
 import com.wind.domain.comment.GetCommentUseCase
 import com.wind.model.Comment
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 /**
  * Created by Phong Huynh on 8/1/2020.

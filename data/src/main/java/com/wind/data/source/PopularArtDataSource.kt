@@ -26,29 +26,6 @@ internal class PopularArtDataSource(
             val nextPageNumber = params.key ?: 0
             val map = mapOf("offset" to nextPageNumber.toString(), "limit" to params.loadSize.toString())
             val response = restApi.getPopularDeviations(map)
-            // load ahead the preview images
-            val requestOptions = RequestOptions().format(DecodeFormat.PREFER_RGB_565)
-            response.data.forEach { art ->
-                art.thumbs.let { listThumb ->
-                    if (listThumb.isNotEmpty()) {
-                        withContext(Dispatchers.IO) {
-                            try {
-                                // just download the image in the disk ahead
-                                // if use memory cache, that would make too much using mem
-                                Glide.with(context)
-                                    .load(listThumb[0].src)
-                                    .apply(requestOptions)
-                                    .skipMemoryCache(true)
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .submit().get()
-                            } catch (e: Exception) {
-                                // just make sure the glide wont crash, do nothing here
-                            }
-                        }
-                    }
-                }
-            }
-
             return LoadResult.Page(
                 data = response.data,
                 prevKey = null, // Only paging forward.
