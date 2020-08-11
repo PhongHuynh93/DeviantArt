@@ -76,6 +76,11 @@ class ArtDetailFragment : Fragment() {
         }
         val headerAdapter = HeaderAdapter().apply {
             submitList(listOf(art))
+            callback = object : HeaderAdapter.Callback {
+                override fun onClickComment(pos: Int, item: Art) {
+                    vmNav.openComment.value = Event(item.id)
+                }
+            }
         }
         val headerTitleAdapter = HeaderTitleAdapter()
         viewBinding.rcv.apply {
@@ -118,7 +123,6 @@ class ArtDetailFragment : Fragment() {
                 override fun onDrawOver(canvas: Canvas, rv: RecyclerView, state: RecyclerView.State) {
                     super.onDrawOver(canvas, rv, state)
                     val count: Int = rv.childCount
-                    if (count < 2 || adapter == null) return
 
                     val layoutManager = rv.layoutManager as StaggeredGridLayoutManager
                     val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPositions(null).let {
@@ -257,13 +261,12 @@ class HeaderAdapter : ListAdapter<Art, HeaderAdapter.ViewHolder>(object : DiffUt
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemArtInfoBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
-        }).apply {
-            itemView.setOnClickListener { view ->
+        return ViewHolder(ItemArtInfoBinding.inflate(LayoutInflater.from(parent.context), parent, false)).apply {
+            binding.btnComment.setOnClickListener {
                 val pos = bindingAdapterPosition
                 if (pos >= 0) {
                     getItem(pos)?.let {
-                        callback?.onClick(view, pos, it)
+                        callback?.onClickComment(pos, it)
                     }
                 }
             }
@@ -279,7 +282,7 @@ class HeaderAdapter : ListAdapter<Art, HeaderAdapter.ViewHolder>(object : DiffUt
     }
 
     interface Callback {
-        fun onClick(view: View, pos: Int, item: Art)
+        fun onClickComment(pos: Int, item: Art)
     }
 
     inner class ViewHolder(val binding: ItemArtInfoBinding) :

@@ -271,7 +271,7 @@ fun FragmentActivity.getHeight(): Int {
 inline fun FragmentManager.inTransaction(useAnim: Boolean = false, func: FragmentTransaction.() -> Unit) {
     beginTransaction().apply {
         if (useAnim) {
-            setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+            setCustomAnimations(R.anim.fragment_open_enter, R.anim.fragment_open_exit, R.anim.fragment_close_enter, R.anim.fragment_close_exit)
         }
         func()
         commitAllowingStateLoss()

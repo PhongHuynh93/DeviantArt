@@ -59,7 +59,7 @@ fun loadImage(
         )
         .apply {
             if (useFade) {
-                transition(withCrossFade())
+                transition(withCrossFade(300))
             }
         }
         .placeholder(R.drawable.image_placeholder)

@@ -30,7 +30,8 @@
             app:h="@{item.preview.height}"
             app:smallImageUrl="@{item.thumbs.size > 0 ? item.thumbs.get(0).src : null}"
             app:imageUrl="@{item.preview.src}"
-            app:useBlur="@{true}"/>
+            app:useBlur="@{true}"
+            app:useFade="@{true}"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgvUserAvatar"
@@ -107,7 +108,6 @@
                 android:gravity="center"
                 android:minWidth="100dp"
                 android:minHeight="56dp"
-                android:onClick="@{() -> vm.clickComment(item.id)}"
                 android:text="@{String.valueOf(item.stats.comments)}"
                 android:layout_gravity="center_vertical"
                 app:backgroundTint="?attr/colorAccent"
