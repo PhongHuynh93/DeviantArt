@@ -20,6 +20,8 @@ interface RestRepository {
     suspend fun getDailyDeviations(): DeviantArtList<Art>
     fun getTopics(pageSize: Int): Flow<PagingData<Topic>>
     fun getTopicDetail(pageSize: Int, topicName: String): Flow<PagingData<Art>>
+    suspend fun getTag(tag: String): TagList
+    fun getTagArtDataSource(pageSize: Int, tag: String): Flow<PagingData<Art>>
 }
 
 internal class RestRepositoryImpl internal constructor(
@@ -58,5 +60,14 @@ internal class RestRepositoryImpl internal constructor(
     override fun getTopicDetail(pageSize: Int, topicName: String) =
         Pager(config = PagingConfig(pageSize = pageSize)) {
             TopicDetailDataSource(context, authApi, topicName)
+        }.flow
+
+    override suspend fun getTag(tag: String): TagList {
+        return authApi.getTagList(mapOf("tag_name" to tag))
+    }
+
+    override fun getTagArtDataSource(pageSize: Int, tag: String) =
+        Pager(config = PagingConfig(pageSize = pageSize)) {
+            TagArtDataSource(context, authApi, tag)
         }.flow
 }

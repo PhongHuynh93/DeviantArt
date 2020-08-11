@@ -10,6 +10,7 @@ import com.wind.deviantart.ui.artdetail.ArtDetailFragment
 import com.wind.deviantart.ui.comment.CommentFragment
 import com.wind.deviantart.ui.main.MainFragment
 import com.wind.deviantart.ui.main.topic.TopicDetailFragment
+import com.wind.deviantart.ui.search.SearchFragment
 import com.wind.deviantart.ui.search.SearchSuggestionFragment
 import com.wind.model.Art
 import com.wind.model.Topic
@@ -23,6 +24,8 @@ private const val TAG_ART_DETAIL = "art_detail"
 private const val TAG_COMMENT = "comment"
 private const val TAG_TOPIC_DETAIL = "topic_detail"
 private const val TAG_SEARCH = "search"
+private const val TAG_SEARCH_TAG = "search_tag"
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val vmNav by viewModels<NavViewModel>()
@@ -49,6 +52,11 @@ class MainActivity : AppCompatActivity() {
                     SearchSuggestionFragment.newInstance(), R.id.root, TAG_SEARCH,
                     isAddBackStack = true, useAnim = true)
             })
+            openSearchTag.observe(lifecycleOwner, EventObserver {
+                replaceFragment(
+                    SearchFragment.newInstance(it), R.id.root, TAG_SEARCH_TAG,
+                    isAddBackStack = true, useAnim = true)
+            })
             openTopic.observe(lifecycleOwner, EventObserver {
                 replaceFragment(
                     TopicDetailFragment.newInstance(it), R.id.root, TAG_TOPIC_DETAIL,
@@ -59,6 +67,9 @@ class MainActivity : AppCompatActivity() {
 }
 
 class NavViewModel @ViewModelInject constructor() : ViewModel() {
+    val openSearchTag: MutableLiveData<Event<String>> by lazy {
+        MutableLiveData<Event<String>>()
+    }
     val openSearch: MutableLiveData<Event<Unit>> by lazy {
         MutableLiveData<Event<Unit>>()
     }

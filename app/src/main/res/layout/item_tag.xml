@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="item"
+            type="String" />
+    </data>
+
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        android:paddingHorizontal="@dimen/space_normal"
+        android:paddingVertical="@dimen/space_small"
+        android:text="@{item}"
+        android:foreground="?attr/selectableItemBackground"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
+        tools:text="@tools:sample/lorem" />
+</layout>
+

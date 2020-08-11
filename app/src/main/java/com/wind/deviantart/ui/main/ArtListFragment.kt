@@ -24,6 +24,7 @@ import com.wind.deviantart.R
 import com.wind.deviantart.adapter.FooterAdapter
 import com.wind.deviantart.databinding.ItemArtBinding
 import com.wind.deviantart.ui.main.topic.TopicDetailViewModel
+import com.wind.deviantart.ui.search.TagViewModel
 import com.wind.deviantart.util.AdapterType
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,9 +43,11 @@ import util.getDimen
 private const val NUMB_COLUMN: Int = 2
 private const val EXTRA_TYPE = "type"
 private const val EXTRA_TOPIC_NAME = "xTopicName"
+private const val EXTRA_TAG = "xTag"
 private const val POPULAR_TYPE = 1
 private const val NEWEST_TYPE = 2
 private const val TOPIC_TYPE = 3
+private const val TAG_TYPE = 4
 
 @AndroidEntryPoint
 class ArtListFragment: Fragment(R.layout.recyclerview) {
@@ -52,6 +55,7 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
     private val vmNewestArt by viewModels<NewestArtViewModel>()
     private val vmTopic by viewModels<NewestArtViewModel>()
     private val vmTopicDetail by viewModels<TopicDetailViewModel>()
+    private val vmTagViewModel by viewModels<TagViewModel>()
 
     private val vmArtToDetailNavViewModel by activityViewModels<NavViewModel>()
     private val browseNewestAdapter = BrowseNewestAdapter()
@@ -68,6 +72,11 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
         fun makeTopicInstance(topicName: String): ArtListFragment {
             return ArtListFragment().apply {
                 arguments = bundleOf(EXTRA_TYPE to TOPIC_TYPE, EXTRA_TOPIC_NAME to topicName)
+            }
+        }
+        fun makeTagInstance(tag: String): ArtListFragment {
+            return ArtListFragment().apply {
+                arguments = bundleOf(EXTRA_TYPE to TAG_TYPE, EXTRA_TAG to tag)
             }
         }
     }
@@ -165,6 +174,14 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
             TOPIC_TYPE -> {
                 vmTopicDetail.id.value = requireArguments()[EXTRA_TOPIC_NAME] as String
                 vmTopicDetail.dataPaging.observe(viewLifecycleOwner) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        browseNewestAdapter.submitData(it)
+                    }
+                }
+            }
+            TAG_TYPE -> {
+                vmTagViewModel.tag.value = requireArguments()[EXTRA_TAG] as String
+                vmTagViewModel.dataPaging.observe(viewLifecycleOwner) {
                     viewLifecycleOwner.lifecycleScope.launch {
                         browseNewestAdapter.submitData(it)
                     }
