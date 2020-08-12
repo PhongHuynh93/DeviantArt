@@ -60,6 +60,7 @@ class MainFragment : Fragment() {
         setUpToolbar(viewBinding.toolbar, getString(R.string.browse))
         viewBinding.vpager.apply {
             adapter = BrowsePagerAdapter(this@MainFragment)
+            isUserInputEnabled = false
         }
 
         TabLayoutMediator(viewBinding.tabLayout, viewBinding.vpager) { tab, pos ->
