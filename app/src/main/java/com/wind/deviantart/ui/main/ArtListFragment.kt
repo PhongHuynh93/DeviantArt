@@ -118,7 +118,10 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
                 }
             }, footerAdapter)
             setHasFixedSize(true)
-            addItemDecoration(SpacesItemDecoration(getDimen(R.dimen.space_art).toInt()))
+            val spaceArt = getDimen(R.dimen.space_art).toInt()
+            val halfSpace = spaceArt / 2
+            setPadding(halfSpace, halfSpace, halfSpace, halfSpace);
+            addItemDecoration(SpacesItemDecoration(halfSpace))
             // top and bot is 16dp, currently top is 10 plus 6 is 16
             val spaceTopFooter = (10 * dp()).toInt()
             val spaceBotFooter = getDimen(R.dimen.space_normal).toInt()
