@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="path"
+            type="String" />
+
+        <variable
+            name="vm"
+            type="com.wind.deviantart.ui.bottomsheet.ArtMoreOptionViewModel" />
+    </data>
+
+    <LinearLayout
+        tools:background="?android:attr/colorBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/space_normal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvDownload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/space_large"
+            android:paddingVertical="@dimen/space_pretty_small"
+            android:background="?attr/selectableItemBackground"
+            android:text="@string/download"
+            android:onClick="@{() -> vm.downloadImage(path)}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+
+        <TextView
+            android:id="@+id/tvCopyLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/space_large"
+            android:paddingVertical="@dimen/space_pretty_small"
+            android:background="?attr/selectableItemBackground"
+            android:text="@string/copy_link"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+    </LinearLayout>
+
+</layout>

@@ -21,6 +21,7 @@ import com.wind.deviantart.adapter.HeaderTitleAdapter
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
 import com.wind.deviantart.databinding.ItemArtBinding
 import com.wind.deviantart.databinding.ItemArtInfoBinding
+import com.wind.deviantart.ui.bottomsheet.ArtMoreOptionDialog
 import com.wind.deviantart.util.AdapterType
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
@@ -79,6 +80,10 @@ class ArtDetailFragment : Fragment() {
             callback = object : HeaderAdapter.Callback {
                 override fun onClickComment(pos: Int, item: Art) {
                     vmNav.openComment.value = Event(item.id)
+                }
+
+                override fun onClickMore(pos: Int, it: Art) {
+                    ArtMoreOptionDialog.newInstance(it.preview?.src).show(childFragmentManager, null)
                 }
             }
         }
@@ -270,6 +275,14 @@ class HeaderAdapter : ListAdapter<Art, HeaderAdapter.ViewHolder>(object : DiffUt
                     }
                 }
             }
+            binding.imgvMore.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos >= 0) {
+                    getItem(pos)?.let {
+                        callback?.onClickMore(pos, it)
+                    }
+                }
+            }
         }
     }
 
@@ -283,6 +296,7 @@ class HeaderAdapter : ListAdapter<Art, HeaderAdapter.ViewHolder>(object : DiffUt
 
     interface Callback {
         fun onClickComment(pos: Int, item: Art)
+        fun onClickMore(pos: Int, it: Art)
     }
 
     inner class ViewHolder(val binding: ItemArtInfoBinding) :

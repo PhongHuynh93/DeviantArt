@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.text.Html
 import android.text.Spanned
 import android.view.View
+import androidx.core.text.parseAsHtml
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -20,10 +21,7 @@ import kotlinx.coroutines.withContext
  */
 object HtmlImageText {
     fun getTextFromHtml(view: View, lifecycleCoroutineScope: LifecycleCoroutineScope, html: String): Spanned =
-        Html.fromHtml(
-            html,
-            HtmlImageGetter(view, lifecycleCoroutineScope), null
-        )
+        html.parseAsHtml(imageGetter = HtmlImageGetter(view, lifecycleCoroutineScope))
 }
 
 class HtmlImageGetter(private val view: View, private val lifecycleCoroutineScope: LifecycleCoroutineScope) :
@@ -75,7 +73,7 @@ internal class UrlDrawable : Drawable(), Drawable.Callback {
         mDrawable?.alpha = alpha
     }
 
-    override fun setColorFilter(cf: ColorFilter) {
+    override fun setColorFilter(cf: ColorFilter?) {
         mDrawable?.colorFilter = cf
     }
 

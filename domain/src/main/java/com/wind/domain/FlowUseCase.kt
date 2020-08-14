@@ -1,10 +1,10 @@
 package com.wind.domain
 
+import com.wind.domain.result.Result
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
-import com.wind.domain.result.Result
 
 /**
  * Executes business logic in its execute method and keep posting updates to the result as
@@ -18,3 +18,6 @@ abstract class FlowUseCase<in P, R>(private val coroutineDispatcher: CoroutineDi
 
     protected abstract fun execute(parameters: P): Flow<Result<R>>
 }
+
+
+

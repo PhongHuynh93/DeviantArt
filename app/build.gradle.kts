@@ -64,7 +64,8 @@ dependencies {
     implementation(Libs.Dagger.core)
     kapt(Libs.Dagger.compiler)
     implementation(Libs.Dagger.viewmodel)
-    kapt(Libs.Dagger.viewmodelCompiler)
+    kapt(Libs.Dagger.hiltCompiler)
+    implementation(Libs.Dagger.workmanager)
 
     // glide
     implementation(Libs.Glide.glide1)

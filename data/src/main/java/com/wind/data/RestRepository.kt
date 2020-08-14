@@ -1,9 +1,12 @@
 package com.wind.data
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.work.*
+import com.wind.data.service.DownloadImageService
 import com.wind.data.source.*
 import com.wind.model.*
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +25,7 @@ interface RestRepository {
     fun getTopicDetail(pageSize: Int, topicName: String): Flow<PagingData<Art>>
     suspend fun getTag(tag: String): TagList
     fun getTagArtDataSource(pageSize: Int, tag: String): Flow<PagingData<Art>>
+    fun downloadImage(url: String?, fileName: String?): LiveData<WorkInfo>
 }
 
 internal class RestRepositoryImpl internal constructor(
@@ -70,4 +74,16 @@ internal class RestRepositoryImpl internal constructor(
         Pager(config = PagingConfig(pageSize = pageSize)) {
             TagArtDataSource(context, authApi, tag)
         }.flow
+
+    override fun downloadImage(url: String?, fileName: String?): LiveData<WorkInfo> {
+        val downloadImageWorkRequest: WorkRequest = OneTimeWorkRequestBuilder<DownloadImageService>()
+            .setInputData(workDataOf(*DownloadImageService.makeParam(url = url, fileName = fileName)))
+            .build()
+        return WorkManager
+            .getInstance(context)
+            .apply {
+                enqueue(downloadImageWorkRequest)
+            }
+            .getWorkInfoByIdLiveData(downloadImageWorkRequest.id)
+    }
 }

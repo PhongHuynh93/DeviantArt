@@ -32,7 +32,8 @@ object Libs {
         const val coreDagger = "com.google.dagger:dagger-android-support:2.28.3"
         const val compilerDagger = "com.google.dagger:dagger-android-processor:2.28.3"
         const val viewmodel =  "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha01"
-        const val viewmodelCompiler = "androidx.hilt:hilt-compiler:1.0.0-alpha01"
+        const val hiltCompiler = "androidx.hilt:hilt-compiler:1.0.0-alpha01"
+        const val workmanager = "androidx.hilt:hilt-work:1.0.0-alpha01"
     }
 
     object Test {
@@ -71,6 +72,7 @@ object Libs {
         const val fbShare = "com.facebook.android:facebook-share:4.40.0"
         const val dialog = "com.afollestad.material-dialogs:core:3.3.0"
         const val skeleton = "io.supercharge:shimmerlayout:2.1.0"
+        const val workManager = "androidx.work:work-runtime-ktx:2.4.0"
     }
 
     object Thread {
@@ -96,8 +98,8 @@ object Libs {
 
 object Configs {
     const val minSdk = 21
-    const val compileSdk = 28
-    const val targetSdk = 28
+    const val compileSdk = 29
+    const val targetSdk = 29
 
     const val applicationId = "com.wind.deviantart"
     const val versionCode = 1

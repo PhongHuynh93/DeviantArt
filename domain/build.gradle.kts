@@ -41,6 +41,7 @@ dependencies {
 
     // helper
     implementation(Libs.Helper.timber)
+    implementation(Libs.Helper.workManager)
 
     // paging
     implementation(Libs.Android.page)

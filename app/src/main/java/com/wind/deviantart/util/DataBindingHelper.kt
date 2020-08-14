@@ -37,31 +37,21 @@ fun loadImageCircle(imageView: ImageView, url: String?) {
 /**
  * ratio: height / width
  */
-@BindingAdapter("imageUrl", "smallImageUrl", "w", "h", "useFade", "useBlur", "maxRatio", requireAll = false)
+@BindingAdapter("imageUrl", "smallImageUrl", "w", "h", "maxRatio", requireAll = false)
 fun loadImage(
     imageView: ImageView, url: String?, smallImageUrl: String?, w: Int,
-    h: Int, useFade: Boolean = false, useBlur: Boolean = false, maxRatio: Float = -1f
+    h: Int, maxRatio: Float = -1f
 ) {
     val requestOptions =
-        RequestOptions().format(DecodeFormat.PREFER_RGB_565).diskCacheStrategy(DiskCacheStrategy.ALL)
+        RequestOptions().format(DecodeFormat.PREFER_RGB_565).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
     // priority load the smallImageFirst
     val loadImage = Glide.with(imageView.context)
         .load(url)
         .priority(Priority.LOW)
         .thumbnail(
             Glide.with(imageView.context).load(smallImageUrl).priority(Priority.IMMEDIATE)
-                .apply {
-                    if (useBlur) {
-                        transform(CenterCrop(), BlurTransformation(25, 4))
-                    }
-                }
                 .apply(requestOptions)
         )
-        .apply {
-            if (useFade) {
-                transition(withCrossFade(300))
-            }
-        }
         .placeholder(R.drawable.image_placeholder)
         .apply(requestOptions)
         .centerCrop()
