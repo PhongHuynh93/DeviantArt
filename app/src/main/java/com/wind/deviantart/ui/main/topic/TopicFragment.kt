@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.ethanhua.skeleton.Skeleton
 import com.wind.deviantart.NavViewModel
+import com.wind.deviantart.OpenArtDetailParam
 import com.wind.deviantart.R
 import com.wind.deviantart.adapter.FooterAdapter
 import com.wind.deviantart.databinding.FragmentTopicBinding
@@ -66,7 +67,7 @@ class TopicFragment: Fragment() {
             }
 
             override fun onClickArt(pos: Int, art: Art) {
-                vmNavViewModel.openArt.value = Event(art)
+                vmNavViewModel.openArt.value = Event(OpenArtDetailParam(art = art))
             }
         }
     }

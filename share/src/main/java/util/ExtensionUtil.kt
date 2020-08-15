@@ -317,15 +317,13 @@ inline fun FragmentManager.inTransaction(useAnim: Boolean = false, func: Fragmen
 }
 
 fun AppCompatActivity.addFragment(
-    fragment: Fragment, frameId: Int, tag: String? = null, addToBackStack: Boolean =
+    fragment: Fragment, frameId: Int, tag: String? = null, isAddBackStack: Boolean =
         false, backStackName: String? = null, useAnim: Boolean = false
 ) {
-    if (supportFragmentManager.findFragmentByTag(tag) == null) {
-        supportFragmentManager.inTransaction(useAnim) {
-            add(frameId, fragment, tag).apply {
-                if (addToBackStack) {
-                    addToBackStack(backStackName)
-                }
+    supportFragmentManager.inTransaction(useAnim) {
+        add(frameId, fragment, tag).apply {
+            if (isAddBackStack) {
+                addToBackStack(backStackName)
             }
         }
     }
