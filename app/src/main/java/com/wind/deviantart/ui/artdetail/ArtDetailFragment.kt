@@ -12,10 +12,14 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.*
 import com.google.android.material.transition.MaterialContainerTransform
+import com.wind.deviantart.BackPressListener
 import com.wind.deviantart.NavViewModel
+import com.wind.deviantart.OpenArtDetailParam
 import com.wind.deviantart.R
 import com.wind.deviantart.adapter.HeaderTitleAdapter
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
@@ -32,7 +36,7 @@ private const val ENTER_TRANSITION_DURATION: Long = 300
 private const val DATA = "data"
 
 @AndroidEntryPoint
-class ArtDetailFragment : Fragment() {
+class ArtDetailFragment : Fragment(), BackPressListener {
     companion object {
         fun newInstance(data: Art): Fragment {
             return ArtDetailFragment().apply {
@@ -66,12 +70,30 @@ class ArtDetailFragment : Fragment() {
         return viewBinding.root
     }
 
+    override fun setUserVisible(userVisible: Boolean) {
+        // custom handle the life cycle in case the fragment is added to back stack
+        val setState: (registry: LifecycleRegistry) -> Unit = { registry ->
+            if (userVisible) {
+                registry.currentState = Lifecycle.State.RESUMED
+            } else {
+                registry.currentState = Lifecycle.State.STARTED
+            }
+        }
+        if (lifecycle is LifecycleRegistry) {
+            setState(lifecycle as LifecycleRegistry)
+        }
+
+        if (viewLifecycleOwner.lifecycle is LifecycleRegistry) {
+            setState(viewLifecycleOwner.lifecycle as LifecycleRegistry)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val stagGridArtAdapter = StagGridArtAdapter().apply {
             callback = object : StagGridArtAdapter.Callback {
-                override fun onClick(pos: Int, art: Art) {
-                    vmNav.openArt.value = Event(art)
+                override fun onClick(view: View, pos: Int, art: Art) {
+                    vmNav.openArt.value = Event(OpenArtDetailParam(view = view, art = art))
                 }
             }
         }
@@ -222,7 +244,7 @@ class StagGridArtAdapter : ListAdapter<Art, StagGridArtAdapter.ViewHolder>(objec
                 val pos = bindingAdapterPosition
                 if (pos >= 0) {
                     getItem(pos)?.let {
-                        callback?.onClick(pos, it)
+                        callback?.onClick(view, pos, it)
                     }
                 }
             }
@@ -238,7 +260,7 @@ class StagGridArtAdapter : ListAdapter<Art, StagGridArtAdapter.ViewHolder>(objec
     }
 
     interface Callback {
-        fun onClick(pos: Int, art: Art)
+        fun onClick(view: View, pos: Int, art: Art)
     }
 
     inner class ViewHolder(val binding: ItemArtBinding) : RecyclerView.ViewHolder(binding.root)
