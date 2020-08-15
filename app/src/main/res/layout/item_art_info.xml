@@ -7,13 +7,11 @@
         <variable
             name="item"
             type="com.wind.model.Art" />
-        <variable
-            name="vm"
-            type="com.wind.deviantart.ui.artdetail.ArtDetailViewModel" />
     </data>
 
     <RelativeLayout
         android:id="@+id/root"
+        tools:background="?android:attr/colorBackground"
         app:layout_scrollFlags="scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -29,8 +27,7 @@
             app:w="@{item.preview.width}"
             app:h="@{item.preview.height}"
             app:smallImageUrl="@{item.thumbs.size > 0 ? item.thumbs.get(0).src : null}"
-            app:imageUrl="@{item.preview.src}"
-            app:useBlur="@{true}" />
+            app:imageUrl="@{item.preview.src}" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgvUserAvatar"
@@ -91,6 +88,7 @@
             app:shapeAppearance="@style/RoundViewLargeRadius" />
 
         <LinearLayout
+            android:id="@+id/buttonContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -135,5 +133,16 @@
                 app:shapeAppearance="@style/RoundViewLargeRadius"
                 tools:text="3000" />
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imgvMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/buttonContainer"
+            android:layout_alignBottom="@+id/buttonContainer"
+            android:layout_alignParentEnd="true"
+            android:padding="@dimen/space_normal"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_baseline_more_horiz_24" />
     </RelativeLayout>
 </layout>

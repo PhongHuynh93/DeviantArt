@@ -13,4 +13,9 @@
     <string name="topic">Topic</string>
     <string name="cancel">Cancel</string>
     <string name="browse">Browse</string>
+
+    <string name="download">Download Image</string>
+    <string name="copy_link">Copy link</string>
+    <string name="error_save_image">Can not download this image</string>
+    <string name="success_save_image">Image saved</string>
 </resources>

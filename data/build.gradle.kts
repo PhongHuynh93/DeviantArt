@@ -27,6 +27,7 @@ android {
 
 dependencies {
     api(project(":model"))
+    api(project(":share"))
 
     implementation(Libs.Kotlin.std)
     implementation(Libs.Ktx.core)
@@ -35,6 +36,7 @@ dependencies {
     implementation(Libs.Dagger.coreDagger)
     kapt(Libs.Dagger.compilerDagger)
     implementation(Libs.Dagger.core)
+    implementation(Libs.Dagger.workmanager)
     kapt(Libs.Dagger.compiler)
 
     // network
@@ -47,6 +49,7 @@ dependencies {
 
     // helper
     implementation(Libs.Helper.timber)
+    implementation(Libs.Helper.workManager)
 
     // paging
     implementation(Libs.Android.page)

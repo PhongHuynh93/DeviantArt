@@ -4,12 +4,16 @@ import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
@@ -31,11 +35,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wind.collagePhotoMaker.share.R
 import kotlinx.coroutines.suspendCancellableCoroutine
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.coroutines.resume
 import kotlin.math.max
 
 //object Extension {
-fun RecyclerView.init(orientation: Int = RecyclerView.VERTICAL, adapterCustom: RecyclerView.Adapter<out RecyclerView.ViewHolder>) {
+fun RecyclerView.init(
+    orientation: Int = RecyclerView.VERTICAL,
+    adapterCustom: RecyclerView.Adapter<out RecyclerView.ViewHolder>
+) {
     layoutManager = LinearLayoutManager(context!!, orientation, false)
     adapter = adapterCustom
 }
@@ -49,10 +58,10 @@ fun Fragment.getDimen(dimenRes: Int): Float {
 }
 
 fun Context.getColorAttribute(
-        @AttrRes attrColor: Int,
-        typedValue: TypedValue = TypedValue(),
-        resolveRefs: Boolean = true
-                             ): Int {
+    @AttrRes attrColor: Int,
+    typedValue: TypedValue = TypedValue(),
+    resolveRefs: Boolean = true
+): Int {
     theme.resolveAttribute(attrColor, typedValue, resolveRefs)
     //    You need to check if the attribute got resolved to a resource or a color value.
     //            The default value of textColorPrimary is not a Color but a ColorStateList, which is a resource
@@ -161,13 +170,17 @@ fun square(widthMeasureSpec: Int, heightMeasureSpec: Int): Pair<Int, Int> {
     size = if (widthDesc == View.MeasureSpec.UNSPECIFIED && heightDesc == View.MeasureSpec.UNSPECIFIED) {
         100 // Use your own default size, in our case
     } else if ((widthDesc == View.MeasureSpec.UNSPECIFIED || heightDesc == View.MeasureSpec.UNSPECIFIED) && !
-            (widthDesc == View.MeasureSpec.UNSPECIFIED && heightDesc == View.MeasureSpec.UNSPECIFIED)) {
+        (widthDesc == View.MeasureSpec.UNSPECIFIED && heightDesc == View.MeasureSpec.UNSPECIFIED)
+    ) {
         //Only one of the dimensions has been specified so we choose the dimension that has a value (in the case of unspecified, the value assigned is 0)
         if (width > height) width else height
     } else {
         if (width > height) height else width
     }
-    return Pair(View.MeasureSpec.makeMeasureSpec(size, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(size, View.MeasureSpec.EXACTLY))
+    return Pair(
+        View.MeasureSpec.makeMeasureSpec(size, View.MeasureSpec.EXACTLY),
+        View.MeasureSpec.makeMeasureSpec(size, View.MeasureSpec.EXACTLY)
+    )
 }
 
 suspend fun View.awaitNextLayout() = suspendCancellableCoroutine<Unit> { cont ->
@@ -175,7 +188,17 @@ suspend fun View.awaitNextLayout() = suspendCancellableCoroutine<Unit> { cont ->
     // a callback/listener
 
     val listener = object : View.OnLayoutChangeListener {
-        override fun onLayoutChange(v: View, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
+        override fun onLayoutChange(
+            v: View,
+            left: Int,
+            top: Int,
+            right: Int,
+            bottom: Int,
+            oldLeft: Int,
+            oldTop: Int,
+            oldRight: Int,
+            oldBottom: Int
+        ) {
             // The next layout has happened!
             // First remove the listener to not leak the coroutine
             v.removeOnLayoutChangeListener(this)
@@ -199,7 +222,17 @@ suspend fun View.awaitLayout() = suspendCancellableCoroutine<Unit> { cont ->
         cont.resume(Unit)
     } else {
         val listener = object : View.OnLayoutChangeListener {
-            override fun onLayoutChange(v: View, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
+            override fun onLayoutChange(
+                v: View,
+                left: Int,
+                top: Int,
+                right: Int,
+                bottom: Int,
+                oldLeft: Int,
+                oldTop: Int,
+                oldRight: Int,
+                oldBottom: Int
+            ) {
                 v.removeOnLayoutChangeListener(this)
                 cont.resume(Unit)
             }
@@ -251,16 +284,16 @@ inline fun RecyclerView.Adapter<out RecyclerView.ViewHolder>.doAtPos(pos: Int, f
 fun FragmentActivity.getWidth(): Int {
     val displayMetrics = DisplayMetrics()
     windowManager
-            .defaultDisplay
-            .getMetrics(displayMetrics)
+        .defaultDisplay
+        .getMetrics(displayMetrics)
     return displayMetrics.widthPixels
 }
 
 fun FragmentActivity.getHeight(): Int {
     val displayMetrics = DisplayMetrics()
     windowManager
-            .defaultDisplay
-            .getMetrics(displayMetrics)
+        .defaultDisplay
+        .getMetrics(displayMetrics)
     return displayMetrics.heightPixels
 }
 
@@ -271,15 +304,22 @@ fun FragmentActivity.getHeight(): Int {
 inline fun FragmentManager.inTransaction(useAnim: Boolean = false, func: FragmentTransaction.() -> Unit) {
     beginTransaction().apply {
         if (useAnim) {
-            setCustomAnimations(R.anim.fragment_open_enter, R.anim.fragment_open_exit, R.anim.fragment_close_enter, R.anim.fragment_close_exit)
+            setCustomAnimations(
+                R.anim.fragment_open_enter,
+                R.anim.fragment_open_exit,
+                R.anim.fragment_close_enter,
+                R.anim.fragment_close_exit
+            )
         }
         func()
         commitAllowingStateLoss()
     }
 }
 
-fun AppCompatActivity.addFragment(fragment: Fragment, frameId: Int, tag: String? = null, addToBackStack: Boolean =
-    false, backStackName: String? = null, useAnim: Boolean = false) {
+fun AppCompatActivity.addFragment(
+    fragment: Fragment, frameId: Int, tag: String? = null, addToBackStack: Boolean =
+        false, backStackName: String? = null, useAnim: Boolean = false
+) {
     if (supportFragmentManager.findFragmentByTag(tag) == null) {
         supportFragmentManager.inTransaction(useAnim) {
             add(frameId, fragment, tag).apply {
@@ -303,7 +343,13 @@ fun AppCompatActivity.popFragment() {
     }
 }
 
-fun Fragment.addFragment(fragment: Fragment, frameId: Int, tag: String? = null, addToBackStack: Boolean = false, useAnim: Boolean = false) {
+fun Fragment.addFragment(
+    fragment: Fragment,
+    frameId: Int,
+    tag: String? = null,
+    addToBackStack: Boolean = false,
+    useAnim: Boolean = false
+) {
     if (childFragmentManager.findFragmentByTag(tag) == null) {
         childFragmentManager.inTransaction(useAnim) {
             add(frameId, fragment, tag).apply {
@@ -315,15 +361,17 @@ fun Fragment.addFragment(fragment: Fragment, frameId: Int, tag: String? = null, 
     }
 }
 
-fun AppCompatActivity.replaceFragment(fragment: Fragment, frameId: Int, tag: String,
-                                      isAddBackStack: Boolean = true, useAnim: Boolean = false) {
+fun AppCompatActivity.replaceFragment(
+    fragment: Fragment, frameId: Int, tag: String,
+    isAddBackStack: Boolean = true, useAnim: Boolean = false
+) {
     supportFragmentManager.inTransaction(useAnim) {
         replace(frameId, fragment, tag)
-                .apply {
-                    if (isAddBackStack) {
-                        addToBackStack(null)
-                    }
+            .apply {
+                if (isAddBackStack) {
+                    addToBackStack(null)
                 }
+            }
     }
 }
 
@@ -331,11 +379,11 @@ fun Fragment.replaceFragment(fragment: Fragment, frameId: Int, tag: String? = nu
     if (childFragmentManager.findFragmentByTag(tag) == null) {
         childFragmentManager.inTransaction {
             replace(frameId, fragment, tag)
-                    .apply {
-                        if (isAddBackStack) {
-                            addToBackStack(null)
-                        }
+                .apply {
+                    if (isAddBackStack) {
+                        addToBackStack(null)
                     }
+                }
         }
     }
 }
@@ -407,5 +455,51 @@ object AnimationExtension {
             setTarget(this@runAnimation)
             start()
         }
+    }
+}
+
+
+open class SingletonHolder<out T : Any, in A>(creator: (A) -> T) {
+    private var creator: ((A) -> T)? = creator
+    @Volatile
+    private var instance: T? = null
+
+    fun getInstance(arg: A): T {
+        val i = instance
+        if (i != null) {
+            return i
+        }
+
+        return synchronized(this) {
+            val i2 = instance
+            if (i2 != null) {
+                i2
+            } else {
+                val created = creator!!(arg)
+                instance = created
+                creator = null
+                created
+            }
+        }
+    }
+}
+
+fun Bitmap.saveFile(context: Context) {
+    try {
+        val sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+        val currentDateAndTime = sdf.format(Date())
+        val imageFileName = "IMG_$currentDateAndTime.jpg"
+        val resolver = context.contentResolver
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, imageFileName)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+        }
+        resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)?.let {imageUri ->
+            val fOut = resolver.openOutputStream(imageUri)
+            compress(Bitmap.CompressFormat.JPEG, 100, fOut)
+            fOut?.close()
+        }
+    } catch (ignored: Exception) {
     }
 }
