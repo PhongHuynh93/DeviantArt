@@ -1,5 +1,5 @@
 # DeviantArt
-<img align="right" src="https://media.giphy.com/media/YR829PUia1CvqnHWLt/giphy.gif">
+<img align="right" src="https://github.com/PhongHuynh93/DeviantArt/blob/master/deviantart.gif">
 
 ## Open-source libraries
 - Minimum SDK level 21
