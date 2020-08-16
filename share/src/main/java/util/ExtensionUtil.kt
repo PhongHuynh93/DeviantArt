@@ -19,6 +19,8 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.AttrRes
@@ -444,18 +446,21 @@ fun Fragment.getToolbar(): ActionBar? {
     return null
 }
 
-//}
-
-object AnimationExtension {
-    /// ANIMATION EXTENSION
-    private fun View.runAnimation(resId: Int) {
-        val anim = AnimatorInflater.loadAnimator(context, resId).apply {
-            setTarget(this@runAnimation)
-            start()
-        }
+/// ANIMATION EXTENSION
+fun View.runAnimator(resId: Int, func: (Animator) -> Unit) {
+    AnimatorInflater.loadAnimator(context, resId).apply {
+        setTarget(this@runAnimator)
+        func(this)
+        start()
     }
 }
 
+fun View.runAnimation(resId: Int, func: (Animation) -> Unit) {
+    AnimationUtils.loadAnimation(context, resId).let {
+        func(it)
+        startAnimation(it)
+    }
+}
 
 open class SingletonHolder<out T : Any, in A>(creator: (A) -> T) {
     private var creator: ((A) -> T)? = creator

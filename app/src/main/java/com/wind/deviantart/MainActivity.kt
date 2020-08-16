@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.fragment.*
 import timber.log.Timber
 import util.*
 import java.lang.ref.WeakReference
+import java.util.*
 
 private const val TAG_ART_DETAIL = "art_detail"
 private const val TAG_COMMENT = "comment"
@@ -158,6 +159,7 @@ class MainActivity : AppCompatActivity() {
                             this.endView = viewB
                             duration = START_CONTAINER_TRANSFORM_DURATION
                             addTarget(viewB)
+                            scrimColor = getColorAttr(this@MainActivity, R.attr.colorPrimary)
                         }
 
                         TransitionManager.beginDelayedTransition(root, transform)
