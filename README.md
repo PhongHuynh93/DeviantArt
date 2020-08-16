@@ -1,4 +1,6 @@
 # DeviantArt
+<img align="right" src="https://media.giphy.com/media/YR829PUia1CvqnHWLt/giphy.gif">
+
 ## Open-source libraries
 - Minimum SDK level 21
 - Target SDK level 29
