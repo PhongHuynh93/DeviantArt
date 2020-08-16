@@ -9,13 +9,14 @@
             type="com.wind.model.Art" />
     </data>
 
-    <ImageView
+    <ui.RatioImageView
         android:id="@+id/imgv"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/topic_image_size"
+        android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:layout_margin="1dp"
+        app:riv_dimensionRatio="2:3"
         app:imageUrl="@{item.preview.src}"
         app:smallImageUrl="@{item.thumbs.size > 0 ? item.thumbs.get(0).src : null}"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />

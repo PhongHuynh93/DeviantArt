@@ -51,16 +51,6 @@ class TopicFragment: Fragment() {
     private val vmTopicViewModel by viewModels<TopicViewModel>()
     private val vmNavViewModel by activityViewModels<NavViewModel>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        viewBinding = FragmentTopicBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-        }
-        return viewBinding.root
-    }
-
     private val topicAdapter = TopicAdapter().apply {
         callback = object : TopicAdapter.Callback {
             override fun onClickTopic(pos: Int, topic: Topic) {
@@ -79,6 +69,16 @@ class TopicFragment: Fragment() {
                 topicAdapter.retry()
             }
         })
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        viewBinding = FragmentTopicBinding.inflate(inflater, container, false).apply {
+            lifecycleOwner = viewLifecycleOwner
+        }
+        return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

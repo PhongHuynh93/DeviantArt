@@ -150,9 +150,21 @@ fun loadImage(
         }
     }
     // TODO: 8/16/2020 currently not support image is not ratio
-//    else {
-//        loadImage.into(imageView)
-//    }
+    else {
+        // priority load the smallImageFirst
+        val loadImage = Glide.with(imageView.context)
+            .load(url)
+            .priority(Priority.LOW)
+            .thumbnail(
+                Glide.with(imageView.context).load(smallImageUrl)
+                    .priority(Priority.IMMEDIATE)
+                    .apply(requestOptions)
+            )
+            .placeholder(R.drawable.image_placeholder)
+            .apply(requestOptions)
+
+        loadImage.into(imageView)
+    }
 }
 
 @BindingAdapter("textHtml", "scope")
