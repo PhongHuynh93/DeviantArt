@@ -17,10 +17,7 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.*
 import com.google.android.material.transition.MaterialContainerTransform
-import com.wind.deviantart.BackPressListener
-import com.wind.deviantart.NavViewModel
-import com.wind.deviantart.OpenArtDetailParam
-import com.wind.deviantart.R
+import com.wind.deviantart.*
 import com.wind.deviantart.adapter.HeaderTitleAdapter
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
 import com.wind.deviantart.databinding.ItemArtBinding
@@ -33,19 +30,18 @@ import util.*
 
 private const val NUMB_COLUMN: Int = 2
 private const val ENTER_TRANSITION_DURATION: Long = 300
-private const val DATA = "data"
+private const val EXTRA_DATA = "xData"
 
 @AndroidEntryPoint
 class ArtDetailFragment : Fragment(), BackPressListener {
     companion object {
-        fun newInstance(data: Art): Fragment {
+        fun newInstance(data: ArtWithCache): Fragment {
             return ArtDetailFragment().apply {
-                arguments = bundleOf(DATA to data)
+                arguments = bundleOf(EXTRA_DATA to data)
             }
         }
     }
 
-    private lateinit var art: Art
     private lateinit var viewBinding: FragmentArtDetailBinding
     private val vmArtDetailViewModel by viewModels<ArtDetailViewModel>()
     private val vmNav by activityViewModels<NavViewModel>()
@@ -63,8 +59,6 @@ class ArtDetailFragment : Fragment(), BackPressListener {
     ): View? {
         viewBinding = FragmentArtDetailBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
-            art = requireArguments().getParcelable(DATA)!!
-            item = art
             vm = vmArtDetailViewModel
         }
         return viewBinding.root
@@ -93,12 +87,15 @@ class ArtDetailFragment : Fragment(), BackPressListener {
         val stagGridArtAdapter = StagGridArtAdapter().apply {
             callback = object : StagGridArtAdapter.Callback {
                 override fun onClick(view: View, pos: Int, art: Art) {
-                    vmNav.openArt.value = Event(OpenArtDetailParam(view = view, art = art))
+                    vmNav.openArt.value = Event(OpenArtDetailParam(view = view, artWithCache = ArtWithCache(art = art, cacheW = view.measuredWidth,
+                        cacheH = view.measuredHeight, isThumbCached = view.getTag(R.id.tagThumb) != null)))
                 }
             }
         }
+        val artWithCache: ArtWithCache = requireArguments().getParcelable(EXTRA_DATA)!!
+
         val headerAdapter = HeaderAdapter().apply {
-            submitList(listOf(art))
+            submitList(listOf(artWithCache))
             callback = object : HeaderAdapter.Callback {
                 override fun onClickComment(pos: Int, item: Art) {
                     vmNav.openComment.value = Event(item.id)
@@ -194,7 +191,7 @@ class ArtDetailFragment : Fragment(), BackPressListener {
             })
         }
         vmArtDetailViewModel.apply {
-            id.value = art.id
+            id.value = artWithCache.art.id
             data.observe(viewLifecycleOwner) { data ->
                 if (headerTitleAdapter.itemCount == 0) {
                     headerTitleAdapter.submitList(listOf(getString(R.string.more_from_artist_header)))
@@ -225,11 +222,6 @@ class StagGridArtAdapter : ListAdapter<Art, StagGridArtAdapter.ViewHolder>(objec
     }
 
 }) {
-
-    init {
-        stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
-    }
-
     var callback: Callback? = null
 
     override fun getItemViewType(position: Int): Int {
@@ -266,21 +258,16 @@ class StagGridArtAdapter : ListAdapter<Art, StagGridArtAdapter.ViewHolder>(objec
     inner class ViewHolder(val binding: ItemArtBinding) : RecyclerView.ViewHolder(binding.root)
 }
 
-class HeaderAdapter : ListAdapter<Art, HeaderAdapter.ViewHolder>(object : DiffUtil
-.ItemCallback<Art>() {
-    override fun areItemsTheSame(oldItem: Art, newItem: Art): Boolean {
-        return oldItem.id == newItem.id
+class HeaderAdapter : ListAdapter<ArtWithCache, HeaderAdapter.ViewHolder>(object : DiffUtil
+.ItemCallback<ArtWithCache>() {
+    override fun areItemsTheSame(oldItem: ArtWithCache, newItem: ArtWithCache): Boolean {
+        return oldItem.art.id == newItem.art.id
     }
 
-    override fun areContentsTheSame(oldItem: Art, newItem: Art): Boolean {
+    override fun areContentsTheSame(oldItem: ArtWithCache, newItem: ArtWithCache): Boolean {
         return oldItem == newItem
     }
 }) {
-
-    init {
-        stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
-    }
-
     var callback: Callback? = null
 
     override fun getItemViewType(position: Int): Int {
@@ -293,7 +280,7 @@ class HeaderAdapter : ListAdapter<Art, HeaderAdapter.ViewHolder>(object : DiffUt
                 val pos = bindingAdapterPosition
                 if (pos >= 0) {
                     getItem(pos)?.let {
-                        callback?.onClickComment(pos, it)
+                        callback?.onClickComment(pos, it.art)
                     }
                 }
             }
@@ -301,7 +288,7 @@ class HeaderAdapter : ListAdapter<Art, HeaderAdapter.ViewHolder>(object : DiffUt
                 val pos = bindingAdapterPosition
                 if (pos >= 0) {
                     getItem(pos)?.let {
-                        callback?.onClickMore(pos, it)
+                        callback?.onClickMore(pos, it.art)
                     }
                 }
             }
