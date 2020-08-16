@@ -1,5 +1,6 @@
 # DeviantArt
 ## Open-source libraries
+<img align="right" src="https://media2.giphy.com/media/LQ2yhecRTkhXkVGSSh/giphy.gif">
 - Minimum SDK level 21
 - Target SDK level 29
 - Clean MVVM architecture followed by [Android Architecture Blueprints - MVP + Clean Architecture](https://github.com/android/architecture-samples/tree/todo-mvp-clean) and [Google I/O Android App](https://github.com/google/iosched)
