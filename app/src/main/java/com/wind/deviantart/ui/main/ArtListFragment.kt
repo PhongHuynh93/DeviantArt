@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.ethanhua.skeleton.Skeleton
+import com.wind.deviantart.ArtWithCache
 import com.wind.deviantart.NavViewModel
 import com.wind.deviantart.OpenArtDetailParam
 import com.wind.deviantart.R
@@ -115,7 +116,10 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
                         art: Art,
                         transitionName: String
                     ) {
-                        vmArtToDetailNavViewModel.openArt.value = Event(OpenArtDetailParam( view, art) )
+                        vmArtToDetailNavViewModel.openArt.value =
+                        Event(OpenArtDetailParam(view = view, artWithCache = ArtWithCache(art = art, cacheW = view.measuredWidth,
+                            cacheH = view.measuredHeight, isThumbCached = view.getTag(R.id.tagThumb) != null)
+                        ))
                     }
                 }
             }, footerAdapter)
@@ -220,9 +224,6 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, BrowseNewestAdapter.ViewHolder
 
 }) {
 
-    init {
-        stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
-    }
     var callback: Callback? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

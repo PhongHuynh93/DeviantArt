@@ -6,7 +6,7 @@
     <data>
         <variable
             name="item"
-            type="com.wind.model.Art" />
+            type="com.wind.deviantart.ArtWithCache" />
     </data>
 
     <RelativeLayout
@@ -20,14 +20,16 @@
             android:id="@+id/imgv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
+            tools:layout_height="300dp"
             tools:src="@tools:sample/backgrounds/scenic"
             tools:ignore="ContentDescription"
-            app:w="@{item.preview.width}"
-            app:h="@{item.preview.height}"
-            app:smallImageUrl="@{item.thumbs.size > 0 ? item.thumbs.get(0).src : null}"
-            app:imageUrl="@{item.preview.src}" />
+            app:cacheW="@{item.cacheW}"
+            app:cacheH="@{item.cacheH}"
+            app:isThumbCached="@{item.thumbCached}"
+            app:smallImageUrl="@{item.art.thumbs.size > 0 ? item.art.thumbs.get(0).src : null}"
+            app:w="@{item.art.preview.width}"
+            app:h="@{item.art.preview.height}"
+            app:imageUrl="@{item.art.preview.src}" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgvUserAvatar"
@@ -36,7 +38,7 @@
             android:layout_below="@+id/imgv"
             android:layout_marginStart="@dimen/space_normal"
             android:layout_marginTop="@dimen/space_normal"
-            app:imageUrlCircle="@{item.author.userIcon}"
+            app:imageUrlCircle="@{item.art.author.userIcon}"
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
@@ -49,7 +51,7 @@
             android:layout_toEndOf="@+id/imgvUserAvatar"
             android:layout_marginStart="@dimen/space_small"
             android:textColor="?attr/colorOnBackground"
-            android:text="@{item.author.name}"
+            android:text="@{item.art.author.name}"
             tools:text="@tools:sample/full_names"/>
 
         <TextView
@@ -62,7 +64,7 @@
             android:layout_marginTop="@dimen/space_normal"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="6dp"
-            android:text="@{item.title}"
+            android:text="@{item.art.title}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
             android:textColor="?attr/colorOnBackground"
             android:textStyle="bold"
@@ -105,7 +107,7 @@
                 android:gravity="center"
                 android:minWidth="100dp"
                 android:minHeight="56dp"
-                android:text="@{String.valueOf(item.stats.comments)}"
+                android:text="@{String.valueOf(item.art.stats.comments)}"
                 android:layout_gravity="center_vertical"
                 app:backgroundTint="?attr/colorAccent"
                 app:icon="@drawable/ic_baseline_comment_24dp"
@@ -126,7 +128,7 @@
                 android:layout_gravity="center_vertical"
                 android:minWidth="100dp"
                 android:minHeight="56dp"
-                android:text="@{String.valueOf(item.stats.favourites)}"
+                android:text="@{String.valueOf(item.art.stats.favourites)}"
                 app:icon="@drawable/ic_baseline_favorite_border_24dp"
                 app:iconGravity="textStart"
                 app:iconSize="@dimen/icon_size_default"

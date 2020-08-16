@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.ethanhua.skeleton.Skeleton
+import com.wind.deviantart.ArtWithCache
 import com.wind.deviantart.NavViewModel
 import com.wind.deviantart.OpenArtDetailParam
 import com.wind.deviantart.R
@@ -67,7 +68,7 @@ class TopicFragment: Fragment() {
             }
 
             override fun onClickArt(pos: Int, art: Art) {
-                vmNavViewModel.openArt.value = Event(OpenArtDetailParam(art = art))
+                vmNavViewModel.openArt.value = Event(OpenArtDetailParam(artWithCache = ArtWithCache(art = art)))
             }
         }
     }
@@ -183,9 +184,6 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
 
 }) {
 
-    init {
-        stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
-    }
     var callback: Callback? = null
 
     override fun getItemViewType(position: Int): Int {

@@ -1,6 +1,7 @@
 package com.wind.deviantart
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
@@ -21,10 +22,12 @@ import com.wind.deviantart.ui.search.SearchSuggestionFragment
 import com.wind.model.Art
 import com.wind.model.Topic
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.fragment.*
 import timber.log.Timber
 import util.*
 import java.lang.ref.WeakReference
+import java.util.*
 
 private const val TAG_ART_DETAIL = "art_detail"
 private const val TAG_COMMENT = "comment"
@@ -82,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         vmNav.apply {
             val lifecycleOwner = this@MainActivity
             openArt.observe(lifecycleOwner, EventObserver {
-                val desFrag = ArtDetailFragment.newInstance(it.art)
+                val desFrag = ArtDetailFragment.newInstance(it.artWithCache)
                 addFragment(
                     desFrag, R.id.root, TAG_ART_DETAIL,
                     isAddBackStack = true
@@ -156,6 +159,7 @@ class MainActivity : AppCompatActivity() {
                             this.endView = viewB
                             duration = START_CONTAINER_TRANSFORM_DURATION
                             addTarget(viewB)
+                            scrimColor = getColorAttr(this@MainActivity, R.attr.colorPrimary)
                         }
 
                         TransitionManager.beginDelayedTransition(root, transform)
@@ -187,7 +191,10 @@ interface BackPressListener {
     fun setUserVisible(userVisible: Boolean)
 }
 
-data class OpenArtDetailParam(val view: View? = null, val art: Art)
+data class OpenArtDetailParam(val view: View? = null, val artWithCache: ArtWithCache)
+@Parcelize
+data class ArtWithCache(val art: Art, val cacheW: Int = 0, val cacheH: Int = 0, val isThumbCached: Boolean = false): Parcelable
+
 class NavViewModel @ViewModelInject constructor() : ViewModel() {
     val openSearchTag: MutableLiveData<Event<String>> by lazy {
         MutableLiveData<Event<String>>()
