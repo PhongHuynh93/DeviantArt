@@ -22,7 +22,7 @@ internal class TopicListDataSource(
             // load addition api to get the image in each topic
             for (topic in response.data) {
                 try {
-                    topic.listArt = restApi.getTopic(mapOf("topic" to topic.name)).data
+                    topic.listArt = restApi.getTopic(mapOf("topic" to topic.canonicalName)).data
                 } catch (ignored: Exception) {
                     // just ignore this list art
                     topic.listArt = emptyList()
