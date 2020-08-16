@@ -6,7 +6,10 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 // https://www.deviantart.com/developers/http/v1/20200519/object/deviation
-
+object ArtType {
+    const val TYPE_LITERATURE = "Literature"
+    const val TYPE_PERSONAL = "Personal"
+}
 @Parcelize
 data class Art (
     @SerializedName("allows_comments")
@@ -44,7 +47,10 @@ data class Art (
     @SerializedName("url")
     val url: String,
     @SerializedName("daily_deviation")
-    val dailyDeviation: DailyDeviation?
+    val dailyDeviation: DailyDeviation?,
+    // Literature type
+    @SerializedName("excerpt")
+    val excerpt: String
 
 ) : Parcelable
 

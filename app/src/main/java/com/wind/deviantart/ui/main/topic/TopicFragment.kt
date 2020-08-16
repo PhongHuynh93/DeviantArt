@@ -25,9 +25,11 @@ import com.wind.deviantart.R
 import com.wind.deviantart.adapter.FooterAdapter
 import com.wind.deviantart.databinding.FragmentTopicBinding
 import com.wind.deviantart.databinding.ItemTopicListBinding
+import com.wind.deviantart.databinding.ItemTopicLiteratureBinding
 import com.wind.deviantart.databinding.ItemTopicTitleBinding
 import com.wind.deviantart.util.AdapterType
 import com.wind.model.Art
+import com.wind.model.ArtType
 import com.wind.model.Topic
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -57,8 +59,11 @@ class TopicFragment: Fragment() {
                 vmNavViewModel.openTopic.value = Event(topic)
             }
 
-            override fun onClickArt(pos: Int, art: Art) {
-                vmNavViewModel.openArt.value = Event(OpenArtDetailParam(artWithCache = ArtWithCache(art = art)))
+            override fun onClickArt(view: View, pos: Int, art: Art) {
+                vmNavViewModel.openArt.value =
+                Event(OpenArtDetailParam(view = view, artWithCache = ArtWithCache(art = art, cacheW = view.measuredWidth,
+                    cacheH = view.measuredHeight, isThumbCached = view.getTag(R.id.tagThumb) != null)
+                ))
             }
         }
     }
@@ -126,10 +131,21 @@ class TopicFragment: Fragment() {
                     val pos = parent.getChildAdapterPosition(view)
                     if (pos == RecyclerView.NO_POSITION)
                         return
-                    when (adapter?.getItemViewType(pos)) {
-                        UiTopic.TYPE_TITLE -> {
-                            outRect.top = spaceNormal
+                    try {
+                        val itemViewType = adapter?.getItemViewType(pos)
+                        val itemNextViewType = adapter?.getItemViewType(pos + 1)
+                        when (itemViewType) {
+                            UiTopic.TYPE_TITLE -> {
+                                outRect.top = spaceLarge
+                            }
+                            UiTopic.TYPE_LITERATURE, UiTopic.TYPE_PERSONAL -> {
+                                if (itemNextViewType == UiTopic.TYPE_LITERATURE || itemNextViewType == UiTopic.TYPE_PERSONAL) {
+                                    outRect.bottom = spaceSmall
+                                }
+                            }
                         }
+                    } catch (ignored: Exception) {
+
                     }
                 }
             })
@@ -212,7 +228,20 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
                         val pos = bindingAdapterPosition
                         if (pos >= 0) {
                             (getItem(pos) as? UiTopic.ArtModel)?.let {
-                                callback?.onClickArt(pos, it.art)
+                                callback?.onClickArt(view, pos, it.art)
+                            }
+                        }
+                    }
+                }
+            }
+            UiTopic.TYPE_LITERATURE, UiTopic.TYPE_PERSONAL -> {
+                TopicLiteratureViewHolder(ItemTopicLiteratureBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
+                }).apply {
+                    itemView.setOnClickListener {view ->
+                        val pos = bindingAdapterPosition
+                        if (pos >= 0) {
+                            (getItem(pos) as? UiTopic.ArtModel)?.let {
+//                                callback?.onClickArt(pos, it.art)
                             }
                         }
                     }
@@ -230,7 +259,7 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
         if (item == null) {
             // bind the placeholder ?? what is it
         } else {
-            when (getItemViewType(position)) {
+            when (val itemViewType = getItemViewType(position)) {
                 UiTopic.TYPE_TITLE -> {
                     (holder as TitleTopicViewHolder).apply {
                         binding.item = (item as UiTopic.TitleModel).topic
@@ -243,6 +272,18 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
                         binding.executePendingBindings()
                     }
                 }
+                UiTopic.TYPE_LITERATURE, UiTopic.TYPE_PERSONAL -> {
+                    (holder as TopicLiteratureViewHolder).apply {
+                        val art = if (itemViewType == UiTopic.TYPE_LITERATURE) {
+                            (item as UiTopic.LiteratureModel).art
+                        } else {
+                            (item as UiTopic.PersonalModel).art
+                        }
+                        binding.item = art
+                        binding.isLiterature = art.category == ArtType.TYPE_LITERATURE
+                        binding.executePendingBindings()
+                    }
+                }
             }
 
         }
@@ -250,9 +291,10 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
 
     interface Callback {
         fun onClickTopic(pos: Int, topic: Topic)
-        fun onClickArt(pos: Int, art: Art)
+        fun onClickArt(pos1: View, pos: Int, art: Art)
     }
 
     inner class TitleTopicViewHolder(val binding: ItemTopicTitleBinding): RecyclerView.ViewHolder(binding.root)
     inner class TopicViewHolder(val binding: ItemTopicListBinding): RecyclerView.ViewHolder(binding.root)
+    inner class TopicLiteratureViewHolder(val binding: ItemTopicLiteratureBinding): RecyclerView.ViewHolder(binding.root)
 }

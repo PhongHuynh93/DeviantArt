@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+
+        <variable
+            name="isLiterature"
+            type="Boolean" />
+
+        <variable
+            name="item"
+            type="com.wind.model.Art" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        android:paddingHorizontal="@dimen/space_normal"
+        android:paddingVertical="@dimen/space_small"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:text="@string/literature"
+            android:visibility="@{isLiterature ? View.VISIBLE : View.GONE}" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            android:textStyle="bold"
+            android:text="@{item.title}"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/tvbody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:text="@{item.excerpt}"
+            tools:text="@tools:sample/lorem/random" />
+    </LinearLayout>
+
+</layout>
