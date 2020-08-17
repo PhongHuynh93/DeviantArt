@@ -99,17 +99,14 @@ class TopicFragment: Fragment() {
                         } catch (ignored: Exception) {
                             -1
                         }) {
-                            UiTopic.TYPE_TITLE -> {
+                            UiTopic.TYPE_TITLE, AdapterType.TYPE_FOOTER, UiTopic.TYPE_LITERATURE, UiTopic.TYPE_PERSONAL -> {
                                2
                             }
                             UiTopic.TYPE_ART -> {
                                 1
                             }
-                            AdapterType.TYPE_FOOTER -> {
-                                2
-                            }
                             else -> {
-                                2
+                                1
                             }
                         }
                     }
@@ -161,7 +158,7 @@ class TopicFragment: Fragment() {
     private fun initSkeletonView() {
         var skeleton: RecyclerViewSkeletonScreen? = Skeleton.bind(viewBinding.rcv)
             .adapter(viewBinding.rcv.adapter)
-            .load(R.layout.item_place_holder)
+            .load(R.layout.item_topic_place_holder)
             .shimmer(true)
             .count(10)
             .color(R.color.greyLight)
