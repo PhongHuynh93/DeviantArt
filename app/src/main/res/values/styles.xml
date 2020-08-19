@@ -13,11 +13,11 @@
         <item name="colorOnBackground">@color/colorOnBackground</item>
         <item name="colorDrawable">@color/colorDrawable</item>
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
-<!--        style for title in tablayout-->
-<!--        <item name="textAppearanceButton">@style/TextAppearance.App.Button</item>-->
         <item name="fontFamily">@font/abhaya_libre</item>
         <item name="android:fontFamily">@font/abhaya_libre</item>
         <item  name="android:windowActivityTransitions">true</item>
+<!--        custom style-->
+        <item name="colorSurfaceSemiTransparent">@color/colorSurfaceSemiTransparent</item>
     </style>
 
     <style name="TextAppearance.App.Button" parent="TextAppearance.MaterialComponents.Button">

@@ -1,5 +1,6 @@
 package com.wind.deviantart
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
@@ -14,11 +15,12 @@ import androidx.transition.TransitionListenerAdapter
 import androidx.transition.TransitionManager
 import com.google.android.material.transition.MaterialContainerTransform
 import com.wind.deviantart.ui.artdetail.ArtDetailFragment
-import com.wind.deviantart.ui.comment.CommentFragment
+import com.wind.deviantart.ui.comment.CommentActivity
 import com.wind.deviantart.ui.main.MainFragment
 import com.wind.deviantart.ui.main.topic.TopicDetailFragment
 import com.wind.deviantart.ui.search.SearchFragment
 import com.wind.deviantart.ui.search.SearchSuggestionFragment
+import com.wind.deviantart.ui.user.UserActivity
 import com.wind.model.Art
 import com.wind.model.Topic
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +32,6 @@ import java.lang.ref.WeakReference
 import java.util.*
 
 private const val TAG_ART_DETAIL = "art_detail"
-private const val TAG_COMMENT = "comment"
 private const val TAG_TOPIC_DETAIL = "topic_detail"
 private const val TAG_SEARCH = "search"
 private const val TAG_SEARCH_TAG = "search_tag"
@@ -95,10 +96,7 @@ class MainActivity : AppCompatActivity() {
                 }
             })
             openComment.observe(lifecycleOwner, EventObserver {
-                replaceFragment(
-                    CommentFragment.newInstance(it), R.id.root, TAG_COMMENT,
-                    isAddBackStack = true, useAnim = true
-                )
+                startActivity(CommentActivity.makeExtra(this@MainActivity, it))
             })
             openSearch.observe(lifecycleOwner, EventObserver {
                 replaceFragment(
@@ -118,13 +116,15 @@ class MainActivity : AppCompatActivity() {
                     isAddBackStack = true, useAnim = true
                 )
             })
+            openUser.observe(lifecycleOwner, EventObserver { id ->
+                startActivity(Intent(this@MainActivity, UserActivity::class.java))
+            })
         }
     }
 
     private fun startContainerTransformAnimation(viewA: View, desFrag: Fragment) {
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                supportFragmentManager.backStackEntryCount
                 remove()
                 val viewB = desFrag.requireView()
                 val transform = MaterialContainerTransform().apply {
@@ -136,7 +136,6 @@ class MainActivity : AppCompatActivity() {
                         override fun onTransitionEnd(transition: Transition) {
                             super.onTransitionEnd(transition)
                             removeListener(this)
-                            Timber.e("onTransitionEnd onBackPress")
                             onBackPressed()
                         }
                     })
@@ -145,6 +144,16 @@ class MainActivity : AppCompatActivity() {
                 TransitionManager.beginDelayedTransition(root, transform)
                 viewB.gone()
                 viewA.show()
+            }
+        }
+        if (desFrag is BackPressListener) {
+            desFrag.getUserVisible().observe(this) {
+                if (it) {
+                    Timber.e("userVisible")
+                    onBackPressedDispatcher.addCallback(this@MainActivity, onBackPressedCallback)
+                } else {
+                    onBackPressedCallback.remove()
+                }
             }
         }
         desFrag.viewLifecycleOwnerLiveData.observe(this) {
@@ -166,19 +175,6 @@ class MainActivity : AppCompatActivity() {
                         viewA.gone()
                         viewB.show()
                     }
-                    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-                    fun onResume() {
-                        onBackPressedDispatcher.addCallback(this@MainActivity, onBackPressedCallback)
-                    }
-                    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-                    fun onPause() {
-                        onBackPressedCallback.remove()
-                        Timber.e("onPause")
-                    }
-                    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-                    fun onStop() {
-                        Timber.e("onStop")
-                    }
                 })
             } else {
                 desFrag.viewLifecycleOwnerLiveData.removeObservers(this)
@@ -189,6 +185,7 @@ class MainActivity : AppCompatActivity() {
 
 interface BackPressListener {
     fun setUserVisible(userVisible: Boolean)
+    fun getUserVisible(): LiveData<Boolean>
 }
 
 data class OpenArtDetailParam(val view: View? = null, val artWithCache: ArtWithCache)
@@ -196,6 +193,9 @@ data class OpenArtDetailParam(val view: View? = null, val artWithCache: ArtWithC
 data class ArtWithCache(val art: Art, val cacheW: Int = 0, val cacheH: Int = 0, val isThumbCached: Boolean = false): Parcelable
 
 class NavViewModel @ViewModelInject constructor() : ViewModel() {
+    val openUser: MutableLiveData<Event<String>> by lazy {
+        MutableLiveData<Event<String>>()
+    }
     val openSearchTag: MutableLiveData<Event<String>> by lazy {
         MutableLiveData<Event<String>>()
     }

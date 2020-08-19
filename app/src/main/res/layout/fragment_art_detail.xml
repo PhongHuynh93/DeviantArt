@@ -27,7 +27,7 @@
             android:layout_width="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize"
             android:adjustViewBounds="true"
-            android:background="?attr/colorSurface"
+            android:background="?attr/colorSurfaceSemiTransparent"
             android:onClick="@{() -> vm.clickClose()}"
             android:padding="10dp"
             android:scaleType="center"

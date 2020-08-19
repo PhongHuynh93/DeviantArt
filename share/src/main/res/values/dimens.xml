@@ -6,7 +6,6 @@
     <dimen name="space_normal">16dp</dimen>
     <dimen name="space_above_normal">20dp</dimen>
     <dimen name="space_large">24dp</dimen>
-    <dimen name="avatar_size">40dp</dimen>
     <dimen name="default_radius">12dp</dimen>
     <dimen name="large_radius">20dp</dimen>
     <dimen name="space_pretty_small">12dp</dimen>

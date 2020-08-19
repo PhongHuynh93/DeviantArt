@@ -12,11 +12,10 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.*
-import com.google.android.material.transition.MaterialContainerTransform
 import com.wind.deviantart.*
 import com.wind.deviantart.adapter.HeaderTitleAdapter
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
@@ -45,13 +44,8 @@ class ArtDetailFragment : Fragment(), BackPressListener {
     private lateinit var viewBinding: FragmentArtDetailBinding
     private val vmArtDetailViewModel by viewModels<ArtDetailViewModel>()
     private val vmNav by activityViewModels<NavViewModel>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            duration = ENTER_TRANSITION_DURATION
-        }
-    }
+    private var _userVisible = MutableLiveData<Boolean>()
+    private var userVisible: LiveData<Boolean> =  _userVisible
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,22 +59,10 @@ class ArtDetailFragment : Fragment(), BackPressListener {
     }
 
     override fun setUserVisible(userVisible: Boolean) {
-        // custom handle the life cycle in case the fragment is added to back stack
-        val setState: (registry: LifecycleRegistry) -> Unit = { registry ->
-            if (userVisible) {
-                registry.currentState = Lifecycle.State.RESUMED
-            } else {
-                registry.currentState = Lifecycle.State.STARTED
-            }
-        }
-        if (lifecycle is LifecycleRegistry) {
-            setState(lifecycle as LifecycleRegistry)
-        }
-
-        if (viewLifecycleOwner.lifecycle is LifecycleRegistry) {
-            setState(viewLifecycleOwner.lifecycle as LifecycleRegistry)
-        }
+        _userVisible.value = userVisible
     }
+
+    override fun getUserVisible() = userVisible
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -103,6 +85,10 @@ class ArtDetailFragment : Fragment(), BackPressListener {
 
                 override fun onClickMore(pos: Int, it: Art) {
                     ArtMoreOptionDialog.newInstance(it.preview?.src).show(childFragmentManager, null)
+                }
+
+                override fun onClickUser(pos: Int, art: Art) {
+                    vmNav.openUser.value = Event(art.id)
                 }
             }
         }
@@ -292,6 +278,20 @@ class HeaderAdapter : ListAdapter<ArtWithCache, HeaderAdapter.ViewHolder>(object
                     }
                 }
             }
+            val clickUserInfo: (View) -> Unit = {
+                val pos = bindingAdapterPosition
+                if (pos >= 0) {
+                    getItem(pos)?.let {
+                        callback?.onClickUser(pos, it.art)
+                    }
+                }
+            }
+            binding.imgvUserAvatar.setOnClickListener {
+                clickUserInfo(it)
+            }
+            binding.tvUserName.setOnClickListener {
+                clickUserInfo(it)
+            }
         }
     }
 
@@ -306,6 +306,7 @@ class HeaderAdapter : ListAdapter<ArtWithCache, HeaderAdapter.ViewHolder>(object
     interface Callback {
         fun onClickComment(pos: Int, item: Art)
         fun onClickMore(pos: Int, it: Art)
+        fun onClickUser(pos: Int, art: Art)
     }
 
     inner class ViewHolder(val binding: ItemArtInfoBinding) :
