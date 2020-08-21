@@ -27,6 +27,10 @@ interface AuthApi {
     suspend fun getTagList(@QueryMap queryMap: Map<String, String>): TagList
     @GET("/api/v1/oauth2/browse/tags")
     suspend fun getTagDeviations(@QueryMap queryMap: Map<String, String>): DeviantArtList<Art>
+
+    // user info
+    @GET("/user/profile/{username}")
+    suspend fun getUserInfo(@Path("username") userName: String, @QueryMap queryMap: Map<String, String>): UserInfo
 }
 
 interface NonAuthApi {
