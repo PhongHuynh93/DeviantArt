@@ -30,4 +30,6 @@
     <string name="pageviews">Pageviews</string>
     <string name="favorites">Favorites</string>
     <string name="watchers">Watchers</string>
+    <string name="user_loading_error">Could not load. Try again later.</string>
+
 </resources>

@@ -9,28 +9,32 @@ import retrofit2.http.QueryMap
  * Created by Phong Huynh on 7/20/2020
  */
 interface AuthApi {
-    @GET("/api/v1/oauth2/browse/dailydeviations")
+    @GET("browse/dailydeviations")
     suspend fun getDailyDeviations(@QueryMap queryMap: Map<String, String>): DeviantArtList<Art>
-    @GET("/api/v1/oauth2/browse/newest")
+    @GET("browse/newest")
     suspend fun getNewestDeviations(@QueryMap queryMap: Map<String, String>): DeviantArtList<Art>
-    @GET("/api/v1/oauth2/browse/popular")
+    @GET("browse/popular")
     suspend fun getPopularDeviations(@QueryMap queryMap: Map<String, String>): DeviantArtList<Art>
-    @GET("api/v1/oauth2/browse/morelikethis/preview")
+    @GET("browse/morelikethis/preview")
     suspend fun getMoreFromThisArtist(@QueryMap queryMap: Map<String, String>): RelatedArt
-    @GET("api/v1/oauth2/comments/deviation/{id}")
+    @GET("comments/deviation/{id}")
     suspend fun getComment(@Path("id") id: String, @QueryMap queryMap: Map<String, String>): DeviantArtList<Comment>
-    @GET("/api/v1/oauth2/browse/topics")
+    @GET("browse/topics")
     suspend fun getTopics(@QueryMap queryMap: Map<String, String>): DeviantArtList<Topic>
-    @GET("/api/v1/oauth2/browse/topic")
+    @GET("browse/topic")
     suspend fun getTopic(@QueryMap queryMap: Map<String, String>): DeviantArtList<Art>
-    @GET("/api/v1/oauth2/browse/tags/search")
+    @GET("browse/tags/search")
     suspend fun getTagList(@QueryMap queryMap: Map<String, String>): TagList
-    @GET("/api/v1/oauth2/browse/tags")
+    @GET("browse/tags")
     suspend fun getTagDeviations(@QueryMap queryMap: Map<String, String>): DeviantArtList<Art>
+
+    // user info
+    @GET("user/profile/{username}")
+    suspend fun getUserInfo(@Path("username") userName: String, @QueryMap queryMap: Map<String, String>): UserInfo
 }
 
 interface NonAuthApi {
-    @GET("/oauth2/token")
+    @GET("oauth2/token")
     fun getToken(@QueryMap queryMap: Map<String, String>): Token
 }
 

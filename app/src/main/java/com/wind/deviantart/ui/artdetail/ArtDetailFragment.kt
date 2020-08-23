@@ -88,7 +88,9 @@ class ArtDetailFragment : Fragment(), BackPressListener {
                 }
 
                 override fun onClickUser(pos: Int, art: Art) {
-                    vmNav.openUser.value = Event(art.id)
+                    art.author?.name?.let {
+                        vmNav.openUser.value = Event(it)
+                    }
                 }
             }
         }

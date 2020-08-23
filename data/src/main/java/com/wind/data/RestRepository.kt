@@ -26,6 +26,7 @@ interface RestRepository {
     suspend fun getTag(tag: String): TagList
     fun getTagArtDataSource(pageSize: Int, tag: String): Flow<PagingData<Art>>
     fun downloadImage(url: String?, fileName: String?): LiveData<WorkInfo>
+    suspend fun getUserInfo(userName: String, extCollection: Boolean, extGallery: Boolean): UserInfo
 }
 
 internal class RestRepositoryImpl internal constructor(
@@ -85,5 +86,9 @@ internal class RestRepositoryImpl internal constructor(
                 enqueue(downloadImageWorkRequest)
             }
             .getWorkInfoByIdLiveData(downloadImageWorkRequest.id)
+    }
+
+    override suspend fun getUserInfo(userName: String, extCollection: Boolean, extGallery: Boolean): UserInfo {
+        return authApi.getUserInfo(userName, mapOf("ext_collections" to extCollection.toString(), "ext_galleries" to extGallery.toString()))
     }
 }

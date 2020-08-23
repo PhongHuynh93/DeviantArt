@@ -1,8 +1,8 @@
 package com.wind.domain
 
+import com.wind.domain.result.Result
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import com.wind.domain.result.Result
 import timber.log.Timber
 
 /**

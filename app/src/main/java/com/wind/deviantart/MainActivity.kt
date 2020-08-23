@@ -116,8 +116,8 @@ class MainActivity : AppCompatActivity() {
                     isAddBackStack = true, useAnim = true
                 )
             })
-            openUser.observe(lifecycleOwner, EventObserver { id ->
-                startActivity(Intent(this@MainActivity, UserActivity::class.java))
+            openUser.observe(lifecycleOwner, EventObserver { userName ->
+                startActivity(UserActivity.makeExtra(this@MainActivity, userName))
             })
         }
     }
