@@ -159,6 +159,7 @@ class MainActivity : AppCompatActivity() {
                             this.endView = viewB
                             duration = START_CONTAINER_TRANSFORM_DURATION
                             addTarget(viewB)
+                            startDelay = 50
                             scrimColor = getColorAttr(this@MainActivity, R.attr.colorPrimary)
                         }
 
