@@ -4,4 +4,5 @@
     <dimen name="avatar_size_big">80dp</dimen>
     <dimen name="avatar_size">40dp</dimen>
     <dimen name="btn_height">56dp</dimen>
+    <dimen name="height_user_info">200dp</dimen>
 </resources>

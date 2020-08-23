@@ -3,7 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data></data>
+    <data>
+        <variable
+            name="item"
+            type="com.wind.model.UserInfo" />
+    </data>
 
 
     <LinearLayout
