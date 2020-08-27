@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
  * Created by Phong Huynh on 7/22/2020
  */
 
-interface RestRepository {
+interface Repository {
     fun getNewestDeviations(catePath: String?, query: String?, pageSize: Int): Flow<PagingData<Art>>
     fun getPopularDeviations(catePath: String?, query: String?, pageSize: Int): Flow<PagingData<Art>>
     suspend fun getArtFromThisArtist(id: String): RelatedArt
@@ -29,10 +29,10 @@ interface RestRepository {
     suspend fun getUserInfo(userName: String, extCollection: Boolean, extGallery: Boolean): UserInfo
 }
 
-internal class RestRepositoryImpl internal constructor(
+internal class RepositoryImpl internal constructor(
     private val context: Context,
     private val authApi: AuthApi
-) : RestRepository {
+) : Repository {
     override fun getNewestDeviations(catePath: String?, query: String?, pageSize: Int) =
         Pager(config = PagingConfig(pageSize = pageSize)) {
             NewestArtDataSource(context, authApi)

@@ -1,10 +1,9 @@
 package com.wind.domain.art
 
-import com.wind.data.RestRepository
+import com.wind.data.Repository
 import com.wind.domain.UseCase
 import com.wind.domain.di.IoDispatcher
 import com.wind.model.Art
-import com.wind.model.RelatedArt
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
@@ -13,9 +12,9 @@ import javax.inject.Inject
  */
 class GetDailyDeviationsUseCase @Inject constructor(
     @IoDispatcher dispatcher: CoroutineDispatcher,
-    private val restRepository: RestRepository
+    private val repository: Repository
 ) : UseCase<Unit, List<Art>>(dispatcher) {
     override suspend fun execute(parameters: Unit): List<Art> {
-        return restRepository.getDailyDeviations().data
+        return repository.getDailyDeviations().data
     }
 }

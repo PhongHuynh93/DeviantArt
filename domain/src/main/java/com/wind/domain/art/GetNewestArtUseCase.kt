@@ -1,7 +1,7 @@
 package com.wind.domain.art
 
 import androidx.paging.filter
-import com.wind.data.RestRepository
+import com.wind.data.Repository
 import com.wind.domain.PageUseCase
 import com.wind.domain.di.IoDispatcher
 import com.wind.model.Art
@@ -18,10 +18,10 @@ data class GetNewestArtParam(
 
 class GetNewestArtUseCase @Inject constructor(
     @IoDispatcher dispatcher: CoroutineDispatcher,
-    private val restRepository: RestRepository
+    private val repository: Repository
 ) : PageUseCase<GetNewestArtParam, Art>(dispatcher) {
     override fun execute(parameters: GetNewestArtParam) =
-        restRepository.getNewestDeviations(parameters.catePath, parameters.query, parameters.pageSize)
+        repository.getNewestDeviations(parameters.catePath, parameters.query, parameters.pageSize)
             .map { pagingData ->
                 pagingData.filter { art ->
                     art.preview?.src != null
