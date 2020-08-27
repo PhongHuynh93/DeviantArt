@@ -1,6 +1,6 @@
 package com.wind.domain.user
 
-import com.wind.data.RestRepository
+import com.wind.data.Repository
 import com.wind.domain.UseCase
 import com.wind.domain.di.IoDispatcher
 import com.wind.model.UserInfo
@@ -13,10 +13,10 @@ import javax.inject.Inject
 data class GetUserProfileParam(val userName: String, val extCollection: Boolean = false, val extGallery: Boolean = false)
 class GetUserProfileUseCase @Inject constructor(
     @IoDispatcher dispatcher: CoroutineDispatcher,
-    private val restRepository: RestRepository
+    private val repository: Repository
 ) : UseCase<GetUserProfileParam, UserInfo>(dispatcher) {
 
     override suspend fun execute(parameters: GetUserProfileParam): UserInfo {
-        return restRepository.getUserInfo(parameters.userName, parameters.extCollection, parameters.extGallery)
+        return repository.getUserInfo(parameters.userName, parameters.extCollection, parameters.extGallery)
     }
 }

@@ -1,6 +1,6 @@
 package com.wind.domain.art
 
-import com.wind.data.RestRepository
+import com.wind.data.Repository
 import com.wind.domain.PageUseCase
 import com.wind.domain.di.IoDispatcher
 import com.wind.model.Topic
@@ -14,8 +14,8 @@ data class GetTopicsArtParam(val pageSize: Int)
 
 class GetTopicsUseCase @Inject constructor(
     @IoDispatcher dispatcher: CoroutineDispatcher,
-    private val restRepository: RestRepository
+    private val repository: Repository
 ) : PageUseCase<GetTopicsArtParam, Topic>(dispatcher) {
     override fun execute(parameters: GetTopicsArtParam) =
-        restRepository.getTopics(parameters.pageSize)
+        repository.getTopics(parameters.pageSize)
 }

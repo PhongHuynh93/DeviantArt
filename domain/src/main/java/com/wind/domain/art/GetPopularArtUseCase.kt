@@ -1,6 +1,6 @@
 package com.wind.domain.art
 
-import com.wind.data.RestRepository
+import com.wind.data.Repository
 import com.wind.domain.PageUseCase
 import com.wind.domain.di.IoDispatcher
 import com.wind.model.Art
@@ -15,8 +15,8 @@ String? = null, val pageSize: Int)
 
 class GetPopularArtUseCase @Inject constructor(
     @IoDispatcher private val coroutineDispatcher: CoroutineDispatcher,
-    private val restRepository: RestRepository)
+    private val repository: Repository)
     : PageUseCase<GetPopularArtParam, Art>(coroutineDispatcher) {
     override fun execute(parameters: GetPopularArtParam) =
-        restRepository.getPopularDeviations(parameters.catePath, parameters.query, parameters.pageSize)
+        repository.getPopularDeviations(parameters.catePath, parameters.query, parameters.pageSize)
 }
