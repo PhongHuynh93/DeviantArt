@@ -22,6 +22,7 @@
             android:layout_width="@dimen/avatar_size_big"
             android:layout_height="@dimen/avatar_size_big"
             android:layout_gravity="end"
+            app:imageUrl="@{item.user.userIcon}"
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
@@ -32,6 +33,7 @@
             android:layout_weight="1"
             tools:maxLines="5"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:text="@{item.bio}"
             tools:text="@tools:sample/lorem/random" />
     </LinearLayout>
 </layout>

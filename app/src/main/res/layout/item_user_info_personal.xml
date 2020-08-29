@@ -21,6 +21,7 @@
             android:layout_width="@dimen/avatar_size_big"
             android:layout_height="@dimen/avatar_size_big"
             android:layout_gravity="end"
+            app:imageUrl="@{item.user.userIcon}"
             tools:srcCompat="@tools:sample/avatars" />
 
         <LinearLayout
@@ -35,6 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:text="@{item.country}"
                 tools:text="@tools:sample/full_names" />
 
             <TextView
@@ -42,6 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:text="@{item.user.type}"
                 tools:text="@tools:sample/full_names[0]" />
 
             <TextView
