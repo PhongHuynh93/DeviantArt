@@ -12,11 +12,12 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.*
-import com.wind.deviantart.*
+import com.wind.deviantart.ArtWithCache
+import com.wind.deviantart.NavViewModel
+import com.wind.deviantart.OpenArtDetailParam
+import com.wind.deviantart.R
 import com.wind.deviantart.adapter.HeaderTitleAdapter
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
 import com.wind.deviantart.databinding.ItemArtBinding
@@ -28,15 +29,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import util.*
 
 private const val NUMB_COLUMN: Int = 2
-private const val ENTER_TRANSITION_DURATION: Long = 300
 private const val EXTRA_DATA = "xData"
+private const val EXTRA_TRANSITION_NAME = "xTransitionName"
 
 @AndroidEntryPoint
-class ArtDetailFragment : Fragment(), BackPressListener {
+class ArtDetailFragment : Fragment() {
     companion object {
-        fun newInstance(data: ArtWithCache): Fragment {
+        fun newInstance(data: ArtWithCache, transitionName: String?): Fragment {
             return ArtDetailFragment().apply {
-                arguments = bundleOf(EXTRA_DATA to data)
+                arguments = bundleOf(EXTRA_DATA to data, EXTRA_TRANSITION_NAME to transitionName)
             }
         }
     }
@@ -44,8 +45,6 @@ class ArtDetailFragment : Fragment(), BackPressListener {
     private lateinit var viewBinding: FragmentArtDetailBinding
     private val vmArtDetailViewModel by viewModels<ArtDetailViewModel>()
     private val vmNav by activityViewModels<NavViewModel>()
-    private var _userVisible = MutableLiveData<Boolean>()
-    private var userVisible: LiveData<Boolean> =  _userVisible
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,15 +53,10 @@ class ArtDetailFragment : Fragment(), BackPressListener {
         viewBinding = FragmentArtDetailBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             vm = vmArtDetailViewModel
+            transitionName = requireArguments().getString(EXTRA_TRANSITION_NAME)
         }
         return viewBinding.root
     }
-
-    override fun setUserVisible(userVisible: Boolean) {
-        _userVisible.value = userVisible
-    }
-
-    override fun getUserVisible() = userVisible
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -234,7 +228,7 @@ class StagGridArtAdapter : ListAdapter<Art, StagGridArtAdapter.ViewHolder>(objec
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.itemView.transitionName =
-            "$ART_TO_DETAIL_TRANSITION_NAME$position${holder.hashCode()}"
+            "$ART_TO_DETAIL_TRANSITION_NAME$position"
         holder.binding.item = item
         holder.binding.executePendingBindings()
     }
