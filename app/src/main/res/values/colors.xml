@@ -13,4 +13,5 @@
     <color name="greyLight">#eeeeee</color>
     <color name="textColorPrimary">#0c0c0c</color>
     <color name="colorDrawable">#f3f4f9</color>
+    <color name="colorSurfaceSemiTransparent">#66E0E0E0</color>
 </resources>

@@ -412,6 +412,10 @@ fun AppCompatActivity.findFragmentByTag(tag: String?): Fragment? {
     return supportFragmentManager.findFragmentByTag(tag)
 }
 
+fun AppCompatActivity.findFragmentById(id: Int): Fragment? {
+    return supportFragmentManager.findFragmentById(id)
+}
+
 fun Fragment.setUpToolbar(toolbar: Toolbar, title: String = "", showUpIcon: Boolean = false) {
     if (activity is AppCompatActivity) {
         val appActivity = activity as AppCompatActivity

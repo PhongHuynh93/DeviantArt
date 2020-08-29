@@ -12,12 +12,12 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.*
-import com.google.android.material.transition.MaterialContainerTransform
-import com.wind.deviantart.*
+import com.wind.deviantart.ArtWithCache
+import com.wind.deviantart.NavViewModel
+import com.wind.deviantart.OpenArtDetailParam
+import com.wind.deviantart.R
 import com.wind.deviantart.adapter.HeaderTitleAdapter
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
 import com.wind.deviantart.databinding.ItemArtBinding
@@ -29,15 +29,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import util.*
 
 private const val NUMB_COLUMN: Int = 2
-private const val ENTER_TRANSITION_DURATION: Long = 300
 private const val EXTRA_DATA = "xData"
+private const val EXTRA_TRANSITION_NAME = "xTransitionName"
 
 @AndroidEntryPoint
-class ArtDetailFragment : Fragment(), BackPressListener {
+class ArtDetailFragment : Fragment() {
     companion object {
-        fun newInstance(data: ArtWithCache): Fragment {
+        fun newInstance(data: ArtWithCache, transitionName: String?): Fragment {
             return ArtDetailFragment().apply {
-                arguments = bundleOf(EXTRA_DATA to data)
+                arguments = bundleOf(EXTRA_DATA to data, EXTRA_TRANSITION_NAME to transitionName)
             }
         }
     }
@@ -46,13 +46,6 @@ class ArtDetailFragment : Fragment(), BackPressListener {
     private val vmArtDetailViewModel by viewModels<ArtDetailViewModel>()
     private val vmNav by activityViewModels<NavViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            duration = ENTER_TRANSITION_DURATION
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,26 +53,9 @@ class ArtDetailFragment : Fragment(), BackPressListener {
         viewBinding = FragmentArtDetailBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             vm = vmArtDetailViewModel
+            transitionName = requireArguments().getString(EXTRA_TRANSITION_NAME)
         }
         return viewBinding.root
-    }
-
-    override fun setUserVisible(userVisible: Boolean) {
-        // custom handle the life cycle in case the fragment is added to back stack
-        val setState: (registry: LifecycleRegistry) -> Unit = { registry ->
-            if (userVisible) {
-                registry.currentState = Lifecycle.State.RESUMED
-            } else {
-                registry.currentState = Lifecycle.State.STARTED
-            }
-        }
-        if (lifecycle is LifecycleRegistry) {
-            setState(lifecycle as LifecycleRegistry)
-        }
-
-        if (viewLifecycleOwner.lifecycle is LifecycleRegistry) {
-            setState(viewLifecycleOwner.lifecycle as LifecycleRegistry)
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -103,6 +79,12 @@ class ArtDetailFragment : Fragment(), BackPressListener {
 
                 override fun onClickMore(pos: Int, it: Art) {
                     ArtMoreOptionDialog.newInstance(it.preview?.src).show(childFragmentManager, null)
+                }
+
+                override fun onClickUser(pos: Int, art: Art) {
+                    art.author?.name?.let {
+                        vmNav.openUser.value = Event(it)
+                    }
                 }
             }
         }
@@ -246,7 +228,7 @@ class StagGridArtAdapter : ListAdapter<Art, StagGridArtAdapter.ViewHolder>(objec
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.itemView.transitionName =
-            "$ART_TO_DETAIL_TRANSITION_NAME$position${holder.hashCode()}"
+            "$ART_TO_DETAIL_TRANSITION_NAME$position"
         holder.binding.item = item
         holder.binding.executePendingBindings()
     }
@@ -292,6 +274,20 @@ class HeaderAdapter : ListAdapter<ArtWithCache, HeaderAdapter.ViewHolder>(object
                     }
                 }
             }
+            val clickUserInfo: (View) -> Unit = {
+                val pos = bindingAdapterPosition
+                if (pos >= 0) {
+                    getItem(pos)?.let {
+                        callback?.onClickUser(pos, it.art)
+                    }
+                }
+            }
+            binding.imgvUserAvatar.setOnClickListener {
+                clickUserInfo(it)
+            }
+            binding.tvUserName.setOnClickListener {
+                clickUserInfo(it)
+            }
         }
     }
 
@@ -306,6 +302,7 @@ class HeaderAdapter : ListAdapter<ArtWithCache, HeaderAdapter.ViewHolder>(object
     interface Callback {
         fun onClickComment(pos: Int, item: Art)
         fun onClickMore(pos: Int, it: Art)
+        fun onClickUser(pos: Int, art: Art)
     }
 
     inner class ViewHolder(val binding: ItemArtInfoBinding) :

@@ -34,7 +34,7 @@ object AggregationDataModule {
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://www.deviantart.com")
+            .baseUrl("https://www.deviantart.com/")
             .client(client)
             .addCallAdapterFactory(SynchronousCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create())
@@ -98,7 +98,7 @@ object AggregationDataModule {
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://www.deviantart.com")
+            .baseUrl("https://www.deviantart.com/api/v1/oauth2/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -108,8 +108,8 @@ object AggregationDataModule {
     @Singleton
     @Provides
     fun getBrowseRepository(@ApplicationContext context: Context, restApi: AuthApi):
-            RestRepository {
-        return RestRepositoryImpl(context, restApi)
+            Repository {
+        return RepositoryImpl(context, restApi)
     }
 
 }

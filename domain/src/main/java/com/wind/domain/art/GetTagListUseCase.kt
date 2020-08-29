@@ -1,10 +1,8 @@
 package com.wind.domain.art
 
-import com.wind.data.RestRepository
+import com.wind.data.Repository
 import com.wind.domain.UseCase
 import com.wind.domain.di.IoDispatcher
-import com.wind.model.Art
-import com.wind.model.RelatedArt
 import com.wind.model.TagList
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -14,9 +12,9 @@ import javax.inject.Inject
  */
 class GetTagListUseCase @Inject constructor(
     @IoDispatcher dispatcher: CoroutineDispatcher,
-    private val restRepository: RestRepository
+    private val repository: Repository
 ) : UseCase<String, TagList>(dispatcher) {
     override suspend fun execute(parameters: String): TagList {
-        return restRepository.getTag(tag = parameters)
+        return repository.getTag(tag = parameters)
     }
 }

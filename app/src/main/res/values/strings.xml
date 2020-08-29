@@ -19,4 +19,17 @@
     <string name="error_save_image">Can not download this image</string>
     <string name="success_save_image">Image saved</string>
     <string name="literature">Literature</string>
+    <string name="gallery">Gallery</string>
+    <string name="journal">Journal</string>
+    <string name="post">Post</string>
+    <string name="favs">Favs</string>
+    <string name="followers">Followers</string>
+    <string name="comments">Comments</string>
+    <string name="send_note">Send note</string>
+    <string name="deviations">Deviations</string>
+    <string name="pageviews">Pageviews</string>
+    <string name="favorites">Favorites</string>
+    <string name="watchers">Watchers</string>
+    <string name="user_loading_error">Could not load. Try again later.</string>
+    <string name="format_user_info_level">%s | %s</string>
 </resources>

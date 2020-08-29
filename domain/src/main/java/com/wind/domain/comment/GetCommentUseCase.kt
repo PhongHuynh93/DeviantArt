@@ -1,7 +1,7 @@
 package com.wind.domain.comment
 
 import androidx.paging.PagingData
-import com.wind.data.RestRepository
+import com.wind.data.Repository
 import com.wind.domain.PageUseCase
 import com.wind.domain.di.IoDispatcher
 import com.wind.model.Comment
@@ -15,9 +15,9 @@ import javax.inject.Inject
 data class GetCommentParam(val id: String, val pageSize: Int)
 class GetCommentUseCase @Inject constructor(
     @IoDispatcher dispatcher: CoroutineDispatcher,
-    private val restRepository: RestRepository
+    private val repository: Repository
 ) : PageUseCase<GetCommentParam, Comment>(dispatcher) {
     override fun execute(parameters: GetCommentParam): Flow<PagingData<Comment>> {
-        return restRepository.getComment(parameters.id, parameters.pageSize)
+        return repository.getComment(parameters.id, parameters.pageSize)
     }
 }

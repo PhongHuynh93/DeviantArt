@@ -1,5 +1,5 @@
 object Versions {
-    const val kotlin = "1.3.61"
+    const val kotlin = "1.4.0"
     const val kotlinCoroutines = "1.3.8"
     const val gradlePlugin: String = "4.0.1"
     const val glide: String = "4.10.0"
