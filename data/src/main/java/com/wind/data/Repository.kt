@@ -27,6 +27,8 @@ interface Repository {
     fun getTagArtDataSource(pageSize: Int, tag: String): Flow<PagingData<Art>>
     fun downloadImage(url: String?, fileName: String?): LiveData<WorkInfo>
     suspend fun getUserInfo(userName: String, extCollection: Boolean, extGallery: Boolean): UserInfo
+    fun getUserGallery(userName: String, pageSize: Int): Flow<PagingData<Art>>
+    fun getUserJournal(userName: String, pageSize: Int): Flow<PagingData<Art>>
 }
 
 internal class RepositoryImpl internal constructor(
@@ -91,4 +93,14 @@ internal class RepositoryImpl internal constructor(
     override suspend fun getUserInfo(userName: String, extCollection: Boolean, extGallery: Boolean): UserInfo {
         return authApi.getUserInfo(userName, mapOf("ext_collections" to extCollection.toString(), "ext_galleries" to extGallery.toString()))
     }
+
+    override fun getUserGallery(userName: String, pageSize: Int) =
+        Pager(config = PagingConfig(pageSize = pageSize)) {
+            UserGalleryDataSource(context, authApi, userName)
+        }.flow
+
+    override fun getUserJournal(userName: String, pageSize: Int) =
+        Pager(config = PagingConfig(pageSize = pageSize)) {
+            UserJournalDataSource(context, authApi, userName)
+        }.flow
 }

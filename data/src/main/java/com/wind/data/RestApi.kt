@@ -28,9 +28,13 @@ interface AuthApi {
     @GET("browse/tags")
     suspend fun getTagDeviations(@QueryMap queryMap: Map<String, String>): DeviantArtList<Art>
 
-    // user info
+    // user
     @GET("user/profile/{username}")
     suspend fun getUserInfo(@Path("username") userName: String, @QueryMap queryMap: Map<String, String>): UserInfo
+    @GET("gallery/all")
+    suspend fun getGallery(@QueryMap queryMap: Map<String, String>): DeviantArtList<Art>
+    @GET("browse/user/journals")
+    suspend fun getJournal(@QueryMap queryMap: Map<String, String>): DeviantArtList<Art>
 }
 
 interface NonAuthApi {

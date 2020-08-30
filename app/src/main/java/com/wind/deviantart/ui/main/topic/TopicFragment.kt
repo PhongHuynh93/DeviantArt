@@ -141,6 +141,9 @@ class TopicFragment: Fragment() {
                                 }
                             }
                         }
+                        if (pos == 0) {
+                            outRect.top = spaceNormal
+                        }
                     } catch (ignored: Exception) {
 
                     }
@@ -291,7 +294,7 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
         fun onClickArt(pos1: View, pos: Int, art: Art)
     }
 
-    inner class TitleTopicViewHolder(val binding: ItemTopicTitleBinding): RecyclerView.ViewHolder(binding.root)
-    inner class TopicViewHolder(val binding: ItemTopicListBinding): RecyclerView.ViewHolder(binding.root)
-    inner class TopicLiteratureViewHolder(val binding: ItemTopicLiteratureBinding): RecyclerView.ViewHolder(binding.root)
+    class TitleTopicViewHolder(val binding: ItemTopicTitleBinding): RecyclerView.ViewHolder(binding.root)
+    class TopicViewHolder(val binding: ItemTopicListBinding): RecyclerView.ViewHolder(binding.root)
+    class TopicLiteratureViewHolder(val binding: ItemTopicLiteratureBinding): RecyclerView.ViewHolder(binding.root)
 }

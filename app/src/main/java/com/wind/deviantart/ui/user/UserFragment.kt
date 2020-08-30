@@ -9,7 +9,10 @@ import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayoutMediator
+import com.wind.deviantart.R
 import com.wind.deviantart.databinding.*
 import com.wind.model.UserInfo
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,12 +32,14 @@ class UserFragment : Fragment() {
         }
     }
 
+    private lateinit var userName: String
     private lateinit var viewBinding: FragmentUserBinding
     private val vmUser by viewModels<UserViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        vmUser.userName.value = requireArguments()[EXTRA_DATA] as String
+        userName = requireArguments()[EXTRA_DATA] as String
+        vmUser.userName.value = userName
     }
 
     override fun onCreateView(
@@ -53,6 +58,31 @@ class UserFragment : Fragment() {
         viewBinding.vPager.apply {
             adapter = UserInfoAdapter()
         }
+        viewBinding.vPager2.apply {
+            adapter = UserAdapter(this@UserFragment, userName)
+        }
+        TabLayoutMediator(viewBinding.tabLayout, viewBinding.vPager2) { tab, pos ->
+            when (pos) {
+                GALLERY_POS -> {
+                    tab.text = getString(R.string.gallery)
+                }
+                JOURNAL_POS -> {
+                    tab.text = getString(R.string.journal)
+                }
+                POST_POS -> {
+                    tab.text = getString(R.string.post)
+                }
+                FAV_POS -> {
+                    tab.text = getString(R.string.favs)
+                }
+                FOLLOWER_POS -> {
+                    tab.text = getString(R.string.followers)
+                }
+                COMMENT_POS -> {
+                    tab.text = getString(R.string.comments)
+                }
+            }
+        }.attach()
     }
 }
 
@@ -67,6 +97,7 @@ private const val TYPE_MAIN = 1
 private const val TYPE_PERSONAL = 2
 private const val TYPE_INTRODUCTION = 3
 private const val TYPE_SOCIAL = 4
+
 class UserInfoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val types = mutableListOf<Int>()
     private val data = mutableListOf<UserInfo>()
@@ -177,10 +208,46 @@ class UserInfoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onClick(view: View, pos: Int, item: Any)
     }
 
-    private inner class UserMainViewHolder(val binding: ItemUserInfoMainBinding) : RecyclerView.ViewHolder(binding.root)
-    private inner class UserPersonalViewHolder(val binding: ItemUserInfoPersonalBinding) : RecyclerView.ViewHolder(binding.root)
-    private inner class UserIntroductionViewHolder(val binding: ItemUserInfoIntroductionBinding) : RecyclerView.ViewHolder(binding.root)
-    private inner class UserSocialViewHolder(val binding: ItemUserInfoSocialBinding) : RecyclerView.ViewHolder(binding.root)
+    private class UserMainViewHolder(val binding: ItemUserInfoMainBinding) : RecyclerView.ViewHolder(binding.root)
+    private class UserPersonalViewHolder(val binding: ItemUserInfoPersonalBinding) : RecyclerView.ViewHolder(binding.root)
+    private class UserIntroductionViewHolder(val binding: ItemUserInfoIntroductionBinding) : RecyclerView.ViewHolder(binding.root)
+    private class UserSocialViewHolder(val binding: ItemUserInfoSocialBinding) : RecyclerView.ViewHolder(binding.root)
+}
 
+private const val USER_TAB = 6
+private const val GALLERY_POS = 0
+private const val JOURNAL_POS = 1
+private const val POST_POS = 2
+private const val FAV_POS = 3
+private const val FOLLOWER_POS = 4
+private const val COMMENT_POS = 5
 
+private class UserAdapter(fragment: Fragment, val userName: String) : FragmentStateAdapter(fragment) {
+    override fun getItemCount() = USER_TAB
+
+    override fun createFragment(position: Int): Fragment {
+        return when (position) {
+            GALLERY_POS -> {
+                UserGalleryFragment.newInstance(userName)
+            }
+            JOURNAL_POS -> {
+                UserJournalFragment.newInstance(userName)
+            }
+            POST_POS -> {
+                UserPostFragment.newInstance(userName)
+            }
+            FAV_POS -> {
+                UserFavFragment.newInstance(userName)
+            }
+            FOLLOWER_POS -> {
+                UserFollowerFragment.newInstance(userName)
+            }
+            COMMENT_POS -> {
+                UserCommentFragment.newInstance(userName)
+            }
+            else -> {
+                throw IllegalStateException()
+            }
+        }
+    }
 }
