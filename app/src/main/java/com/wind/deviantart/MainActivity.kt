@@ -13,7 +13,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import com.wind.deviantart.ui.artdetail.ArtDetailFragment
 import com.wind.deviantart.ui.comment.CommentActivity
 import com.wind.deviantart.ui.main.MainFragment
-import com.wind.deviantart.ui.main.topic.TopicDetailFragment
+import com.wind.deviantart.ui.main.topic.TopicActivity
 import com.wind.deviantart.ui.search.SearchFragment
 import com.wind.deviantart.ui.search.SearchSuggestionFragment
 import com.wind.deviantart.ui.user.UserActivity
@@ -80,10 +80,7 @@ class MainActivity : AppCompatActivity() {
                 )
             })
             openTopic.observe(lifecycleOwner, EventObserver {
-                replaceFragment(
-                    TopicDetailFragment.newInstance(it), R.id.root, TAG_TOPIC_DETAIL,
-                    isAddBackStack = true, useAnim = true
-                )
+                startActivity(TopicActivity.makeExtra(this@MainActivity, it))
             })
             openUser.observe(lifecycleOwner, EventObserver { userName ->
                 startActivity(UserActivity.makeExtra(this@MainActivity, userName))

@@ -22,6 +22,7 @@
         </activity>
         <activity android:name=".ui.user.UserActivity"/>
         <activity android:name=".ui.comment.CommentActivity"/>
+        <activity android:name=".ui.main.topic.TopicActivity"/>
     </application>
 
 </manifest>

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="item"
-            type="com.wind.model.Topic" />
+            type="String" />
     </data>
 
     <LinearLayout
@@ -22,7 +22,7 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
             app:titleTextColor="?attr/colorOnPrimary"
-            app:title="@{item.name}" />
+            app:title="@{item}" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/container"
