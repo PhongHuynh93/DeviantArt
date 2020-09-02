@@ -17,7 +17,7 @@ import util.addFragment
  */
 private const val EXTRA_TRANSITION_NAME = "xTransitionName"
 private const val EXTRA_ART = "xArt"
-private const val START_TRANSFORM_DURATION = 400L
+private const val START_TRANSFORM_DURATION = 350L
 private const val END_TRANSFORM_DURATION = 300L
 
 @AndroidEntryPoint
