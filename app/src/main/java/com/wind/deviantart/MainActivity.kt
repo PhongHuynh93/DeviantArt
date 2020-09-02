@@ -1,5 +1,6 @@
 package com.wind.deviantart
 
+import android.app.ActivityOptions
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
@@ -8,9 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.material.transition.Hold
-import com.google.android.material.transition.MaterialContainerTransform
-import com.wind.deviantart.ui.artdetail.ArtDetailFragment
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
+import com.wind.deviantart.ui.artdetail.ArtDetailActivity
 import com.wind.deviantart.ui.comment.CommentActivity
 import com.wind.deviantart.ui.main.MainFragment
 import com.wind.deviantart.ui.main.topic.TopicActivity
@@ -30,39 +30,36 @@ private const val TAG_ART_DETAIL = "art_detail"
 private const val TAG_TOPIC_DETAIL = "topic_detail"
 private const val TAG_SEARCH = "search"
 private const val TAG_SEARCH_TAG = "search_tag"
-private const val START_CONTAINER_TRANSFORM_DURATION = 400L
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val vmNav by viewModels<NavViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // setup transition
+        setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+        window.sharedElementsUseOverlay = false
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment)
         if (savedInstanceState == null) {
-            addFragment(MainFragment().apply {
-                exitTransition = Hold()
-            }, R.id.root)
+            addFragment(MainFragment(), R.id.root)
         }
+
         vmNav.apply {
             val lifecycleOwner = this@MainActivity
             openArt.observe(lifecycleOwner, EventObserver {
-                val desFrag = ArtDetailFragment.newInstance(it.artWithCache, it.view?.transitionName).apply {
-                    sharedElementEnterTransition = MaterialContainerTransform().apply {
-                        duration = START_CONTAINER_TRANSFORM_DURATION
-                    }
-                    exitTransition = Hold()
+                if (it.view != null) {
+                    val intent = ArtDetailActivity.makeExtra(this@MainActivity, it.artWithCache, it.view.transitionName)
+                    val options = ActivityOptions.makeSceneTransitionAnimation(
+                        this@MainActivity,
+                        it.view,
+                        it.view.transitionName
+                    )
+                    startActivity(intent, options.toBundle())
+                } else {
+                    startActivity(ArtDetailActivity.makeExtra(this@MainActivity, it.artWithCache))
                 }
-                supportFragmentManager
-                    .beginTransaction()
-                    .apply {
-                        it.view?.let { view ->
-                            addSharedElement(view, view.transitionName)
-                        }
-                    }
-                    .replace(R.id.root, desFrag, TAG_ART_DETAIL)
-                    .addToBackStack(null)
-                    .commit()
             })
             openComment.observe(lifecycleOwner, EventObserver {
                 startActivity(CommentActivity.makeExtra(this@MainActivity, it))

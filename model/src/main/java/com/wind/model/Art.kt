@@ -50,7 +50,7 @@ data class Art (
     val dailyDeviation: DailyDeviation?,
     // Literature type
     @SerializedName("excerpt")
-    val excerpt: String
+    val excerpt: String?
 
 ) : Parcelable
 
