@@ -59,6 +59,10 @@ fun Fragment.getDimen(dimenRes: Int): Float {
     return resources.getDimension(dimenRes)
 }
 
+fun Context.getDimen(dimenRes: Int): Float {
+    return resources.getDimension(dimenRes)
+}
+
 fun Context.getColorAttribute(
     @AttrRes attrColor: Int,
     typedValue: TypedValue = TypedValue(),
@@ -76,9 +80,9 @@ fun Context.getColorEx(colorId: Int): Int {
     return ContextCompat.getColor(this, colorId)
 }
 
-fun Context.getColorAttr(activity: Activity, @AttrRes colorAttr: Int): Int {
+fun Context.getColorAttr(@AttrRes colorAttr: Int): Int {
     val typedValue = TypedValue()
-    activity.theme.resolveAttribute(colorAttr, typedValue, true)
+    theme.resolveAttribute(colorAttr, typedValue, true)
     return typedValue.data
 }
 
@@ -429,7 +433,7 @@ fun Fragment.setUpToolbar(toolbar: Toolbar, title: String = "", showUpIcon: Bool
             }
         }
         if (showUpIcon) {
-            toolbar.navigationIcon?.tint(context!!.getColorAttr(appActivity, R.attr.colorOnPrimary))
+            toolbar.navigationIcon?.tint(context!!.getColorAttr(R.attr.colorOnPrimary))
             toolbar.setNavigationOnClickListener {
                 appActivity.onBackPressed()
             }
