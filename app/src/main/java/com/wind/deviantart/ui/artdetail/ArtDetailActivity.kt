@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import com.wind.deviantart.ArtWithCache
+import com.wind.deviantart.NavigatorHelper
 import com.wind.deviantart.R
 import dagger.hilt.android.AndroidEntryPoint
 import util.addFragment
@@ -73,5 +74,6 @@ class ArtDetailActivity: AppCompatActivity(R.layout.fragment)  {
         if (savedInstanceState == null) {
             addFragment(frag, R.id.root)
         }
+        NavigatorHelper(fragmentManager = supportFragmentManager).run()
     }
 }
