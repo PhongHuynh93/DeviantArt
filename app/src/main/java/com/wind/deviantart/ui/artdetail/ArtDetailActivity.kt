@@ -3,6 +3,7 @@ package com.wind.deviantart.ui.artdetail;
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.transition.Transition
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.transition.platform.MaterialContainerTransform
@@ -32,6 +33,10 @@ class ArtDetailActivity: AppCompatActivity(R.layout.fragment)  {
         }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
+        val art = intent.getParcelableExtra<ArtWithCache>(EXTRA_ART)!!
+        val frag = ArtDetailFragment.newInstance(art, null)
+
+        // transition
         val transitionName = intent.getStringExtra(EXTRA_TRANSITION_NAME)
         transitionName?.let {
             findViewById<View>(android.R.id.content).transitionName = transitionName
@@ -39,6 +44,25 @@ class ArtDetailActivity: AppCompatActivity(R.layout.fragment)  {
             window.sharedElementEnterTransition = MaterialContainerTransform().apply {
                 addTarget(android.R.id.content)
                 duration = START_TRANSFORM_DURATION
+                addListener(object: Transition.TransitionListener {
+                    override fun onTransitionStart(transition: Transition?) {
+                        frag.onTransitionStart(transition)
+                    }
+
+                    override fun onTransitionEnd(transition: Transition?) {
+                        frag.onTransitionEnd(transition)
+                    }
+
+                    override fun onTransitionCancel(transition: Transition?) {
+                    }
+
+                    override fun onTransitionPause(transition: Transition?) {
+                    }
+
+                    override fun onTransitionResume(transition: Transition?) {
+                    }
+
+                })
             }
             window.sharedElementReturnTransition = MaterialContainerTransform().apply {
                 addTarget(android.R.id.content)
@@ -47,8 +71,7 @@ class ArtDetailActivity: AppCompatActivity(R.layout.fragment)  {
         }
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            val art = intent.getParcelableExtra<ArtWithCache>(EXTRA_ART)!!
-            addFragment(ArtDetailFragment.newInstance(art, null), R.id.root)
+            addFragment(frag, R.id.root)
         }
     }
 }

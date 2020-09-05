@@ -5,6 +5,8 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
+import android.transition.Transition
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +14,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.*
 import com.wind.deviantart.ArtWithCache
@@ -35,42 +38,22 @@ private const val EXTRA_TRANSITION_NAME = "xTransitionName"
 @AndroidEntryPoint
 class ArtDetailFragment : Fragment() {
     companion object {
-        fun newInstance(data: ArtWithCache, transitionName: String?): Fragment {
+        fun newInstance(data: ArtWithCache, transitionName: String?): ArtDetailFragment {
             return ArtDetailFragment().apply {
                 arguments = bundleOf(EXTRA_DATA to data, EXTRA_TRANSITION_NAME to transitionName)
             }
         }
     }
 
+    private val handler = Handler()
     private lateinit var viewBinding: FragmentArtDetailBinding
     private val vmArtDetailViewModel by viewModels<ArtDetailViewModel>()
     private val vmNav by activityViewModels<NavViewModel>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        viewBinding = FragmentArtDetailBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-            vm = vmArtDetailViewModel
-            transitionName = requireArguments().getString(EXTRA_TRANSITION_NAME)
-        }
-        return viewBinding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val stagGridArtAdapter = StagGridArtAdapter().apply {
-            callback = object : StagGridArtAdapter.Callback {
-                override fun onClick(view: View, pos: Int, art: Art) {
-                    vmNav.openArt.value = Event(OpenArtDetailParam(view = view, artWithCache = ArtWithCache(art = art, cacheW = view.measuredWidth,
-                        cacheH = view.measuredHeight, isThumbCached = view.getTag(R.id.tagThumb) != null)))
-                }
-            }
-        }
-        val artWithCache: ArtWithCache = requireArguments().getParcelable(EXTRA_DATA)!!
-
-        val headerAdapter = HeaderAdapter().apply {
+    private val config = ConcatAdapter.Config.Builder().setIsolateViewTypes(false).build()
+    private val headerAdapter = HeaderAdapter().apply {
+        lifecycleScope.launchWhenCreated {
+            val artWithCache: ArtWithCache = requireArguments().getParcelable(EXTRA_DATA)!!
             submitList(listOf(artWithCache))
             callback = object : HeaderAdapter.Callback {
                 override fun onClickComment(pos: Int, item: Art) {
@@ -88,13 +71,41 @@ class ArtDetailFragment : Fragment() {
                 }
             }
         }
-        val headerTitleAdapter = HeaderTitleAdapter()
+    }
+    private val headerTitleAdapter = HeaderTitleAdapter()
+    private val stagGridArtAdapter = StagGridArtAdapter().apply {
+        callback = object : StagGridArtAdapter.Callback {
+            override fun onClick(view: View, pos: Int, art: Art) {
+                vmNav.openArt.value = Event(OpenArtDetailParam(view = view, artWithCache = ArtWithCache(art = art, cacheW = view.measuredWidth,
+                    cacheH = view.measuredHeight, isThumbCached = view.getTag(R.id.tagThumb) != null)))
+            }
+        }
+    }
+    private val artDetailAdapter = ConcatAdapter(config, headerAdapter)
+    private val showDetailRunnable = Runnable {
+        artDetailAdapter.addAdapter(headerTitleAdapter)
+        artDetailAdapter.addAdapter(stagGridArtAdapter)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        viewBinding = FragmentArtDetailBinding.inflate(inflater, container, false).apply {
+            lifecycleOwner = viewLifecycleOwner
+            vm = vmArtDetailViewModel
+            transitionName = requireArguments().getString(EXTRA_TRANSITION_NAME)
+        }
+        return viewBinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewBinding.rcv.apply {
             layoutManager =
                 StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL)
             setHasFixedSize(true)
-            val config = ConcatAdapter.Config.Builder().setIsolateViewTypes(false).build()
-            adapter = ConcatAdapter(config, headerAdapter, headerTitleAdapter, stagGridArtAdapter)
+            adapter = artDetailAdapter
             val spaceArt = getDimen(R.dimen.space_art).toInt()
             val spaceOffsetBetweenSection = (4 * dp()).toInt()
             val spaceTitleVer = getDimen(R.dimen.space_pretty_small).toInt()
@@ -173,6 +184,7 @@ class ArtDetailFragment : Fragment() {
             })
         }
         vmArtDetailViewModel.apply {
+            val artWithCache: ArtWithCache = requireArguments().getParcelable(EXTRA_DATA)!!
             id.value = artWithCache.art.id
             data.observe(viewLifecycleOwner) { data ->
                 if (headerTitleAdapter.itemCount == 0) {
@@ -186,6 +198,22 @@ class ArtDetailFragment : Fragment() {
             openComment.observe(viewLifecycleOwner, EventObserver {
                 vmNav.openComment.value = Event(it)
             })
+        }
+        handler.postDelayed(showDetailRunnable, 600)
+    }
+
+
+
+    fun onTransitionStart(transition: Transition?) {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            handler.removeCallbacks(showDetailRunnable)
+        }
+    }
+
+    fun onTransitionEnd(transition: Transition?) {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            handler.removeCallbacks(showDetailRunnable)
+            handler.post(showDetailRunnable)
         }
     }
 }
