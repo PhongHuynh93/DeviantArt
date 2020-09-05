@@ -22,7 +22,7 @@
         </activity>
         <activity android:name=".ui.user.UserActivity"/>
         <activity android:name=".ui.comment.CommentActivity"/>
-        <activity android:name=".ui.main.topic.TopicActivity"/>
+        <activity android:name="com.wind.deviantart.ui.topic.TopicActivity"/>
         <activity android:name=".ui.artdetail.ArtDetailActivity"/>
     </application>
 

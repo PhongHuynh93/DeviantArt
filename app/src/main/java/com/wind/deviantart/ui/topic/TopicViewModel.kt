@@ -1,4 +1,4 @@
-package com.wind.deviantart.ui.main.topic
+package com.wind.deviantart.ui.topic
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel

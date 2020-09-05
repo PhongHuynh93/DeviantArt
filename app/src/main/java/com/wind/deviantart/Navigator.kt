@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.wind.deviantart.ui.artdetail.ArtDetailActivity
 import com.wind.deviantart.ui.comment.CommentActivity
-import com.wind.deviantart.ui.main.topic.TopicActivity
+import com.wind.deviantart.ui.topic.TopicActivity
 import com.wind.deviantart.ui.user.UserActivity
 import util.EventObserver
 
