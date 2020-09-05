@@ -188,7 +188,7 @@ class TopicFragment: Fragment() {
     }
 }
 
-
+private const val TOPIC_ART_ITEM_TO_DETAIL_TRANSITION_NAME = "topic_art_item_to_detail"
 class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: DiffUtil.ItemCallback<UiTopic>() {
     override fun areItemsTheSame(oldItem: UiTopic, newItem: UiTopic): Boolean {
         return oldItem == newItem
@@ -268,6 +268,7 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
                 }
                 UiTopic.TYPE_ART -> {
                     (holder as TopicViewHolder).apply {
+                        itemView.transitionName = "$TOPIC_ART_ITEM_TO_DETAIL_TRANSITION_NAME$position"
                         binding.item = (item as UiTopic.ArtModel).art
                         binding.executePendingBindings()
                     }
