@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import util.Event
 import util.getDimen
+import util.replaceFragment
 
 /**
  * Created by Phong Huynh on 8/8/2020.
@@ -65,6 +66,11 @@ class TopicFragment: Fragment() {
                     cacheH = view.measuredHeight, isThumbCached = view.getTag(R.id.tagThumb) != null)
                 ))
             }
+
+            override fun onClickFiction(pos: Int, art: Art) {
+                replaceFragment(ArtFictionFragment.newInstance(art), R.id.expandContainer, isAddBackStack = true)
+                viewBinding.rcv.expandItem(pos)
+            }
         }
     }
 
@@ -89,6 +95,7 @@ class TopicFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding.rcv.apply {
+            expandablePage = viewBinding.expandPage
             val config = ConcatAdapter.Config.Builder().setIsolateViewTypes(false).build()
             val concatAdapter = ConcatAdapter(config, topicAdapter, footerAdapter)
             layoutManager = GridLayoutManager(requireContext(), 2).apply {
@@ -240,8 +247,8 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
                     itemView.setOnClickListener {view ->
                         val pos = bindingAdapterPosition
                         if (pos >= 0) {
-                            (getItem(pos) as? UiTopic.ArtModel)?.let {
-//                                callback?.onClickArt(pos, it.art)
+                            (getItem(pos) as? UiTopic.LiteratureModel)?.let {
+                                callback?.onClickFiction(pos, it.art)
                             }
                         }
                     }
@@ -293,6 +300,7 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
     interface Callback {
         fun onClickTopic(pos: Int, topic: Topic)
         fun onClickArt(pos1: View, pos: Int, art: Art)
+        fun onClickFiction(pos: Int, art: Art)
     }
 
     class TitleTopicViewHolder(val binding: ItemTopicTitleBinding): RecyclerView.ViewHolder(binding.root)

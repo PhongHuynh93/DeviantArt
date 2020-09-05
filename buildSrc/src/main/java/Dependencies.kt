@@ -73,7 +73,6 @@ object Libs {
         const val dialog = "com.afollestad.material-dialogs:core:3.3.0"
         const val skeleton = "io.supercharge:shimmerlayout:2.1.0"
         const val workManager = "androidx.work:work-runtime-ktx:2.4.0"
-        const val inboxRcv = "me.saket:inboxrecyclerview:2.3.0"
     }
 
     object Thread {

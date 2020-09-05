@@ -5,7 +5,6 @@ plugins {
     kotlin(Plugins.kotlinExtensions)
     kotlin(Plugins.kapt)
     id(Plugins.safeArgs)
-    id("kotlin-android")
 }
 
 android {
@@ -42,6 +41,7 @@ dependencies {
     implementation(project(":share"))
     implementation(project(":model"))
     implementation(project(":shimmer"))
+    implementation(project(":inboxrecyclerview"))
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
     testImplementation(Libs.Test.junit)
@@ -84,7 +84,6 @@ dependencies {
     // helper class
     implementation(Libs.Helper.timber)
     implementation(Libs.Helper.dialog)
-    implementation(Libs.Helper.inboxRcv)
 
     // thread
     implementation(Libs.Thread.coroutine)
