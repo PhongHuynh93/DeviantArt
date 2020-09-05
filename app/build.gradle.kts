@@ -84,6 +84,7 @@ dependencies {
     // helper class
     implementation(Libs.Helper.timber)
     implementation(Libs.Helper.dialog)
+    implementation(Libs.Helper.inboxRcv)
 
     // thread
     implementation(Libs.Thread.coroutine)
