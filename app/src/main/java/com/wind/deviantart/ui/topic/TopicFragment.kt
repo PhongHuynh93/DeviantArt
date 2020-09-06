@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -35,17 +33,12 @@ import com.wind.model.Topic
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import me.saket.inboxrecyclerview.page.ExpandablePageLayout
-import me.saket.inboxrecyclerview.page.PageStateChangeCallbacks
 import timber.log.Timber
 import util.Event
-import util.popFragment
-import util.replaceFragment
 
 /**
  * Created by Phong Huynh on 8/8/2020.
  */
-private const val TAG_FICTION_FRAG = "tag_fiction_Frag"
 @AndroidEntryPoint
 class TopicFragment: Fragment() {
     companion object {
@@ -54,38 +47,10 @@ class TopicFragment: Fragment() {
         }
     }
 
-    private lateinit var expandView: ExpandablePageLayout
+    private var artFictionExpandableFrag: ArtFictionExpandableFragment? = null
     private lateinit var viewBinding: FragmentTopicBinding
     private val vmTopicViewModel by viewModels<TopicViewModel>()
     private val vmNavViewModel by activityViewModels<NavViewModel>()
-
-    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            Timber.e("onbackpress")
-            if (expandView.isExpanded) {
-                Timber.e("onbackpress view is expand, collapse the view")
-                expandView.addStateChangeCallbacks(object: PageStateChangeCallbacks {
-                    override fun onPageAboutToExpand(expandAnimDuration: Long) {
-
-                    }
-
-                    override fun onPageExpanded() {
-                    }
-
-                    override fun onPageAboutToCollapse(collapseAnimDuration: Long) {
-                    }
-
-                    override fun onPageCollapsed() {
-                        Timber.e("remove fiction fraction")
-                        expandView.removeStateChangeCallbacks(this)
-                        requireActivity().popFragment(TAG_FICTION_FRAG, POP_BACK_STACK_INCLUSIVE)
-                        remove()
-                    }
-                })
-                viewBinding.rcv.collapse()
-            }
-        }
-    }
 
     private val topicAdapter = TopicAdapter().apply {
         callback = object : TopicAdapter.Callback {
@@ -106,17 +71,7 @@ class TopicFragment: Fragment() {
             }
 
             override fun onClickFiction(pos: Int, art: Art) {
-                requireActivity().replaceFragment(
-                    ArtFictionFragment.newInstance(art),
-                    R.id.expandContainer,
-                    isAddBackStack = true,
-                    tag = TAG_FICTION_FRAG
-                )
-                viewBinding.rcv.expandItem(pos)
-                requireActivity().onBackPressedDispatcher.addCallback(
-                    this@TopicFragment,
-                    onBackPressedCallback
-                )
+                artFictionExpandableFrag?.expandItemAtPos(pos, art)
             }
         }
     }
@@ -139,29 +94,17 @@ class TopicFragment: Fragment() {
         return viewBinding.root
     }
 
-    init {
-        viewLifecycleOwnerLiveData.observe(this) {
-            Timber.e("view lifecycle $it")
-            val rootContentView = (requireActivity().findViewById<View>(android.R.id.content) as ViewGroup)
-            if (it != null) {
-                // view created
-                LayoutInflater.from(requireContext()).inflate(R.layout.item_expandable_page_layout, rootContentView, true)
-                expandView = rootContentView.findViewById<ExpandablePageLayout>(R.id.expandPage).apply {
-                    pullToCollapseEnabled = false
-                }
-                viewBinding.rcv.apply {
-                    expandablePage = expandView
-                }
-            } else {
-                // view destroyed
-                rootContentView.removeView(expandView)
-            }
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        artFictionExpandableFrag!!.finish()
+        artFictionExpandableFrag = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        artFictionExpandableFrag = ArtFictionExpandableFragment.addViewToRootViewTree(requireActivity()).apply {
+            setRcv(viewBinding.rcv)
+        }
         viewBinding.rcv.apply {
             val config = ConcatAdapter.Config.Builder().setIsolateViewTypes(false).build()
             val concatAdapter = ConcatAdapter(config, topicAdapter, footerAdapter)

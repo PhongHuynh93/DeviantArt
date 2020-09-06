@@ -318,7 +318,7 @@ open class InboxRecyclerView @JvmOverloads constructor(
   override fun setAdapter(adapter: Adapter<*>?) {
     ensureStableIds(adapter)
     super.setAdapter(adapter)
-    restorer.restoreIfPossible()
+//    restorer.restoreIfPossible()
   }
 
   override fun swapAdapter(

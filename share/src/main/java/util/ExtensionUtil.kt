@@ -411,11 +411,11 @@ fun Fragment.findFragmentByTag(tag: String?): Fragment? {
     return childFragmentManager.findFragmentByTag(tag)
 }
 
-fun AppCompatActivity.findFragmentByTag(tag: String?): Fragment? {
+fun FragmentActivity.findFragmentByTag(tag: String?): Fragment? {
     return supportFragmentManager.findFragmentByTag(tag)
 }
 
-fun AppCompatActivity.findFragmentById(id: Int): Fragment? {
+fun FragmentActivity.findFragmentById(id: Int): Fragment? {
     return supportFragmentManager.findFragmentById(id)
 }
 
