@@ -96,8 +96,8 @@ open class InboxRecyclerView @JvmOverloads constructor(
 
   init {
     // Because setters don't get called for default values.
-    itemExpandAnimator = ItemExpandAnimator.split()
-    dimPainter = DimPainter.listAndPage()
+    itemExpandAnimator = ItemExpandAnimator.none()
+    dimPainter = DimPainter.none()
   }
 
   override fun dispatchDraw(canvas: Canvas) {

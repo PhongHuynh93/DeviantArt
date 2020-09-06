@@ -13,16 +13,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
-import me.saket.inboxrecyclerview.ANIMATION_START_DELAY
-import me.saket.inboxrecyclerview.InboxRecyclerView
+import me.saket.inboxrecyclerview.*
 import me.saket.inboxrecyclerview.InboxRecyclerView.ExpandedItem
-import me.saket.inboxrecyclerview.InternalPageCallbacks
 import me.saket.inboxrecyclerview.InternalPageCallbacks.NoOp
-import me.saket.inboxrecyclerview.executeOnMeasure
-import me.saket.inboxrecyclerview.locationOnScreen
 import me.saket.inboxrecyclerview.page.ExpandablePageLayout.PageState.EXPANDED
 import me.saket.inboxrecyclerview.page.ExpandablePageLayout.PageState.EXPANDING
-import me.saket.inboxrecyclerview.withEndAction
 import java.lang.reflect.Method
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.math.abs
@@ -67,7 +62,17 @@ open class ExpandablePageLayout @JvmOverloads constructor(
     }
 
   var pullToCollapseEnabled = false
-  val pullToCollapseListener: PullToCollapseListener
+    set(value) {
+      field = value
+      if (value) {
+        pullToCollapseListener.addOnPullListener(this)
+      } else {
+        pullToCollapseListener.removeOnPullListener(this)
+      }
+    }
+  val pullToCollapseListener: PullToCollapseListener by lazy {
+    PullToCollapseListener(this)
+  }
   lateinit var currentState: PageState
 
   internal var internalStateCallbacksForRecyclerView: InternalPageCallbacks = NoOp()
@@ -120,10 +125,6 @@ open class ExpandablePageLayout @JvmOverloads constructor(
     visibility = INVISIBLE
     contentCoverAlpha = collapsedContentCoverAlpha
     changeState(PageState.COLLAPSED)
-
-    pullToCollapseEnabled = true
-    pullToCollapseListener = PullToCollapseListener(this)
-    pullToCollapseListener.addOnPullListener(this)
 
     outlineProvider = object : ViewOutlineProvider() {
       override fun getOutline(view: View, outline: Outline) {

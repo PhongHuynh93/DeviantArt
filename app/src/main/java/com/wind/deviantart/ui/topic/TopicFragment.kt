@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -34,14 +36,18 @@ import com.wind.model.Topic
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import me.saket.inboxrecyclerview.page.ExpandablePageLayout
+import me.saket.inboxrecyclerview.page.PageStateChangeCallbacks
 import timber.log.Timber
 import util.Event
 import util.getDimen
+import util.popFragment
 import util.replaceFragment
 
 /**
  * Created by Phong Huynh on 8/8/2020.
  */
+private const val TAG_FICTION_FRAG = "tag_fiction_Frag"
 @AndroidEntryPoint
 class TopicFragment: Fragment() {
     companion object {
@@ -50,9 +56,38 @@ class TopicFragment: Fragment() {
         }
     }
 
+    private lateinit var expandView: ExpandablePageLayout
     private lateinit var viewBinding: FragmentTopicBinding
     private val vmTopicViewModel by viewModels<TopicViewModel>()
     private val vmNavViewModel by activityViewModels<NavViewModel>()
+
+    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            Timber.e("onbackpress")
+            if (expandView.isExpanded) {
+                Timber.e("onbackpress view is expand, collapse the view")
+                expandView.addStateChangeCallbacks(object: PageStateChangeCallbacks {
+                    override fun onPageAboutToExpand(expandAnimDuration: Long) {
+
+                    }
+
+                    override fun onPageExpanded() {
+                    }
+
+                    override fun onPageAboutToCollapse(collapseAnimDuration: Long) {
+                    }
+
+                    override fun onPageCollapsed() {
+                        Timber.e("remove fiction fraction")
+                        expandView.removeStateChangeCallbacks(this)
+                        requireActivity().popFragment(TAG_FICTION_FRAG, POP_BACK_STACK_INCLUSIVE)
+                        remove()
+                    }
+                })
+                viewBinding.rcv.collapse()
+            }
+        }
+    }
 
     private val topicAdapter = TopicAdapter().apply {
         callback = object : TopicAdapter.Callback {
@@ -62,20 +97,34 @@ class TopicFragment: Fragment() {
 
             override fun onClickArt(view: View, pos: Int, art: Art) {
                 vmNavViewModel.openArt.value =
-                Event(OpenArtDetailParam(view = view, artWithCache = ArtWithCache(art = art, cacheW = view.measuredWidth,
-                    cacheH = view.measuredHeight, isThumbCached = view.getTag(R.id.tagThumb) != null)
-                ))
+                Event(
+                    OpenArtDetailParam(
+                        view = view, artWithCache = ArtWithCache(
+                            art = art, cacheW = view.measuredWidth,
+                            cacheH = view.measuredHeight, isThumbCached = view.getTag(R.id.tagThumb) != null
+                        )
+                    )
+                )
             }
 
             override fun onClickFiction(pos: Int, art: Art) {
-                replaceFragment(ArtFictionFragment.newInstance(art), R.id.expandContainer, isAddBackStack = true)
+                requireActivity().replaceFragment(
+                    ArtFictionFragment.newInstance(art),
+                    R.id.expandContainer,
+                    isAddBackStack = true,
+                    tag = TAG_FICTION_FRAG
+                )
                 viewBinding.rcv.expandItem(pos)
+                requireActivity().onBackPressedDispatcher.addCallback(
+                    this@TopicFragment,
+                    onBackPressedCallback
+                )
             }
         }
     }
 
     private val footerAdapter = FooterAdapter().apply {
-        setCallback(object: FooterAdapter.Callback {
+        setCallback(object : FooterAdapter.Callback {
             override fun retry() {
                 topicAdapter.retry()
             }
@@ -92,10 +141,30 @@ class TopicFragment: Fragment() {
         return viewBinding.root
     }
 
+    init {
+        viewLifecycleOwnerLiveData.observe(this) {
+            Timber.e("view lifecycle $it")
+            val rootContentView = (requireActivity().findViewById<View>(android.R.id.content) as ViewGroup)
+            if (it != null) {
+                // view created
+                LayoutInflater.from(requireContext()).inflate(R.layout.item_expandable_page_layout, rootContentView, true)
+                expandView = rootContentView.findViewById<ExpandablePageLayout>(R.id.expandPage).apply {
+                    pullToCollapseEnabled = false
+                }
+                viewBinding.rcv.apply {
+                    expandablePage = expandView
+                }
+            } else {
+                // view destroyed
+                rootContentView.removeView(expandView)
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         viewBinding.rcv.apply {
-            expandablePage = viewBinding.expandPage
             val config = ConcatAdapter.Config.Builder().setIsolateViewTypes(false).build()
             val concatAdapter = ConcatAdapter(config, topicAdapter, footerAdapter)
             layoutManager = GridLayoutManager(requireContext(), 2).apply {
@@ -107,7 +176,7 @@ class TopicFragment: Fragment() {
                             -1
                         }) {
                             UiTopic.TYPE_TITLE, AdapterType.TYPE_FOOTER, UiTopic.TYPE_LITERATURE, UiTopic.TYPE_PERSONAL -> {
-                               2
+                                2
                             }
                             UiTopic.TYPE_ART -> {
                                 1
@@ -121,7 +190,7 @@ class TopicFragment: Fragment() {
             }
             adapter = concatAdapter
             setHasFixedSize(true)
-            addItemDecoration(object: RecyclerView.ItemDecoration() {
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
                 val spaceLarge = getDimen(R.dimen.space_large).toInt()
                 val spaceNormal = getDimen(R.dimen.space_normal).toInt()
                 val spaceSmall = getDimen(R.dimen.space_small).toInt()
@@ -196,7 +265,7 @@ class TopicFragment: Fragment() {
 }
 
 private const val TOPIC_ART_ITEM_TO_DETAIL_TRANSITION_NAME = "topic_art_item_to_detail"
-class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: DiffUtil.ItemCallback<UiTopic>() {
+class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<UiTopic>() {
     override fun areItemsTheSame(oldItem: UiTopic, newItem: UiTopic): Boolean {
         return oldItem == newItem
     }
@@ -218,7 +287,7 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
             UiTopic.TYPE_TITLE -> {
                 TitleTopicViewHolder(ItemTopicTitleBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
                 }).apply {
-                    itemView.setOnClickListener {view ->
+                    itemView.setOnClickListener { view ->
                         val pos = bindingAdapterPosition
                         if (pos >= 0) {
                             (getItem(pos) as? UiTopic.TitleModel)?.let {
@@ -231,7 +300,7 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
             UiTopic.TYPE_ART -> {
                 TopicViewHolder(ItemTopicListBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
                 }).apply {
-                    itemView.setOnClickListener {view ->
+                    itemView.setOnClickListener { view ->
                         val pos = bindingAdapterPosition
                         if (pos >= 0) {
                             (getItem(pos) as? UiTopic.ArtModel)?.let {
@@ -244,7 +313,7 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
             UiTopic.TYPE_LITERATURE, UiTopic.TYPE_PERSONAL -> {
                 TopicLiteratureViewHolder(ItemTopicLiteratureBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
                 }).apply {
-                    itemView.setOnClickListener {view ->
+                    itemView.setOnClickListener { view ->
                         val pos = bindingAdapterPosition
                         if (pos >= 0) {
                             (getItem(pos) as? UiTopic.LiteratureModel)?.let {

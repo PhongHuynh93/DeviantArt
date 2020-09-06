@@ -3,7 +3,6 @@ package util
 import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorListenerAdapter
-import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.pm.ApplicationInfo
@@ -322,7 +321,7 @@ inline fun FragmentManager.inTransaction(useAnim: Boolean = false, func: Fragmen
     }
 }
 
-fun AppCompatActivity.addFragment(
+fun FragmentActivity.addFragment(
     fragment: Fragment, frameId: Int, tag: String? = null, isAddBackStack: Boolean =
         false, backStackName: String? = null, useAnim: Boolean = false
 ) {
@@ -335,13 +334,13 @@ fun AppCompatActivity.addFragment(
     }
 }
 
-fun AppCompatActivity.popFragment(name: String, flag: Int = 0) {
+fun FragmentActivity.popFragment(name: String, flag: Int = 0) {
     if (supportFragmentManager.backStackEntryCount > 0) {
         supportFragmentManager.popBackStack(name, flag)
     }
 }
 
-fun AppCompatActivity.popFragment() {
+fun FragmentActivity.popFragment() {
     if (supportFragmentManager.backStackEntryCount > 0) {
         supportFragmentManager.popBackStack()
     }
@@ -365,7 +364,7 @@ fun Fragment.addFragment(
     }
 }
 
-fun AppCompatActivity.replaceFragment(
+fun FragmentActivity.replaceFragment(
     fragment: Fragment, frameId: Int, tag: String,
     isAddBackStack: Boolean = true, useAnim: Boolean = false
 ) {
@@ -373,7 +372,7 @@ fun AppCompatActivity.replaceFragment(
         replace(frameId, fragment, tag)
             .apply {
                 if (isAddBackStack) {
-                    addToBackStack(null)
+                    addToBackStack(tag)
                 }
             }
     }
