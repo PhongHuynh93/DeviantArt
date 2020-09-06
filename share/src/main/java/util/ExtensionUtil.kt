@@ -419,7 +419,7 @@ fun AppCompatActivity.findFragmentById(id: Int): Fragment? {
     return supportFragmentManager.findFragmentById(id)
 }
 
-fun Fragment.setUpToolbar(toolbar: Toolbar, title: String = "", showUpIcon: Boolean = false) {
+fun Fragment.setUpToolbar(toolbar: Toolbar, title: String? = null, showUpIcon: Boolean = false) {
     if (activity is AppCompatActivity) {
         val appActivity = activity as AppCompatActivity
         appActivity.setSupportActionBar(toolbar)
