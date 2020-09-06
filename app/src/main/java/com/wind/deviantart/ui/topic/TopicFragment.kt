@@ -1,6 +1,5 @@
 package com.wind.deviantart.ui.topic
 
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,7 +39,6 @@ import me.saket.inboxrecyclerview.page.ExpandablePageLayout
 import me.saket.inboxrecyclerview.page.PageStateChangeCallbacks
 import timber.log.Timber
 import util.Event
-import util.getDimen
 import util.popFragment
 import util.replaceFragment
 
@@ -190,41 +188,7 @@ class TopicFragment: Fragment() {
             }
             adapter = concatAdapter
             setHasFixedSize(true)
-            addItemDecoration(object : RecyclerView.ItemDecoration() {
-                val spaceLarge = getDimen(R.dimen.space_large).toInt()
-                val spaceNormal = getDimen(R.dimen.space_normal).toInt()
-                val spaceSmall = getDimen(R.dimen.space_small).toInt()
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    super.getItemOffsets(outRect, view, parent, state)
-                    val pos = parent.getChildAdapterPosition(view)
-                    if (pos == RecyclerView.NO_POSITION)
-                        return
-                    try {
-                        val itemViewType = adapter?.getItemViewType(pos)
-                        val itemNextViewType = adapter?.getItemViewType(pos + 1)
-                        when (itemViewType) {
-                            UiTopic.TYPE_TITLE -> {
-                                outRect.top = spaceLarge
-                            }
-                            UiTopic.TYPE_LITERATURE, UiTopic.TYPE_PERSONAL -> {
-                                if (itemNextViewType == UiTopic.TYPE_LITERATURE || itemNextViewType == UiTopic.TYPE_PERSONAL) {
-                                    outRect.bottom = spaceSmall
-                                }
-                            }
-                        }
-                        if (pos == 0) {
-                            outRect.top = spaceNormal
-                        }
-                    } catch (ignored: Exception) {
-
-                    }
-                }
-            })
+            addItemDecoration(TopicItemDecoration(requireContext()))
         }
         vmTopicViewModel.dataPaging.observe(viewLifecycleOwner) {
             viewLifecycleOwner.lifecycleScope.launch {
