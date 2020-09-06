@@ -9,7 +9,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.wind.deviantart.NavViewModel
 import com.wind.deviantart.R
 import com.wind.deviantart.databinding.FragmentBrowseBinding
-import com.wind.deviantart.ui.main.topic.TopicFragment
+import com.wind.deviantart.ui.topic.TopicFragment
 import dagger.hilt.android.AndroidEntryPoint
 import util.Event
 import util.setUpToolbar

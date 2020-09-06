@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wind.deviantart.databinding.FragmentUserGalleryBinding
 import com.wind.deviantart.databinding.ItemUserGalleryBinding
-import com.wind.deviantart.ui.main.topic.UiTopic
+import com.wind.deviantart.ui.topic.UiTopic
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch

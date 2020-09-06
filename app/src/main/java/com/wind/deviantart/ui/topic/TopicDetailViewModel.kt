@@ -1,10 +1,8 @@
-package com.wind.deviantart.ui.main.topic
+package com.wind.deviantart.ui.topic
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import androidx.paging.cachedIn
-import com.wind.domain.art.GetPopularArtParam
-import com.wind.domain.art.GetPopularArtUseCase
 import com.wind.domain.art.GetTopicDetailArtParam
 import com.wind.domain.art.GetTopicDetailUseCase
 

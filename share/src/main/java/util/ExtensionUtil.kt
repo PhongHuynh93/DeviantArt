@@ -3,7 +3,6 @@ package util
 import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorListenerAdapter
-import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.pm.ApplicationInfo
@@ -322,7 +321,7 @@ inline fun FragmentManager.inTransaction(useAnim: Boolean = false, func: Fragmen
     }
 }
 
-fun AppCompatActivity.addFragment(
+fun FragmentActivity.addFragment(
     fragment: Fragment, frameId: Int, tag: String? = null, isAddBackStack: Boolean =
         false, backStackName: String? = null, useAnim: Boolean = false
 ) {
@@ -335,16 +334,26 @@ fun AppCompatActivity.addFragment(
     }
 }
 
-fun AppCompatActivity.popFragment(name: String, flag: Int = 0) {
+fun FragmentActivity.popFragment(name: String, flag: Int = 0) {
     if (supportFragmentManager.backStackEntryCount > 0) {
         supportFragmentManager.popBackStack(name, flag)
     }
 }
 
-fun AppCompatActivity.popFragment() {
+fun FragmentActivity.popFragment() {
     if (supportFragmentManager.backStackEntryCount > 0) {
         supportFragmentManager.popBackStack()
     }
+}
+
+fun FragmentActivity.removeFragment(tag: String) {
+    val fragment = supportFragmentManager.findFragmentByTag(tag)
+    if (fragment != null) supportFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss()
+}
+
+fun Fragment.removeFragment(tag: String) {
+    val fragment = childFragmentManager.findFragmentByTag(tag)
+    if (fragment != null) childFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss()
 }
 
 fun Fragment.addFragment(
@@ -365,7 +374,7 @@ fun Fragment.addFragment(
     }
 }
 
-fun AppCompatActivity.replaceFragment(
+fun FragmentActivity.replaceFragment(
     fragment: Fragment, frameId: Int, tag: String,
     isAddBackStack: Boolean = true, useAnim: Boolean = false
 ) {
@@ -373,7 +382,7 @@ fun AppCompatActivity.replaceFragment(
         replace(frameId, fragment, tag)
             .apply {
                 if (isAddBackStack) {
-                    addToBackStack(null)
+                    addToBackStack(tag)
                 }
             }
     }
@@ -412,15 +421,15 @@ fun Fragment.findFragmentByTag(tag: String?): Fragment? {
     return childFragmentManager.findFragmentByTag(tag)
 }
 
-fun AppCompatActivity.findFragmentByTag(tag: String?): Fragment? {
+fun FragmentActivity.findFragmentByTag(tag: String?): Fragment? {
     return supportFragmentManager.findFragmentByTag(tag)
 }
 
-fun AppCompatActivity.findFragmentById(id: Int): Fragment? {
+fun FragmentActivity.findFragmentById(id: Int): Fragment? {
     return supportFragmentManager.findFragmentById(id)
 }
 
-fun Fragment.setUpToolbar(toolbar: Toolbar, title: String = "", showUpIcon: Boolean = false) {
+fun Fragment.setUpToolbar(toolbar: Toolbar, title: String? = null, showUpIcon: Boolean = false) {
     if (activity is AppCompatActivity) {
         val appActivity = activity as AppCompatActivity
         appActivity.setSupportActionBar(toolbar)
@@ -506,7 +515,7 @@ fun Bitmap.saveFile(context: Context) {
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg")
             put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
         }
-        resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)?.let {imageUri ->
+        resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)?.let { imageUri ->
             val fOut = resolver.openOutputStream(imageUri)
             compress(Bitmap.CompressFormat.JPEG, 100, fOut)
             fOut?.close()

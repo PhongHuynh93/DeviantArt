@@ -25,7 +25,7 @@ import com.wind.deviantart.OpenArtDetailParam
 import com.wind.deviantart.R
 import com.wind.deviantart.adapter.FooterAdapter
 import com.wind.deviantart.databinding.ItemArtBinding
-import com.wind.deviantart.ui.main.topic.TopicDetailViewModel
+import com.wind.deviantart.ui.topic.TopicDetailViewModel
 import com.wind.deviantart.ui.search.TagViewModel
 import com.wind.deviantart.util.AdapterType
 import com.wind.model.Art

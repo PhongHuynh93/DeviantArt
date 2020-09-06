@@ -1,6 +1,5 @@
-package com.wind.deviantart.ui.main.topic
+package com.wind.deviantart.ui.topic
 
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,9 +33,9 @@ import com.wind.model.Topic
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import me.saket.inboxrecyclerview.dimming.DimPainter
 import timber.log.Timber
 import util.Event
-import util.getDimen
 
 /**
  * Created by Phong Huynh on 8/8/2020.
@@ -49,6 +48,7 @@ class TopicFragment: Fragment() {
         }
     }
 
+    private var artFictionExpandableFrag: ArtFictionExpandableFragment? = null
     private lateinit var viewBinding: FragmentTopicBinding
     private val vmTopicViewModel by viewModels<TopicViewModel>()
     private val vmNavViewModel by activityViewModels<NavViewModel>()
@@ -61,15 +61,24 @@ class TopicFragment: Fragment() {
 
             override fun onClickArt(view: View, pos: Int, art: Art) {
                 vmNavViewModel.openArt.value =
-                Event(OpenArtDetailParam(view = view, artWithCache = ArtWithCache(art = art, cacheW = view.measuredWidth,
-                    cacheH = view.measuredHeight, isThumbCached = view.getTag(R.id.tagThumb) != null)
-                ))
+                Event(
+                    OpenArtDetailParam(
+                        view = view, artWithCache = ArtWithCache(
+                            art = art, cacheW = view.measuredWidth,
+                            cacheH = view.measuredHeight, isThumbCached = view.getTag(R.id.tagThumb) != null
+                        )
+                    )
+                )
+            }
+
+            override fun onClickFiction(pos: Int, art: Art) {
+                artFictionExpandableFrag?.expandItemAtPos(pos, art)
             }
         }
     }
 
     private val footerAdapter = FooterAdapter().apply {
-        setCallback(object: FooterAdapter.Callback {
+        setCallback(object : FooterAdapter.Callback {
             override fun retry() {
                 topicAdapter.retry()
             }
@@ -86,9 +95,19 @@ class TopicFragment: Fragment() {
         return viewBinding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        artFictionExpandableFrag!!.finish()
+        artFictionExpandableFrag = null
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        artFictionExpandableFrag = ArtFictionExpandableFragment.addViewToRootViewTree(requireActivity()).apply {
+            setRcv(viewBinding.rcv)
+        }
         viewBinding.rcv.apply {
+            dimPainter = DimPainter.listAndPage()
             val config = ConcatAdapter.Config.Builder().setIsolateViewTypes(false).build()
             val concatAdapter = ConcatAdapter(config, topicAdapter, footerAdapter)
             layoutManager = GridLayoutManager(requireContext(), 2).apply {
@@ -100,7 +119,7 @@ class TopicFragment: Fragment() {
                             -1
                         }) {
                             UiTopic.TYPE_TITLE, AdapterType.TYPE_FOOTER, UiTopic.TYPE_LITERATURE, UiTopic.TYPE_PERSONAL -> {
-                               2
+                                2
                             }
                             UiTopic.TYPE_ART -> {
                                 1
@@ -114,41 +133,7 @@ class TopicFragment: Fragment() {
             }
             adapter = concatAdapter
             setHasFixedSize(true)
-            addItemDecoration(object: RecyclerView.ItemDecoration() {
-                val spaceLarge = getDimen(R.dimen.space_large).toInt()
-                val spaceNormal = getDimen(R.dimen.space_normal).toInt()
-                val spaceSmall = getDimen(R.dimen.space_small).toInt()
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    super.getItemOffsets(outRect, view, parent, state)
-                    val pos = parent.getChildAdapterPosition(view)
-                    if (pos == RecyclerView.NO_POSITION)
-                        return
-                    try {
-                        val itemViewType = adapter?.getItemViewType(pos)
-                        val itemNextViewType = adapter?.getItemViewType(pos + 1)
-                        when (itemViewType) {
-                            UiTopic.TYPE_TITLE -> {
-                                outRect.top = spaceLarge
-                            }
-                            UiTopic.TYPE_LITERATURE, UiTopic.TYPE_PERSONAL -> {
-                                if (itemNextViewType == UiTopic.TYPE_LITERATURE || itemNextViewType == UiTopic.TYPE_PERSONAL) {
-                                    outRect.bottom = spaceSmall
-                                }
-                            }
-                        }
-                        if (pos == 0) {
-                            outRect.top = spaceNormal
-                        }
-                    } catch (ignored: Exception) {
-
-                    }
-                }
-            })
+            addItemDecoration(TopicItemDecoration(requireContext()))
         }
         vmTopicViewModel.dataPaging.observe(viewLifecycleOwner) {
             viewLifecycleOwner.lifecycleScope.launch {
@@ -188,8 +173,8 @@ class TopicFragment: Fragment() {
     }
 }
 
-
-class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: DiffUtil.ItemCallback<UiTopic>() {
+private const val TOPIC_ART_ITEM_TO_DETAIL_TRANSITION_NAME = "topic_art_item_to_detail"
+class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<UiTopic>() {
     override fun areItemsTheSame(oldItem: UiTopic, newItem: UiTopic): Boolean {
         return oldItem == newItem
     }
@@ -211,7 +196,7 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
             UiTopic.TYPE_TITLE -> {
                 TitleTopicViewHolder(ItemTopicTitleBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
                 }).apply {
-                    itemView.setOnClickListener {view ->
+                    itemView.setOnClickListener { view ->
                         val pos = bindingAdapterPosition
                         if (pos >= 0) {
                             (getItem(pos) as? UiTopic.TitleModel)?.let {
@@ -224,7 +209,7 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
             UiTopic.TYPE_ART -> {
                 TopicViewHolder(ItemTopicListBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
                 }).apply {
-                    itemView.setOnClickListener {view ->
+                    itemView.setOnClickListener { view ->
                         val pos = bindingAdapterPosition
                         if (pos >= 0) {
                             (getItem(pos) as? UiTopic.ArtModel)?.let {
@@ -237,11 +222,11 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
             UiTopic.TYPE_LITERATURE, UiTopic.TYPE_PERSONAL -> {
                 TopicLiteratureViewHolder(ItemTopicLiteratureBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
                 }).apply {
-                    itemView.setOnClickListener {view ->
+                    itemView.setOnClickListener { view ->
                         val pos = bindingAdapterPosition
                         if (pos >= 0) {
-                            (getItem(pos) as? UiTopic.ArtModel)?.let {
-//                                callback?.onClickArt(pos, it.art)
+                            (getItem(pos) as? UiTopic.LiteratureModel)?.let {
+                                callback?.onClickFiction(pos, it.art)
                             }
                         }
                     }
@@ -268,6 +253,7 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
                 }
                 UiTopic.TYPE_ART -> {
                     (holder as TopicViewHolder).apply {
+                        itemView.transitionName = "$TOPIC_ART_ITEM_TO_DETAIL_TRANSITION_NAME$position"
                         binding.item = (item as UiTopic.ArtModel).art
                         binding.executePendingBindings()
                     }
@@ -292,6 +278,7 @@ class TopicAdapter: PagingDataAdapter<UiTopic, RecyclerView.ViewHolder>(object: 
     interface Callback {
         fun onClickTopic(pos: Int, topic: Topic)
         fun onClickArt(pos1: View, pos: Int, art: Art)
+        fun onClickFiction(pos: Int, art: Art)
     }
 
     class TitleTopicViewHolder(val binding: ItemTopicTitleBinding): RecyclerView.ViewHolder(binding.root)
