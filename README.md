@@ -1,6 +1,12 @@
 # DeviantArt
-<img align="left" width="300" src="https://github.com/PhongHuynh93/DeviantArt/blob/master/preview/device-2020-09-12-093819.gif">
-<img align="center" width="300" src="https://github.com/PhongHuynh93/DeviantArt/blob/master/preview/device-2020-09-12-093110.gif">
+<p align="center">
+DeviantArt is a small open source project that uses DeviantArt API based on MVVM with clean architecture. It focuses on smooth and beautiful animation.
+  </p>
+
+<p align="center">
+<img width="300" src="https://github.com/PhongHuynh93/DeviantArt/blob/master/preview/device-2020-09-12-093819.gif">
+<img width="300" src="https://github.com/PhongHuynh93/DeviantArt/blob/master/preview/device-2020-09-12-093110.gif">
+</p>
 
 ## Open-source libraries
 - Minimum SDK level 21
