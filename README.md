@@ -1,6 +1,6 @@
 # DeviantArt
-<img align="right" width="300" src="https://github.com/PhongHuynh93/DeviantArt/blob/master/preview/device-2020-09-12-093819.gif">
-<img align="right" width="300" src="https://github.com/PhongHuynh93/DeviantArt/blob/master/preview/device-2020-09-12-093110.gif">
+<img align="left" width="300" src="https://github.com/PhongHuynh93/DeviantArt/blob/master/preview/device-2020-09-12-093819.gif">
+<img align="center" width="300" src="https://github.com/PhongHuynh93/DeviantArt/blob/master/preview/device-2020-09-12-093110.gif">
 
 ## Open-source libraries
 - Minimum SDK level 21
