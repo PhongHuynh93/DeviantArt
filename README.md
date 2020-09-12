@@ -1,5 +1,6 @@
 # DeviantArt
-<img align="right" width="300" src="https://github.com/PhongHuynh93/DeviantArt/blob/master/preview/deviantart.gif">
+<img align="right" width="300" src="https://github.com/PhongHuynh93/DeviantArt/blob/master/preview/device-2020-09-12-093819.gif">
+<img align="right" width="300" src="https://github.com/PhongHuynh93/DeviantArt/blob/master/preview/device-2020-09-12-093110.gif">
 
 ## Open-source libraries
 - Minimum SDK level 21
@@ -18,3 +19,4 @@
 - [Gson](https://github.com/google/gson) - A modern JSON library for Kotlin and Java.
 - [Timber](https://github.com/JakeWharton/timber) - logging.
 - [Material-Components](https://github.com/material-components/material-components-android)
+- [InboxRecyclerView](https://github.com/saket/InboxRecyclerView)
