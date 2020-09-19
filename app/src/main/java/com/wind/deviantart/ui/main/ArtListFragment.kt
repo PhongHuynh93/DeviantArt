@@ -2,15 +2,13 @@ package com.wind.deviantart.ui.main
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.observe
+import androidx.lifecycle.*
 import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
@@ -24,13 +22,14 @@ import com.wind.deviantart.NavViewModel
 import com.wind.deviantart.OpenArtDetailParam
 import com.wind.deviantart.R
 import com.wind.deviantart.adapter.FooterAdapter
-import com.wind.deviantart.databinding.ItemArtBinding
 import com.wind.deviantart.ui.search.TagViewModel
 import com.wind.deviantart.ui.topic.TopicDetailViewModel
-import com.wind.deviantart.util.AdapterType
+import com.wind.deviantart.util.ArtViewHolder
+import com.wind.deviantart.util.ViewHolderFactory
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.recyclerview.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -38,6 +37,8 @@ import util.Event
 import util.dp
 import util.getDimen
 import util.recyclerview.SpacesItemDecoration
+import util.recyclerview.pool.HolderPrefetcher
+import util.recyclerview.pool.PrefetchRecycledViewPool
 
 /**
  * Created by Phong Huynh on 7/22/2020
@@ -51,6 +52,7 @@ private const val NEWEST_TYPE = 2
 private const val TOPIC_TYPE = 3
 private const val TAG_TYPE = 4
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class ArtListFragment: Fragment(R.layout.recyclerview) {
     private var type: Int = -1
@@ -100,16 +102,35 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val footerAdapter = FooterAdapter().apply {
-            setCallback(object: FooterAdapter.Callback {
+            setCallback(object : FooterAdapter.Callback {
                 override fun retry() {
                     browseNewestAdapter.retry()
                 }
             })
         }
         rcv.apply {
+//        create the viewpool ahead of time
+            val viewPool = PrefetchRecycledViewPool(
+                requireContext(),
+                viewLifecycleOwner.lifecycleScope
+            ).also { pool ->
+                pool.prepare()
+                viewLifecycleOwner.lifecycle.addObserver(object : LifecycleObserver {
+                    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+                    fun onDestroy() {
+                        Timber.e("onDestroyView, clear the pool")
+                        viewLifecycleOwner.lifecycle.removeObserver(this)
+                        pool.clear()
+                    }
+                })
+            }
+            setRecycledViewPool(viewPool)
+            prefetchItems(viewPool)
             layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL)
-            adapter = ConcatAdapter(browseNewestAdapter.apply {
-                callback = object: BrowseNewestAdapter.Callback {
+
+            val config = ConcatAdapter.Config.Builder().setIsolateViewTypes(false).build()
+            adapter = ConcatAdapter(config, browseNewestAdapter.apply {
+                callback = object : BrowseNewestAdapter.Callback {
                     override fun onClick(
                         view: View,
                         pos: Int,
@@ -117,9 +138,14 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
                         transitionName: String
                     ) {
                         vmArtToDetailNavViewModel.openArt.value =
-                        Event(OpenArtDetailParam(view = view, artWithCache = ArtWithCache(art = art, cacheW = view.measuredWidth,
-                            cacheH = view.measuredHeight, isThumbCached = view.getTag(R.id.tagThumb) != null)
-                        ))
+                            Event(
+                                OpenArtDetailParam(
+                                    view = view, artWithCache = ArtWithCache(
+                                        art = art, cacheW = view.measuredWidth,
+                                        cacheH = view.measuredHeight, isThumbCached = view.getTag(R.id.tagThumb) != null
+                                    )
+                                )
+                            )
                     }
                 }
             }, footerAdapter)
@@ -142,7 +168,7 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
                     if (pos == RecyclerView.NO_POSITION)
                         return
                     when (adapter?.getItemViewType(pos)) {
-                        AdapterType.TYPE_FOOTER -> {
+                        ViewHolderFactory.TYPE_FOOTER -> {
                             outRect.top = spaceTopFooter
                             outRect.bottom = spaceBotFooter
                         }
@@ -162,15 +188,11 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
             .frozen(true)
             .show()
 
-        Timber.e("show skeleton")
-
         viewLifecycleOwner.lifecycleScope.launch {
                 browseNewestAdapter.loadStateFlow.collectLatest { loadState ->
-                    Timber.e("load state $loadState")
                     if (loadState.refresh != LoadState.Loading && browseNewestAdapter.itemCount
                         > 0) {
                         skeleton?.let {
-                            Timber.e("hide skeleton")
                             it.hide()
                             skeleton = null
                         }
@@ -208,12 +230,21 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
                 }
             }
         }
+    }
 
+    private fun prefetchItems(holderPrefetcher: HolderPrefetcher) {
+        holderPrefetcher.apply {
+            val artCount = 10
+            setViewsCount(ViewHolderFactory.TYPE_ART, artCount) { fakeParent, viewType ->
+                Timber.e("create ahead view holder with viewType $viewType")
+                ViewHolderFactory.createHolder(fakeParent, viewType)
+            }
+        }
     }
 }
 
 private const val ART_TO_DETAIL_TRANSITION_NAME = "art_to_detail"
-class BrowseNewestAdapter: PagingDataAdapter<Art, BrowseNewestAdapter.ViewHolder>(object: DiffUtil.ItemCallback<Art>() {
+class BrowseNewestAdapter: PagingDataAdapter<Art, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Art>() {
     override fun areItemsTheSame(oldItem: Art, newItem: Art): Boolean {
         return oldItem.id == newItem.id
     }
@@ -226,11 +257,14 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, BrowseNewestAdapter.ViewHolder
 
     var callback: Callback? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun getItemViewType(position: Int): Int {
+        return ViewHolderFactory.TYPE_ART
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         Timber.e("onCreateViewHolder viewType %d", viewType)
-        return ViewHolder(ItemArtBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
-        }).apply {
-            itemView.setOnClickListener {view ->
+        return ViewHolderFactory.createHolder(parent, viewType).apply {
+            itemView.setOnClickListener { view ->
                 val pos = bindingAdapterPosition
                 if (pos >= 0) {
                     getItem(pos)?.let {
@@ -241,12 +275,12 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, BrowseNewestAdapter.ViewHolder
         }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         holder.itemView.transitionName = "$ART_TO_DETAIL_TRANSITION_NAME$position"
         if (item == null) {
             // bind the placeholder ?? what is it
-        } else {
+        } else if (holder is ArtViewHolder) {
             holder.binding.item = item
             holder.binding.executePendingBindings()
         }
@@ -256,6 +290,4 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, BrowseNewestAdapter.ViewHolder
     interface Callback {
         fun onClick(view: View, pos: Int, art: Art, transitionName: String)
     }
-
-    inner class ViewHolder(val binding: ItemArtBinding): RecyclerView.ViewHolder(binding.root)
 }

@@ -9,7 +9,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.wind.deviantart.R
-import com.wind.deviantart.util.AdapterType
+import com.wind.deviantart.util.ViewHolderFactory
 import util.dp
 import util.getColorAttr
 import util.getDimen
@@ -34,13 +34,13 @@ class ArtDetailItemDecoration(context: Context, private val adapter: RecyclerVie
         if (pos == RecyclerView.NO_POSITION)
             return
         when (adapter.getItemViewType(pos)) {
-            AdapterType.TYPE_TITLE -> {
+            ViewHolderFactory.TYPE_TITLE -> {
                 outRect.left = spaceTitleHoz
                 outRect.right = spaceTitleHoz
                 outRect.top = spaceTitleVerTop
                 outRect.bottom = spaceTitleVer - spaceArt / 2
             }
-            AdapterType.TYPE_ART -> {
+            ViewHolderFactory.TYPE_ART -> {
                 outRect.top = spaceArt / 2
                 outRect.bottom = spaceArt / 2
                 outRect.left = spaceArt / 2
@@ -71,10 +71,10 @@ class ArtDetailItemDecoration(context: Context, private val adapter: RecyclerVie
                 continue
             }
 
-            if (currentType == AdapterType.TYPE_TITLE || currentType == AdapterType.TYPE_ART_HEADER) {
+            if (currentType == ViewHolderFactory.TYPE_TITLE || currentType == ViewHolderFactory.TYPE_ART_HEADER) {
                 val holder: RecyclerView.ViewHolder = rv.findViewHolderForAdapterPosition(currentPos) ?: continue
                 val left = 0f
-                var top = if (currentType == AdapterType.TYPE_TITLE) {
+                var top = if (currentType == ViewHolderFactory.TYPE_TITLE) {
                     holder.itemView.top - spaceTitleVerTop
                 } else {
                     holder.itemView.top - spaceOffsetBetweenSection
@@ -95,7 +95,7 @@ class ArtDetailItemDecoration(context: Context, private val adapter: RecyclerVie
                 drawDividerFunc()
 
                 // draw another path at the bottom of art header
-                if (currentType == AdapterType.TYPE_ART_HEADER) {
+                if (currentType == ViewHolderFactory.TYPE_ART_HEADER) {
                     top = holder.itemView.bottom.toFloat()
                     bottom = top + spaceOffsetBetweenSection
                     drawDividerFunc()
