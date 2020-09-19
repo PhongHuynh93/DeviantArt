@@ -22,4 +22,8 @@ abstract class SimplePageStateChangeCallbacks : PageStateChangeCallbacks {
   override fun onPageCollapsed() {
     // For rent. Broker free.
   }
+
+  override fun onPageChangeAlpha(expand: Boolean, alpha: Float) {
+    // For rent. Broker free.
+  }
 }
