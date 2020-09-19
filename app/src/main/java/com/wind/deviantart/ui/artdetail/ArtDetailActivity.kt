@@ -69,6 +69,9 @@ class ArtDetailActivity: AppCompatActivity(R.layout.fragment)  {
                 addTarget(android.R.id.content)
                 duration = END_TRANSFORM_DURATION
             }
+            setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+            window.sharedElementsUseOverlay = false
+
         }
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
