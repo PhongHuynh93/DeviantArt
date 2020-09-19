@@ -7,7 +7,7 @@ import com.wind.domain.result.Result
 import com.wind.domain.result.data
 import com.wind.domain.user.GetUserProfileParam
 import com.wind.domain.user.GetUserProfileUseCase
-import ui.Message
+import model.Message
 import util.Event
 
 /**

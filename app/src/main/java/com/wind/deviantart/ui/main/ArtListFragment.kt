@@ -25,8 +25,8 @@ import com.wind.deviantart.OpenArtDetailParam
 import com.wind.deviantart.R
 import com.wind.deviantart.adapter.FooterAdapter
 import com.wind.deviantart.databinding.ItemArtBinding
-import com.wind.deviantart.ui.topic.TopicDetailViewModel
 import com.wind.deviantart.ui.search.TagViewModel
+import com.wind.deviantart.ui.topic.TopicDetailViewModel
 import com.wind.deviantart.util.AdapterType
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
@@ -227,6 +227,7 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, BrowseNewestAdapter.ViewHolder
     var callback: Callback? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        Timber.e("onCreateViewHolder viewType %d", viewType)
         return ViewHolder(ItemArtBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
         }).apply {
             itemView.setOnClickListener {view ->

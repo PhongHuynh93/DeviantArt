@@ -22,7 +22,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.wind.deviantart.R
 import com.wind.model.Art
-import ui.RatioImageView
+import widget.RatioImageView
 import util.HtmlImageText
 
 /**

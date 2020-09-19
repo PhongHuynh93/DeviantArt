@@ -9,7 +9,7 @@
             type="com.wind.model.Art" />
     </data>
 
-    <ui.RatioImageView
+    <widget.RatioImageView
         android:id="@+id/imgv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

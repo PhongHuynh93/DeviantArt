@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ui.RatioImageView
+        <widget.RatioImageView
             android:id="@+id/imgv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

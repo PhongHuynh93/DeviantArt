@@ -1,4 +1,4 @@
-package ui
+package widget
 
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator

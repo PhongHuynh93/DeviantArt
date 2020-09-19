@@ -1,4 +1,4 @@
-package ui;
+package widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
