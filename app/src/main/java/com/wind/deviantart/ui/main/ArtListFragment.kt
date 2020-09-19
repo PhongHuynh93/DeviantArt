@@ -2,6 +2,7 @@ package com.wind.deviantart.ui.main
 
 import android.graphics.Rect
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
@@ -235,9 +236,10 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
     private fun prefetchItems(holderPrefetcher: HolderPrefetcher) {
         holderPrefetcher.apply {
             val artCount = 10
-            setViewsCount(ViewHolderFactory.TYPE_ART, artCount) { fakeParent, viewType ->
+            val layoutInflater = LayoutInflater.from(requireContext())
+            setViewsCount(ViewHolderFactory.TYPE_ART, artCount) { parent, viewType ->
                 Timber.e("create ahead view holder with viewType $viewType")
-                ViewHolderFactory.createHolder(fakeParent, viewType)
+                ViewHolderFactory.createHolder(layoutInflater, parent, viewType)
             }
         }
     }
@@ -256,14 +258,17 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, RecyclerView.ViewHolder>(objec
 }) {
 
     var callback: Callback? = null
-
+    private lateinit var layoutInflater: LayoutInflater
     override fun getItemViewType(position: Int): Int {
         return ViewHolderFactory.TYPE_ART
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         Timber.e("onCreateViewHolder viewType %d", viewType)
-        return ViewHolderFactory.createHolder(parent, viewType).apply {
+        if (!this::layoutInflater.isInitialized) {
+            layoutInflater = LayoutInflater.from(parent.context)
+        }
+        return ViewHolderFactory.createHolder(layoutInflater, parent, viewType).apply {
             itemView.setOnClickListener { view ->
                 val pos = bindingAdapterPosition
                 if (pos >= 0) {

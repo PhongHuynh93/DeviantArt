@@ -14,10 +14,10 @@ object ViewHolderFactory {
     const val TYPE_FOOTER = 72
     const val TYPE_ART_HEADER = 73
 
-    fun createHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    fun createHolder(layoutInflater: LayoutInflater, parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_ART -> {
-                ArtViewHolder(ItemArtBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+                ArtViewHolder(ItemArtBinding.inflate(layoutInflater, parent, false))
             }
             else -> {
                 throw IllegalArgumentException("View type not found")

@@ -2,7 +2,6 @@ package util.recyclerview.pool
 
 import android.content.Context
 import android.util.SparseIntArray
-import android.widget.FrameLayout
 import androidx.recyclerview.widget.ALLOW_THREAD_GAP_WORK
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.viewType
@@ -18,7 +17,6 @@ class ViewHolderCreator(
     context: Context,
     private val coroutineScope: CoroutineScope,
     private val holderConsumer: (holder: RecyclerView.ViewHolder, creationTimeNs: Long) -> Unit) {
-    private val fakeParent by lazy { FrameLayout(context) }
     private val createdOutsideChannel = Channel<ViewType>(1)
     private val enqueueChannel = Channel<ViewHolderWrapper>(1)
     private val createItemChannel = Channel<ViewHolderWrapper>(1)
@@ -87,7 +85,7 @@ class ViewHolderCreator(
 
         try {
             start = nanoTimeIfNeed()
-            holder = holderCreator(fakeParent, viewType)
+            holder = holderCreator(null, viewType)
             end = nanoTimeIfNeed()
         } catch (e: Exception) {
             return

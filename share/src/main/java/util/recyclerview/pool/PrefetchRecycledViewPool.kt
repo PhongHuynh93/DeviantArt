@@ -16,7 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class PrefetchRecycledViewPool(context: Context, coroutineScope: CoroutineScope): RecyclerView.RecycledViewPool(), HolderPrefetcher {
     private val viewHolderCreator = ViewHolderCreator(context, coroutineScope, ::putViewFromCreator)
 
-    override fun setViewsCount(viewType: Int, count: Int, holderCreator: (fakeParent: ViewGroup, viewType: Int) -> RecyclerView.ViewHolder) {
+    override fun setViewsCount(viewType: Int, count: Int, holderCreator: (parent: ViewGroup?, viewType: Int) -> RecyclerView.ViewHolder) {
         require(count > 0)
         viewHolderCreator.setPrefetchBound(holderCreator, viewType, count)
     }
