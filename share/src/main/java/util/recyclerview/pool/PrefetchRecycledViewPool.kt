@@ -1,6 +1,5 @@
 package util.recyclerview.pool
 
-import android.content.Context
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.attachToPreventViewPoolFromClearing
@@ -13,8 +12,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * Created by Phong Huynh on 9/19/2020
  */
 @ExperimentalCoroutinesApi
-class PrefetchRecycledViewPool(context: Context, coroutineScope: CoroutineScope): RecyclerView.RecycledViewPool(), HolderPrefetcher {
-    private val viewHolderCreator = ViewHolderCreator(context, coroutineScope, ::putViewFromCreator)
+internal class PrefetchRecycledViewPool(coroutineScope: CoroutineScope): RecyclerView.RecycledViewPool(), ViewHolderPrefetcher {
+    private val viewHolderCreator = ViewHolderCreator(coroutineScope, ::putViewFromCreator)
 
     override fun setViewsCount(viewType: Int, count: Int, holderCreator: (parent: ViewGroup?, viewType: Int) -> RecyclerView.ViewHolder) {
         require(count > 0)

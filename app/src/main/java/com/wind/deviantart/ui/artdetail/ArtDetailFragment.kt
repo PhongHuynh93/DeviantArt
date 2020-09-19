@@ -19,14 +19,17 @@ import com.wind.deviantart.OpenArtDetailParam
 import com.wind.deviantart.R
 import com.wind.deviantart.adapter.HeaderTitleAdapter
 import com.wind.deviantart.databinding.FragmentArtDetailBinding
-import com.wind.deviantart.databinding.ItemArtBinding
 import com.wind.deviantart.databinding.ItemArtInfoBinding
 import com.wind.deviantart.ui.bottomsheet.ArtMoreOptionDialog
+import com.wind.deviantart.util.ArtViewHolder
 import com.wind.deviantart.util.ViewHolderFactory
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import util.Event
 import util.EventObserver
+import util.recyclerview.pool.ViewHolderPrefetcher
+import util.recyclerview.pool.setPrefetchRecycledViewPool
 
 private const val NUMB_COLUMN: Int = 2
 private const val EXTRA_DATA = "xData"
@@ -99,6 +102,9 @@ class ArtDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding.rcv.apply {
+            setPrefetchRecycledViewPool(viewLifecycleOwner) {
+                prefetchItems(it)
+            }
             layoutManager =
                 StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL)
             setHasFixedSize(true)
@@ -124,6 +130,16 @@ class ArtDetailFragment : Fragment() {
         handler.postDelayed(showDetailRunnable, 600)
     }
 
+    private fun prefetchItems(viewHolderPrefetcher: ViewHolderPrefetcher) {
+        viewHolderPrefetcher.apply {
+            val artCount = 20
+            val layoutInflater = LayoutInflater.from(requireContext())
+            setViewsCount(ViewHolderFactory.TYPE_ART, artCount) { parent, viewType ->
+                Timber.e("create ahead view holder with viewType $viewType")
+                ViewHolderFactory.createHolder(layoutInflater, parent, viewType)
+            }
+        }
+    }
 
 
     fun onTransitionStart(transition: Transition?) {
@@ -143,7 +159,7 @@ class ArtDetailFragment : Fragment() {
 
 private const val ART_TO_DETAIL_TRANSITION_NAME = "art_detail_to_detail_transition"
 
-class StagGridArtAdapter : ListAdapter<Art, StagGridArtAdapter.ViewHolder>(object : DiffUtil
+class StagGridArtAdapter : ListAdapter<Art, RecyclerView.ViewHolder>(object : DiffUtil
 .ItemCallback<Art>() {
     override fun areItemsTheSame(oldItem: Art, newItem: Art): Boolean {
         return oldItem.id == newItem.id
@@ -155,17 +171,12 @@ class StagGridArtAdapter : ListAdapter<Art, StagGridArtAdapter.ViewHolder>(objec
 
 }) {
     var callback: Callback? = null
-
-    override fun getItemViewType(position: Int): Int {
-        return ViewHolderFactory.TYPE_ART
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            ItemArtBinding.inflate(LayoutInflater.from(parent.context), parent, false).apply {
-            }).apply {
-            itemView.setOnClickListener { view ->
-                val pos = bindingAdapterPosition
+    private lateinit var layoutInflater: LayoutInflater
+    private val onClickListener = View.OnClickListener { view ->
+        val type = view.getTag(R.id.tagType) as Int
+        val pos = view.getTag(R.id.tagPos) as Int
+        when (type) {
+            ViewHolderFactory.TYPE_ART -> {
                 if (pos >= 0) {
                     getItem(pos)?.let {
                         callback?.onClick(view, pos, it)
@@ -175,19 +186,31 @@ class StagGridArtAdapter : ListAdapter<Art, StagGridArtAdapter.ViewHolder>(objec
         }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = getItem(position)
-        holder.itemView.transitionName =
-            "$ART_TO_DETAIL_TRANSITION_NAME$position"
-        holder.binding.item = item
-        holder.binding.executePendingBindings()
+    override fun getItemViewType(position: Int): Int {
+        return ViewHolderFactory.TYPE_ART
+    }
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return ViewHolderFactory.createHolder(layoutInflater, parent, viewType)
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is ArtViewHolder) {
+            val item = getItem(position)
+            holder.itemView.transitionName =
+                "$ART_TO_DETAIL_TRANSITION_NAME$position"
+            holder.binding.item = item
+            holder.itemView.setTag(R.id.tagType, getItemViewType(position))
+            holder.itemView.setTag(R.id.tagPos, position)
+            holder.itemView.setOnClickListener(onClickListener)
+            holder.binding.executePendingBindings()
+        }
     }
 
     interface Callback {
         fun onClick(view: View, pos: Int, art: Art)
     }
-
-    inner class ViewHolder(val binding: ItemArtBinding) : RecyclerView.ViewHolder(binding.root)
 }
 
 class HeaderAdapter : ListAdapter<ArtWithCache, HeaderAdapter.ViewHolder>(object : DiffUtil

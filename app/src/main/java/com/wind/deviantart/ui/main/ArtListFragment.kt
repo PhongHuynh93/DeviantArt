@@ -9,7 +9,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.*
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
@@ -38,8 +39,8 @@ import util.Event
 import util.dp
 import util.getDimen
 import util.recyclerview.SpacesItemDecoration
-import util.recyclerview.pool.HolderPrefetcher
-import util.recyclerview.pool.PrefetchRecycledViewPool
+import util.recyclerview.pool.ViewHolderPrefetcher
+import util.recyclerview.pool.setPrefetchRecycledViewPool
 
 /**
  * Created by Phong Huynh on 7/22/2020
@@ -110,23 +111,9 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
             })
         }
         rcv.apply {
-//        create the viewpool ahead of time
-            val viewPool = PrefetchRecycledViewPool(
-                requireContext(),
-                viewLifecycleOwner.lifecycleScope
-            ).also { pool ->
-                pool.prepare()
-                viewLifecycleOwner.lifecycle.addObserver(object : LifecycleObserver {
-                    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-                    fun onDestroy() {
-                        Timber.e("onDestroyView, clear the pool")
-                        viewLifecycleOwner.lifecycle.removeObserver(this)
-                        pool.clear()
-                    }
-                })
+            setPrefetchRecycledViewPool(viewLifecycleOwner) {
+                prefetchItems(it)
             }
-            setRecycledViewPool(viewPool)
-            prefetchItems(viewPool)
             layoutManager = StaggeredGridLayoutManager(NUMB_COLUMN, StaggeredGridLayoutManager.VERTICAL)
 
             val config = ConcatAdapter.Config.Builder().setIsolateViewTypes(false).build()
@@ -233,9 +220,9 @@ class ArtListFragment: Fragment(R.layout.recyclerview) {
         }
     }
 
-    private fun prefetchItems(holderPrefetcher: HolderPrefetcher) {
-        holderPrefetcher.apply {
-            val artCount = 10
+    private fun prefetchItems(viewHolderPrefetcher: ViewHolderPrefetcher) {
+        viewHolderPrefetcher.apply {
+            val artCount = 20
             val layoutInflater = LayoutInflater.from(requireContext())
             setViewsCount(ViewHolderFactory.TYPE_ART, artCount) { parent, viewType ->
                 Timber.e("create ahead view holder with viewType $viewType")
@@ -268,9 +255,13 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, RecyclerView.ViewHolder>(objec
         if (!this::layoutInflater.isInitialized) {
             layoutInflater = LayoutInflater.from(parent.context)
         }
-        return ViewHolderFactory.createHolder(layoutInflater, parent, viewType).apply {
-            itemView.setOnClickListener { view ->
-                val pos = bindingAdapterPosition
+        return ViewHolderFactory.createHolder(layoutInflater, parent, viewType)
+    }
+
+    private val onClickListener = View.OnClickListener { view ->
+        when (view.getTag(R.id.tagType) as Int) {
+            ViewHolderFactory.TYPE_ART -> {
+                val pos = view.getTag(R.id.tagPos) as Int
                 if (pos >= 0) {
                     getItem(pos)?.let {
                         callback?.onClick(view, pos, it, view.transitionName)
@@ -287,6 +278,9 @@ class BrowseNewestAdapter: PagingDataAdapter<Art, RecyclerView.ViewHolder>(objec
             // bind the placeholder ?? what is it
         } else if (holder is ArtViewHolder) {
             holder.binding.item = item
+            holder.itemView.setTag(R.id.tagType, getItemViewType(position))
+            holder.itemView.setTag(R.id.tagPos, position)
+            holder.itemView.setOnClickListener(onClickListener)
             holder.binding.executePendingBindings()
         }
     }

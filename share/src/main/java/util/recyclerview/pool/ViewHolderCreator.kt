@@ -1,6 +1,5 @@
 package util.recyclerview.pool
 
-import android.content.Context
 import android.util.SparseIntArray
 import androidx.recyclerview.widget.ALLOW_THREAD_GAP_WORK
 import androidx.recyclerview.widget.RecyclerView
@@ -13,8 +12,7 @@ import kotlinx.coroutines.channels.consumeEach
  * Created by Phong Huynh on 9/19/2020
  */
 @ExperimentalCoroutinesApi
-class ViewHolderCreator(
-    context: Context,
+internal class ViewHolderCreator(
     private val coroutineScope: CoroutineScope,
     private val holderConsumer: (holder: RecyclerView.ViewHolder, creationTimeNs: Long) -> Unit) {
     private val createdOutsideChannel = Channel<ViewType>(1)
