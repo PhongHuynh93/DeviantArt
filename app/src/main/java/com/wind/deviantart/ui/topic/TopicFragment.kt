@@ -26,7 +26,7 @@ import com.wind.deviantart.databinding.FragmentTopicBinding
 import com.wind.deviantart.databinding.ItemTopicListBinding
 import com.wind.deviantart.databinding.ItemTopicLiteratureBinding
 import com.wind.deviantart.databinding.ItemTopicTitleBinding
-import com.wind.deviantart.util.AdapterType
+import com.wind.deviantart.util.ViewHolderFactory
 import com.wind.model.Art
 import com.wind.model.ArtType
 import com.wind.model.Topic
@@ -118,7 +118,7 @@ class TopicFragment: Fragment() {
                         } catch (ignored: Exception) {
                             -1
                         }) {
-                            UiTopic.TYPE_TITLE, AdapterType.TYPE_FOOTER, UiTopic.TYPE_LITERATURE, UiTopic.TYPE_PERSONAL -> {
+                            UiTopic.TYPE_TITLE, ViewHolderFactory.TYPE_FOOTER, UiTopic.TYPE_LITERATURE, UiTopic.TYPE_PERSONAL -> {
                                 2
                             }
                             UiTopic.TYPE_ART -> {

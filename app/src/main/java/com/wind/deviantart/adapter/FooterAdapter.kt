@@ -7,9 +7,8 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.wind.deviantart.R
-import com.wind.deviantart.util.AdapterType
+import com.wind.deviantart.util.ViewHolderFactory
 import kotlinx.android.synthetic.main.item_footer.view.*
-import timber.log.Timber
 
 /**
  * Created by Phong Huynh on 8/1/2020.
@@ -51,7 +50,7 @@ class FooterAdapter : RecyclerView.Adapter<FooterAdapter.ViewHolder>() {
     }
 
     override fun getItemViewType(position: Int): Int {
-        return AdapterType.TYPE_FOOTER
+        return ViewHolderFactory.TYPE_FOOTER
     }
 
     override fun getItemCount(): Int = (if (displayLoadStateAsItem(loadState)) 1 else 0)
@@ -61,12 +60,10 @@ class FooterAdapter : RecyclerView.Adapter<FooterAdapter.ViewHolder>() {
             itemView.btnRetry.setOnClickListener {
                 callback?.retry()
             }
-            Timber.e("onCreateViewHolder")
         }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Timber.e("onBindViewHolder")
         // full span if used in staggered layout
         (holder.itemView.layoutParams as? StaggeredGridLayoutManager.LayoutParams)?.isFullSpan = true
         // bind

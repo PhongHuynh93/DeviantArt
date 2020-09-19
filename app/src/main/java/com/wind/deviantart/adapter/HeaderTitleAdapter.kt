@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.wind.deviantart.databinding.ItemTitleBinding
-import com.wind.deviantart.util.AdapterType
+import com.wind.deviantart.util.ViewHolderFactory
 
 /**
  * Created by Phong Huynh on 8/1/2020.
@@ -23,7 +23,7 @@ class HeaderTitleAdapter : ListAdapter<String, HeaderTitleAdapter.ViewHolder>(ob
 }) {
 
     override fun getItemViewType(position: Int): Int {
-        return AdapterType.TYPE_TITLE
+        return ViewHolderFactory.TYPE_TITLE
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

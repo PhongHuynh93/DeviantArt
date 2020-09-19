@@ -1,9 +1,5 @@
 package com.wind.deviantart.ui.artdetail
 
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.transition.Transition
@@ -26,10 +22,11 @@ import com.wind.deviantart.databinding.FragmentArtDetailBinding
 import com.wind.deviantart.databinding.ItemArtBinding
 import com.wind.deviantart.databinding.ItemArtInfoBinding
 import com.wind.deviantart.ui.bottomsheet.ArtMoreOptionDialog
-import com.wind.deviantart.util.AdapterType
+import com.wind.deviantart.util.ViewHolderFactory
 import com.wind.model.Art
 import dagger.hilt.android.AndroidEntryPoint
-import util.*
+import util.Event
+import util.EventObserver
 
 private const val NUMB_COLUMN: Int = 2
 private const val EXTRA_DATA = "xData"
@@ -160,7 +157,7 @@ class StagGridArtAdapter : ListAdapter<Art, StagGridArtAdapter.ViewHolder>(objec
     var callback: Callback? = null
 
     override fun getItemViewType(position: Int): Int {
-        return AdapterType.TYPE_ART
+        return ViewHolderFactory.TYPE_ART
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -206,7 +203,7 @@ class HeaderAdapter : ListAdapter<ArtWithCache, HeaderAdapter.ViewHolder>(object
     var callback: Callback? = null
 
     override fun getItemViewType(position: Int): Int {
-        return AdapterType.TYPE_ART_HEADER
+        return ViewHolderFactory.TYPE_ART_HEADER
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
