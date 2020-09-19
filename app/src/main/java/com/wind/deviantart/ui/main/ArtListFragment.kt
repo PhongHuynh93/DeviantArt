@@ -35,9 +35,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import util.Event
-import util.SpacesItemDecoration
 import util.dp
 import util.getDimen
+import util.recyclerview.SpacesItemDecoration
 
 /**
  * Created by Phong Huynh on 7/22/2020

@@ -1,4 +1,4 @@
-package util
+package util.recyclerview.layoutmanager
 
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager

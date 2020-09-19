@@ -1,38 +1,44 @@
-package util;
+package util.recyclerview.layoutmanager;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.OrientationHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by Phong Huynh on 5/9/2020.
  */
-public class PreloadLinearLayoutManager extends LinearLayoutManager {
+public class PreloadGridLayoutManager extends GridLayoutManager {
 
     private OrientationHelper mOrientationHelper;
 
     /**
-     * As {@link LinearLayoutManager#collectAdjacentPrefetchPositions} will prefetch one view for us,
+     * As {@link GridLayoutManager#collectAdjacentPrefetchPositions} will prefetch one view for us,
      * we only need to prefetch additional ones.
      */
     private int mAdditionalAdjacentPrefetchItemCount = 0;
 
-    public PreloadLinearLayoutManager(Context context) {
-        super(context);
-        init();
-    }
-
-    public PreloadLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
-        super(context, orientation, reverseLayout);
-        init();
-    }
-
-    public PreloadLinearLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public PreloadGridLayoutManager(Context context,
+                                    AttributeSet attrs,
+                                    int defStyleAttr,
+                                    int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        init();
+    }
+
+    public PreloadGridLayoutManager(Context context, int spanCount) {
+        super(context, spanCount);
+        init();
+    }
+
+    public PreloadGridLayoutManager(Context context,
+                                    int spanCount,
+                                    int orientation,
+                                    boolean reverseLayout) {
+        super(context, spanCount, orientation, reverseLayout);
         init();
     }
 

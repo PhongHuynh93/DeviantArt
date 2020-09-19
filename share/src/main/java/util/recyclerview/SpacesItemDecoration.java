@@ -1,4 +1,4 @@
-package util;
+package util.recyclerview;
 
 import android.graphics.Rect;
 import android.view.View;
