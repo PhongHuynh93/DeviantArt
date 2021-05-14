@@ -6,7 +6,7 @@ coverage:
       default:
         # basic
         target: 55%
-        threshold: 2%  # allow for 2% reduction of coverage without failing
+        threshold: 100%  # allow for 2% reduction of coverage without failing
 
 
     # do not run coverage on patch nor changes
