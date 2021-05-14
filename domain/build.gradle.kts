@@ -52,4 +52,9 @@ dependencies {
 
     // paging
     implementation(Libs.Android.page)
+
+    // test
+    testImplementation(Libs.Test.junit)
+    androidTestImplementation(Libs.Test.runner)
+    androidTestImplementation(Libs.Test.espresso)
 }

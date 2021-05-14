@@ -20,15 +20,12 @@ project.afterEvaluate {
             .all { variant ->
                 def variantName = variant.name
                 def unitTestTask = "test${variantName.capitalize()}UnitTest"
-                def androidTestCoverageTask = "create${variantName.capitalize()}CoverageReport"
+                def androidTestCoverageTask = "connected${variantName.capitalize()}AndroidTest"
 
                 tasks.create(name: "${unitTestTask}Coverage", type: JacocoReport, dependsOn: [
                         "$unitTestTask",
                         ":domain:testDebugUnitTest",
-                        ":data:testDebugUnitTest",
-                        "$androidTestCoverageTask",
-                        ":domain:createDebugCoverageReport",
-                        ":data:createDebugCoverageReport",
+                        ":data:testDebugUnitTest"
                 ]) {
                     group = "Reporting"
                     description = "Generate Jacoco coverage reports for the ${variantName.capitalize()} build"
@@ -105,7 +102,6 @@ project.afterEvaluate {
 
                     executionData(files([
                             "$project.buildDir/jacoco/${unitTestTask}.exec",
-                            uiTestsApp, uiTestsDomain, uiTestsData,
                             "$project.rootDir/domain/build/jacoco/testDebugUnitTest.exec",
                             "$project.rootDir/data/build/jacoco/testDebugUnitTest.exec"
                     ]))

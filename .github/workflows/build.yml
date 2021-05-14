@@ -27,4 +27,4 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           token: b7c6be65-08ea-46bc-bc2d-f909fb4d1e4d
-          files: ${{ github.workspace }}/app/build/reports/jacoco/testProdDebugUnitTestCoverage/testProdDebugUnitTestCoverage.xml
+          files: ${{ github.workspace }}/app/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml

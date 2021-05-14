@@ -64,4 +64,9 @@ dependencies {
     // image
     implementation(Libs.Glide.glide1)
     implementation(Libs.Glide.glideTransform)
+
+    // test
+    testImplementation(Libs.Test.junit)
+    androidTestImplementation(Libs.Test.runner)
+    androidTestImplementation(Libs.Test.espresso)
 }
