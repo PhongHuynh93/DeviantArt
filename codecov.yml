@@ -10,7 +10,7 @@ coverage:
 
 
     # do not run coverage on patch nor changes
-    patch: false
+    # patch: false
 
 # Pull request comments:
 # ----------------------
