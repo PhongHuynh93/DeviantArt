@@ -1,0 +1,20 @@
+# Coverage configuration
+# ----------------------
+coverage:
+  status:
+    project:
+      default:
+        # basic
+        target: 55%
+        threshold: 2%  # allow for 2% reduction of coverage without failing
+
+
+    # do not run coverage on patch nor changes
+    patch: false
+
+# Pull request comments:
+# ----------------------
+# Diff is the Coverage Diff of the pull request.
+# Files are the files impacted by the pull request
+comment:
+  layout: diff, files  # accepted in any order: reach, diff, flags, and/or files
