@@ -18,11 +18,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Unit tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          script: bash ./gradlew app:testDebugUnitTestCoverage --stacktrace
+      - name: Build Debug APK
+        run: bash ./gradlew :app:testDebugUnitTestCoverage --stacktrace
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
