@@ -6,6 +6,7 @@ plugins {
     kotlin(Plugins.kapt)
     id(Plugins.safeArgs)
 }
+apply(from = "$rootDir/buildSrc/src/main/java/jacoco.gradle")
 
 android {
     compileSdkVersion(Configs.compileSdk)
@@ -31,6 +32,12 @@ android {
     kotlinOptions {
         this as org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
         jvmTarget = "1.8"
+    }
+
+    buildTypes {
+        getByName("debug") {
+            isTestCoverageEnabled = true
+        }
     }
 }
 
